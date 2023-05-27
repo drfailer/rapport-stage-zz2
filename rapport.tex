@@ -159,6 +159,34 @@ plan !
 CKsquare est une entreprise d'ingénierie spécialisée dans la conception de
 systèmes de payement automatisés.
 
+L'entreprise fourni principalement les stations de lavage automatiques pour les
+voitures ainsi que les laveries mais s'intéresse aussi à d'autre marchés. Par
+exemple, elle est en train de mettre en place un projet projet de casier
+entièrement automatisés qui pourront être utilisés pour acheter des produits
+locaux.
+
+CKsquare est un groupe composé de plusieurs sociétés chacune chargé de la
+conception d'une partie des borne. Cela permet de faire en sorte que la
+fabrication des bornes soit presque entièrement réalisé par l'entreprise.
+
+% TODO: revoir cette partie
+L'objectif de la société est de pouvoir fournir des produits configurables et
+adaptables aux besoins des différents clients. Une équipe SAV est en permanence
+à l'écoute des requêtes des clients ce qui permet de guider l'équipe de
+développement pour la conception d'éléments permettant de répondre à ces
+besoins.
+
+% aspect sécurité ?
+% je suis pas encore satisfait de ce paragraphe
+Un des gros atouts de la société est son savoir faire concernant l'utilisation
+des cartes électroniques. En effet, les bornes CKsquare sont toutes équipées de
+cartes électroniques beaucoup plus fiables et moins énergivores que des PC.
+Cependant, ces cartes doivent assurer beaucoup de fonctionnalités et gérer un
+grand nombre de composants ce qui pose de gros problèmes en terme d'optimisation
+du stockage. De plus, l'utilisation d'outils de payements implique encore plus
+de contraintes comme par exemple la nécessité de s'assurer que toutes les ventes
+sont correctement enregistrées puis envoyées sur le serveur.
+
 - monétique ++
 - station auto lavage
 - faite ses 20 ans cette année
@@ -173,11 +201,25 @@ systèmes de payement automatisés.
 %% Tranvail demandé ========================================================{{{
 \section{Travail demandé}
 
-L'objectif du stage est de réaliser un outil permettant de pouvoir tester la
-partie commune des bibliothèques qui s'exécutent sur les cartes électroniques
-des bornes de la société. À terme, l'outil doit permettre de faire de
-l'intégration continue, les tests doivent donc pouvoir être automatisés dans une
-pipeline Gitlab.
+L'objectif est de réaliser un outil servant à faire de l'intégration continu
+pour valider les fichier de la partie commune du code utilisé sur les bornes.
+L'outil doit permettre l'écriture de tests pour valider le code et doit pouvoir
+être automatisé dans une pipeline Gitlab. De plus, l'outil sera utilisé pour
+tester du code exécuté sur du matériel embarqué, il faudra donc un moyen de
+tester des fonctions qui interagissent avec le matériel électronique. Pour ce
+faire, il faudra émuler les interactions avec le matériel en créant des
+fonctions et des structures de données qui réagiront comme les composants
+électroniques. Par exemple, si une fonction doit modifier un registre sur une
+carte, il faut pouvoir émuler l'interface de la carte et le registre pour
+vérifier que les bonnes modification ont été apportées. Il faudra aussi des
+fonctionnalités permettant de simuler l'interaction d'un utilisateur avec un
+composant pendant les tests. Par exemple, on doit pouvoir faire en sorte de
+tester le comportement du système lorsqu'un utilisateur appuie sur une séquence
+de touches.
+
+Il sera donc nécessaire d'émuler la mémoire des composants électroniques les
+fonctions qui permettent d'interagir avec ainsi que des fonctions permettant de
+simuler les actions d'un utilisateur.
 
 La première tâche sera de trouver le framework de test adapté pour la conception
 de l'outil. Le code à tester est écrit en C, cependant, la société souhaiterait
@@ -221,6 +263,8 @@ constitue la base de l'outil à créer, c'est donc un choix assez important. Dan
 cette partie nous traiterons de la procédure qui a été utilisée pour trouver et
 comparer des frameworks et des bibliothèques de test.
 
+\subsection{Les critères de comparaison}
+
 Étant donné le fait que le langage C est très utilisé, il y a beaucoup de choix
 quand aux différentes bibliothèques de test utilisables. Le premier travail a
 été de faire un listing des bibliothèques et frameworks de tests existants pour
@@ -249,10 +293,34 @@ non négligeable que d'avoir un framework qui permette d'écrire des tests
 simples, lisibles et compréhensibles. Enfin, ce critère impacte aussi le temps
 de conception de l'outil de test car le fait d'utiliser un framework trop
 complexe aurait nécessité la conception de fonctions et macros (pour réduire la
-complexité) et rallongé le temps d'écriture de la documentation.
+complexité) et rallongé le temps d'écriture de la documentation. À noter que
+pour valider ce critère, la documentation des différents outils a aussi été
+étudiée, les frameworks devaient donc fournir une documentation suffisamment
+claire et précise permettant d'utiliser facilement toutes les fonctionnalités
+proposées.
 
-TODO:
-- statut du développement (star github, collaborateurs, dernière maj)
+% TODO: reformuler
+Le critère le plus important est celui du statut du développement du framework.
+En effet, lorsque l'on souhaite utiliser un outil, une question importante à se
+poser est de savoir ce que l'on peut faire en cas de problème. Ici, il a fallut
+regarder la taille, la popularité et l'age des projets. En effet, plus un projet
+est populaire plus il sera facile de trouver de l'aide en cas de problème. De
+plus, les projet important on souvent beaucoup plus de collaborateurs ce qui
+peut accélérer la corrections des bugs. Enfin la dates de dernières mis à jours
+ont aussi été répertoriées car là aussi, il est beaucoup plus simple de résoudre
+les problèmes sur un projet qui est encore activement maintenu.
+
+% TODO: mal dit
+D'autres critères ont permis de démarquer les frameworks comme par exemple le
+fait que les frameworks fournisse des fonctionnalités supplémentaires comme le
+fait de pouvoir exporter les résultats des tests dans différents format comme
+TAP ou XML (utile pour faire des rapport) ou encore des générateur de nombres
+pseudo aléatoires pour faire des tests avec des entrée aléatoires, \dots Une
+autre fonctionnalité intéressante est que les frameworks exécutent les tests
+dans des threads séparer ce qui permet de tester des signaux ou encore de ne pas
+stopper tous les tester pour un plantage.
+
+% TODO: résumé des frameworks
 
 %===========================================================================}}}
 %% Organisation du projet =================================================={{{
@@ -268,6 +336,37 @@ TODO:
 %% Simulation du stockage =================================================={{{
 \section{Simulation du stockage}
 
+Une partie importante de l'émulation concerne le stockage et il y a plusieurs
+types composants à simuler, les registres, les eeproms, et la mémoire flash.
+L'émulation des périphériques des stockage est assez simple puisqu'il s'agit
+simplement de tableaux de caractères non signés (codés sur 8 bits sur la plupart
+des machines). La partie complexe de l'émulation du stockage concerne
+l'interface qui permet d'interagir avec les périphériques. Il y a deux
+protocoles qui sont utilisés avec le stockage. Tout d'abord il y a le protocole
+I²C qui est utilisé avec les registre et certaines eeproms. Ensuite il y a le
+protocole SPI qui est utilisé avec les eeproms et les mémoire flash.
+
+Dans cette partie nous allons voir comment a été réalisée l'émulation de
+l'interface permettant d'utiliser le stockage avec les différents protocoles.
+
+%%% Les threads ------------------------------------------------------------{{{
+\subsection{Échec des threads}
+
+La première solution qui a été implémentée utilisait des \textbf{threads}.
+L'objectif été de pouvoir simuler les composants de sorte à ce qu'ils se
+comportent comme les composants réels installés sur la carte. Pour se faire, il
+été souhaitable que les composants simulés soient actif en même temps que la
+carte (représentée ici par le programme à tester) et c'est pour cela que les
+threads ont été utilisés. Le principe était que les composants été représentés
+par des machines à états qui bouclaient dans un état de base jusqu'à ce que le
+composant soit appelé (donc jusqu'à ce que le programme principale décide de
+lancer une communication en utilisant un des protocoles cités précédemment). Une
+fois le composant appelé, la machine à états permettait d'assurer la
+communication. Pour que les composant simulé s'exécutent en même temps que le
+programme principale, la fonction qui contenait la machine à états était
+exécutée dans un thread.
+
+%---------------------------------------------------------------------------}}}
 %%% Interface I²C ----------------------------------------------------------{{{
 \subsection{Interface I²C}
 
