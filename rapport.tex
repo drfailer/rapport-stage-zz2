@@ -153,7 +153,6 @@ plan !
 % Contexte du projet *******************************************************{{{
 \part{Contexte du projet}
 
-%% Présentation de CKsquare ================================================{{{
 \section{Présentation de CKsquare}
 
 CKsquare est une entreprise d'ingénierie spécialisée dans la conception de
@@ -197,8 +196,6 @@ sont correctement enregistrées puis envoyées sur le serveur.
 - regroupement d'entreprises pour concevoir les bornes de A à Z
 - fournissent des solution personnalisées pour les clients
 
-%===========================================================================}}}
-%% Tranvail demandé ========================================================{{{
 \section{Travail demandé}
 
 L'objectif est de réaliser un outil servant à faire de l'intégration continu
@@ -247,14 +244,11 @@ création d'un nouveau composant.
 écrits durant le projet mais ces derniers ont pour objectif de valider le bon
 fonctionnement des composants simulés et non celui du code de la société.
 
-%===========================================================================}}}
-
 \clearpage
 %***************************************************************************}}}
 % Réalisation et conception ************************************************{{{
 \part{Réalisation et conception}
 
-%% Choix du framework de test =============================================={{{
 \section{Choix du framework de test}
 
 Le but du projet est de concevoir un outil permettant de tester du code, la
@@ -322,8 +316,6 @@ stopper tous les tester pour un plantage.
 
 % TODO: résumé des frameworks
 
-%===========================================================================}}}
-%% Organisation du projet =================================================={{{
 \section{Organisation du projet}
 
 - myosismonnayeur
@@ -332,8 +324,6 @@ stopper tous les tester pour un plantage.
   - Fichiers à tester (commun\_global, dev\_pic)
 - les fichiers de Tests
 
-%===========================================================================}}}
-%% Simulation du stockage =================================================={{{
 \section{Simulation du stockage}
 
 Une partie importante de l'émulation concerne le stockage et il y a plusieurs
@@ -349,7 +339,6 @@ protocole SPI qui est utilisé avec les eeproms et les mémoire flash.
 Dans cette partie nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
-%%% Les threads ------------------------------------------------------------{{{
 \subsection{Échec des threads}
 
 La première solution qui a été implémentée utilisait des \textbf{threads}.
@@ -366,55 +355,33 @@ communication. Pour que les composant simulé s'exécutent en même temps que le
 programme principale, la fonction qui contenait la machine à états était
 exécutée dans un thread.
 
-%---------------------------------------------------------------------------}}}
-%%% Interface I²C ----------------------------------------------------------{{{
 \subsection{Interface I²C}
 
 
-%---------------------------------------------------------------------------}}}
-%%% Interface SPI ----------------------------------------------------------{{{
 \subsection{Interface SPI}
 
 
-%---------------------------------------------------------------------------}}}
-
-%===========================================================================}}}
-%% Simulation des composants ==============================================={{{
 \section{Simulation des composants}
 
-%%% Interface Cctalk -------------------------------------------------------{{{
 \subsection{Interface Cctalk}
 
-
-%---------------------------------------------------------------------------}}}
-%%% Interface MDB ----------------------------------------------------------{{{
 \subsection{Interface MDB}
 
 
-%---------------------------------------------------------------------------}}}
-
-%===========================================================================}}}
-%% Déroulement du projet ==================================================={{{
 \section{Déroulement du projet}
 
-%%% Les outils -------------------------------------------------------------{{{
 \subsection{Les outils utilisés}
 
-%%%% Gestion de version ....................................................{{{
 \subsubsection{Gestion de version}
 
 utilisation de git / version modifiée de gitflow. Je suis seul mais j'ai quand
 même organiser mes branche de façon similaire à gitflow pour ne jamais casser du
 code qui marche en mergant ou en tentant d implémenté du code qui marche pas.
 
-%...........................................................................}}}
-%%%% Gitlab ................................................................{{{
 \subsubsection{Gitlab}
 
 ci/cd
 
-%...........................................................................}}}
-%%%% Compilation ...........................................................{{{
 \subsubsection{Compilation}
 
 L'objectif étant de pouvoir automatiser les tests dans une pipeline Gitlab, il
@@ -439,16 +406,10 @@ de la compilation séparer ce qui à permis de gagner du temps pendant le
 développement étant donner le fait que seuls les fichiers modifiés sont
 recompilés lors de l'écriture des tests.
 
-%...........................................................................}}}
-%%%% nvim ..................................................................{{{
 \subsubsection{nvim}
 
 I use vim btw
 
-%...........................................................................}}}
-
-%---------------------------------------------------------------------------}}}
-%%% Planification des tâches -----------------------------------------------{{{
 \subsection{Planification des tâches}
 
 On voit ça sur le gantt.
@@ -480,35 +441,27 @@ On peut retrouver ce diagramme en index \ref{appendix:realgantt}.
 
 conclusion
 
-%---------------------------------------------------------------------------}}}
-%===========================================================================}}}
-
 \clearpage
 %***************************************************************************}}}
 % Résultats et discussions *************************************************{{{
 \part{Résultats et discussions}
 
-%% TODO ===================================================================={{{
 \section{TODO}
 
 todo
 
 \clearpage
-%===========================================================================}}}
-%% Discussion et perspectives =============================================={{{
+
 \section{Discussion et perspectives}
 
 On a fait ça et c'est bien mais on pourrait faire ça ou changer ça.
 
 \clearpage
-%===========================================================================}}}
-%% Conclusion =============================================================={{{
+
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
 CONCLUSION
-
-%}}}
 
 %***************************************************************************}}}
 
@@ -523,6 +476,7 @@ CONCLUSION
   \item \cite{engblom2015continuous}: simulation pour CI sur systèmes embarqués
   \item \cite{maartensson2016continuous}: intégration continue sur les systèmes
     embarqués.
+  \item \cite{hamill2004unit}: livre sur les frameworks de tests (p 41: mocking)
 \end{itemize}
 
 \clearpage{}
