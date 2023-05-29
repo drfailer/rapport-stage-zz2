@@ -158,6 +158,9 @@ plan !
 CKsquare est une entreprise d'ingénierie spécialisée dans la conception de
 systèmes de payement automatisés.
 
+% TODO: société créée en 2003 par Manu (nom complet) et compte N employés
+% TODO: groupe CKsquare
+
 L'entreprise fourni principalement les stations de lavage automatiques pour les
 voitures ainsi que les laveries mais s'intéresse aussi à d'autre marchés. Par
 exemple, elle est en train de mettre en place un projet projet de casier
@@ -198,8 +201,10 @@ sont correctement enregistrées puis envoyées sur le serveur.
 
 \section{Travail demandé}
 
-L'objectif est de réaliser un outil servant à faire de l'intégration continu
-pour valider les fichier de la partie commune du code utilisé sur les bornes.
+% TODO: faire un condencé de tout ça
+
+L'objectif est de réaliser un outil servant à faire de l'intégration continue
+pour valider les fichiers de la partie commune du code utilisé sur les bornes.
 L'outil doit permettre l'écriture de tests pour valider le code et doit pouvoir
 être automatisé dans une pipeline Gitlab. De plus, l'outil sera utilisé pour
 tester du code exécuté sur du matériel embarqué, il faudra donc un moyen de
@@ -207,23 +212,22 @@ tester des fonctions qui interagissent avec le matériel électronique. Pour ce
 faire, il faudra émuler les interactions avec le matériel en créant des
 fonctions et des structures de données qui réagiront comme les composants
 électroniques. Par exemple, si une fonction doit modifier un registre sur une
-carte, il faut pouvoir émuler l'interface de la carte et le registre pour
-vérifier que les bonnes modification ont été apportées. Il faudra aussi des
-fonctionnalités permettant de simuler l'interaction d'un utilisateur avec un
-composant pendant les tests. Par exemple, on doit pouvoir faire en sorte de
-tester le comportement du système lorsqu'un utilisateur appuie sur une séquence
-de touches.
-
-Il sera donc nécessaire d'émuler la mémoire des composants électroniques les
-fonctions qui permettent d'interagir avec ainsi que des fonctions permettant de
-simuler les actions d'un utilisateur.
+carte, il faut pouvoir émuler le registre pour vérifier que les bonnes
+modifications ont été apportées. Il faudra aussi des fonctionnalités permettant
+de simuler l'interaction d'un utilisateur avec un composant pendant les tests.
+Par exemple, on doit pouvoir faire en sorte de tester le comportement du système
+lorsqu'un utilisateur appuie sur une séquence de touches. Il sera donc
+nécessaire d'émuler la mémoire des composants électroniques, les fonctions qui % note: pas clair ici
+permettent d'interagir avec. Il faudra aussi des fonctions permettant de simuler
+les actions d'un utilisateur.
 
 La première tâche sera de trouver le framework de test adapté pour la conception
 de l'outil. Le code à tester est écrit en C, cependant, la société souhaiterait
 aussi pouvoir tester les bibliothèques écrites par l'équipe Qt. Il serait donc
 intéressant que l'outil soit aussi adapté au C++.
 
-Étant donné que les tests seront exécuter dans une pipeline (donc dans un
+% NOTE: redite sur l'émulation ici
+Étant donné que les tests seront exécutés dans une pipeline (donc dans un
 docker), il faudra s'assurer que le code puisse compiler sous Linux. De plus, le
 code étant à la base fait pour s'exécuter sur une carte électronique, cela
 nécessitera d'émuler les composants pour que le code puisse fonctionner
@@ -233,6 +237,7 @@ de communication comme le SPI ou encore le Cctalk. En plus de cela, il faudra
 pouvoir remplacer une partie des bibliothèques de la carte pour pouvoir simuler
 les composants.
 
+% validé
 Le résultat final doit être un outil qui doit pouvoir être facilement
 réutilisable et adaptable. La documentation et la structure du code doit pouvoir
 permettre d'aisément modifier ou copier les différents éléments. Par exemple, il
@@ -240,6 +245,7 @@ faudra que tous les composants simulés aient la même structure et que cette
 structure soit suffisamment simple et générique pour pouvoir être copiée pour la
 création d'un nouveau composant.
 
+% validé
 À noter que l'objectif du projet n'est pas d'écrire des tests. Des tests ont été
 écrits durant le projet mais ces derniers ont pour objectif de valider le bon
 fonctionnement des composants simulés et non celui du code de la société.
@@ -253,8 +259,8 @@ fonctionnement des composants simulés et non celui du code de la société.
 
 Le but du projet est de concevoir un outil permettant de tester du code, la
 première tâche à donc été de choisir un framework de test. Le framework de test
-constitue la base de l'outil à créer, c'est donc un choix assez important. Dans
-cette partie nous traiterons de la procédure qui a été utilisée pour trouver et
+constitue la base de l'outil, c'est donc un choix assez important. Dans cette
+partie nous traiterons de la procédure qui a été utilisée pour trouver et
 comparer des frameworks et des bibliothèques de test.
 
 \subsection{Les critères de comparaison}
@@ -262,21 +268,22 @@ comparer des frameworks et des bibliothèques de test.
 Étant donné le fait que le langage C est très utilisé, il y a beaucoup de choix
 quand aux différentes bibliothèques de test utilisables. Le premier travail a
 été de faire un listing des bibliothèques et frameworks de tests existants pour
-ensuite pouvoir les comparer. Ce travail de recherche à permis de faire un prés
-tri et d'éliminer les framework incomplets ou trop peut utilisés. Une fois le
+ensuite pouvoir les comparer. Une liste des frameworks disponibles sur Wikipédia
+\cite{enwikiframeworks}. Ce travail de recherche à permis de faire un prés tri
+et d'éliminer les framework incomplets ou trop peut utilisés. Une fois le
 listing terminé, il a fallut trouver des critères pour comparer les frameworks.
+\\
 
 Tout d'abord, l'équipe de développement souhaitait pouvoir tester à la fois du
-code \textbf{C} et du code \textbf{C++} pour pouvoir tester certaines parties de
-code développées par l'équipe \textbf{Qt}. Ce critère était optionnel mais
-apprécié. À noter que lorsque l'on parle de pouvoir tester du code C++, cela ne
-prend pas seulement en compte le fait de pouvoir exécuter des fonctions basiques
-puisque c'est parfaitement possible avec tous les frameworks C étant donné la
-compatibilité entre le C et le C++. Pour pouvoir tester du code C++, il fallait
-aussi que le framework soit capable d'interagir avec les structures de donnés
-fournis par la bibliothèque standard de C++ ou encore de pouvoir traiter des
-exceptions. Ce critère à aussi été considéré pour la recherche du framework et
-des frameworks C++ on aussi été retenus..
+code \textbf{C} et du code \textbf{C++} pour certaines parties développées par
+l'équipe \textbf{Qt}. Ce critère était optionnel mais apprécié. À noter que
+lorsque l'on parle de pouvoir tester du code C++, cela ne prend pas seulement en
+compte le fait de pouvoir exécuter des fonctions basiques puisque c'est possible
+avec tous les frameworks C étant donné la compatibilité entre le C et le C++.
+Pour pouvoir tester du code C++, il faut aussi que le framework soit capable
+d'interagir avec les structures de donnés fournis par la bibliothèque standard
+de C++ ou encore de pouvoir traiter des exceptions. Étant donné ce critère,
+l'idée d'utiliser un framework écrit en C++ a été envisagé.
 
 Un autre critère concerne la modernité et la facilité d'utilisation du
 framework. Cela peut sembler anodin mais l'écriture des tests est une tâche
@@ -346,14 +353,13 @@ L'objectif été de pouvoir simuler les composants de sorte à ce qu'ils se
 comportent comme les composants réels installés sur la carte. Pour se faire, il
 été souhaitable que les composants simulés soient actif en même temps que la
 carte (représentée ici par le programme à tester) et c'est pour cela que les
-threads ont été utilisés. Le principe était que les composants été représentés
-par des machines à états qui bouclaient dans un état de base jusqu'à ce que le
-composant soit appelé (donc jusqu'à ce que le programme principale décide de
-lancer une communication en utilisant un des protocoles cités précédemment). Une
-fois le composant appelé, la machine à états permettait d'assurer la
-communication. Pour que les composant simulé s'exécutent en même temps que le
-programme principale, la fonction qui contenait la machine à états était
-exécutée dans un thread.
+threads ont été utilisés. Le principe était que les composants étaient
+représentés par des machines à états qui bouclaient dans un état de base jusqu'à
+ce que le composant soit appelé (donc jusqu'à ce que le programme principale
+décide de lancer une communication en utilisant un des protocoles cités
+précédemment). Une fois le composant appelé, la machine à états permettait
+d'assurer la communication. Pour que les composants simulés s'exécutent en même
+temps que le programme principale, ils s'exécutaient dans des threads séparés.
 
 \subsection{Interface I²C}
 
