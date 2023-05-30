@@ -153,33 +153,44 @@ plan !
 % Contexte du projet *******************************************************{{{
 \part{Contexte du projet}
 
-\section{Présentation de CKsquare}
+\section{CKsquare}
 
-CKsquare est une entreprise d'ingénierie spécialisée dans la conception de
-systèmes de payement automatisés.
+CKsquare est une entreprise d'ingénierie, d'étude et de conseil spécialisée dans
+la conception de systèmes de payement automatisés. La société, au départ nommée
+cbsquare, a été créée en 2003 par Emmanuel Bertrand et compte aujourd'hui plus
+de 30 employés. Au départ, l'entreprise se tourne vers le secteur des stations
+de lavage auto en créant une gamme de distributeurs de jetons. Par la suite,
+elle élargie sa gamme de produits articulés autour de la monétique et se lance
+dans la conception de ses propres cartes électroniques.
 
-% TODO: société créée en 2003 par Manu (nom complet) et compte N employés
-% TODO: groupe CKsquare
+L'entreprise conçoit des bornes principalement les stations de lavage auto ainsi
+que les laveries mais s'intéresse aussi à d'autres marchés comme l'hôtellerie.
+Un projet de casiers automatisés est aussi en train de se mettre en place. Ce
+nouveau projet innovent et écologique (car il privilégiera les producteurs
+locaux et évitera les voyages en voiture pour se rendre dans les grandes
+surfaces) permettra de faire face au déclin des stations de lavage auto à cause
+des sécheresses de plus en plus fréquentes. Aujourd'hui, plus de 40000 stations
+de lavage auto sont équipé de bornes CKsquare.
 
-L'entreprise fourni principalement les stations de lavage automatiques pour les
-voitures ainsi que les laveries mais s'intéresse aussi à d'autre marchés. Par
-exemple, elle est en train de mettre en place un projet projet de casier
-entièrement automatisés qui pourront être utilisés pour acheter des produits
-locaux.
+CKsquare est un groupe composé de quatre sociétés chacune chargée de la
+conception d'une partie des produits. Parmi ces entreprises, on compte la
+société M-Innov qui se charge de la conception et de l'installation des bornes
+et systèmes monétiques pour les aires de services, campings, parking, ou hôtels.
+La société Mecasystem International qui se charge de la tôlerie et de la
+mécanique pour les bornes CKsquare et M-Innov. Enfin, en plus de CKsquare, il y
+a la société Ehrse qui se charge de la fabrication des cartes électroniques. Ces
+quatre sociétés travaillent en coopération ce qui leur permet d'avoir la
+maitrise de la conception et de la fabrication de tous les composants de leurs
+produits.
 
-CKsquare est un groupe composé de plusieurs sociétés chacune chargé de la
-conception d'une partie des borne. Cela permet de faire en sorte que la
-fabrication des bornes soit presque entièrement réalisé par l'entreprise.
+L'objectif de la société CKsquare est de pouvoir fournir des produits
+configurables et adaptables aux besoins des différents clients. C'est pour cela
+que les bornes possèdent beaucoup d'options et que l'entreprise entretient un
+savoir faire quant à la gestion de la plupart des systèmes de payements. De
+plus, une équipe SAV reste à l'écoute du besoin des clients ce qui permet à
+l'entreprise de concevoir des solutions encore plus spécifiques et
+personnalisées.
 
-% TODO: revoir cette partie
-L'objectif de la société est de pouvoir fournir des produits configurables et
-adaptables aux besoins des différents clients. Une équipe SAV est en permanence
-à l'écoute des requêtes des clients ce qui permet de guider l'équipe de
-développement pour la conception d'éléments permettant de répondre à ces
-besoins.
-
-% aspect sécurité ?
-% je suis pas encore satisfait de ce paragraphe
 Un des gros atouts de la société est son savoir faire concernant l'utilisation
 des cartes électroniques. En effet, les bornes CKsquare sont toutes équipées de
 cartes électroniques beaucoup plus fiables et moins énergivores que des PC.
@@ -188,16 +199,6 @@ grand nombre de composants ce qui pose de gros problèmes en terme d'optimisatio
 du stockage. De plus, l'utilisation d'outils de payements implique encore plus
 de contraintes comme par exemple la nécessité de s'assurer que toutes les ventes
 sont correctement enregistrées puis envoyées sur le serveur.
-
-- monétique ++
-- station auto lavage
-- faite ses 20 ans cette année
-- pousse les carte électroniques très loin -> solution très fiable / économique
-  et écologique
-- ils ont mis en place des systèmes perso pour pousser les cartes encore plus
-  loin
-- regroupement d'entreprises pour concevoir les bornes de A à Z
-- fournissent des solution personnalisées pour les clients
 
 \section{Travail demandé}
 
@@ -249,6 +250,14 @@ création d'un nouveau composant.
 À noter que l'objectif du projet n'est pas d'écrire des tests. Des tests ont été
 écrits durant le projet mais ces derniers ont pour objectif de valider le bon
 fonctionnement des composants simulés et non celui du code de la société.
+
+\section{Environnement et outils à disposition}
+
+parler de l'environnement dans l'entreprise... et des outils
+- travail seul
+- aide disponible
+- pc sous linux
+- accès à la documentation
 
 \clearpage
 %***************************************************************************}}}
@@ -325,11 +334,45 @@ stopper tous les tester pour un plantage.
 
 \section{Organisation du projet}
 
+\subsection{Découverte du code}
+
+Découverte du code sur un projet simple.
+config (solution personnalisée) = premier difficulté, il faut savoir comment
+configurer le projet.
+
+\subsection{Organisation des fichiers}
+
 - myosismonnayeur
 - fichiers de bases
   - Les fichiers locaux
   - Fichiers à tester (commun\_global, dev\_pic)
 - les fichiers de Tests
+
+\subsection{Contrainte pour compiler}
+
+\subsection{Machines à états}
+
+\section{Les premiers tests}
+
+Tools, machines, cashregister
+
+Fichiers simples au départ car il était très compliquer de compiler le projet
+sans les bibliothèques et le compilateur de la carte.
+
+\subsection{Différents types de fichiers à tester}
+
+\subsubsection{Tools: fonctions basiques}
+
+\subsubsection{Cashregister et machines: tester des machines à états}
+
+contrainte => pas d'acces aux états, ... on doit tester l'environnement
+
+\subsection{Versions tests}
+
+\subsection{Organisation du projet de test}
+
+Organisation du répertoire, philosophie quand à la copie de fichiers lorsqu'il y
+a des modifications à faire, substitution des bibliothèques.
 
 \section{Simulation du stockage}
 
@@ -363,16 +406,19 @@ temps que le programme principale, ils s'exécutaient dans des threads séparés
 
 \subsection{Interface I²C}
 
-
 \subsection{Interface SPI}
 
+\section{Le Cctalk}
 
-\section{Simulation des composants}
+\subsection{Le protocole}
 
-\subsection{Interface Cctalk}
+\subsection{Émulation des composants}
 
-\subsection{Interface MDB}
+\section{Le MDB}
 
+\subsection{Le protocole}
+
+\subsection{Émulation des composants}
 
 \section{Déroulement du projet}
 
@@ -452,15 +498,17 @@ conclusion
 % Résultats et discussions *************************************************{{{
 \part{Résultats et discussions}
 
-\section{TODO}
+\section{L'outil final}
 
-todo
+Description de l'outil final réalisé à la fin du stage.
 
 \clearpage
 
 \section{Discussion et perspectives}
 
-On a fait ça et c'est bien mais on pourrait faire ça ou changer ça.
+Regard sur ce qui a été fait et comment cela a été fait (parler de l'échec
+des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou a
+améliorer.
 
 \clearpage
 
@@ -474,6 +522,8 @@ CONCLUSION
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
+
+Test affichage biblio:
 
 \begin{itemize}
   \item \cite{mankar2014review}: présentation du protocole I²C
