@@ -170,7 +170,7 @@ nouveau projet innovent et écologique (car il privilégiera les producteurs
 locaux et évitera les voyages en voiture pour se rendre dans les grandes
 surfaces) permettra de faire face au déclin des stations de lavage auto à cause
 des sécheresses de plus en plus fréquentes. Aujourd'hui, plus de 40000 stations
-de lavage auto sont équipé de bornes CKsquare.
+de lavage auto sont équipées de bornes CKsquare.
 
 CKsquare est un groupe composé de quatre sociétés chacune chargée de la
 conception d'une partie des produits. Parmi ces entreprises, on compte la
@@ -186,10 +186,10 @@ produits.
 L'objectif de la société CKsquare est de pouvoir fournir des produits
 configurables et adaptables aux besoins des différents clients. C'est pour cela
 que les bornes possèdent beaucoup d'options et que l'entreprise entretient un
-savoir faire quant à la gestion de la plupart des systèmes de payements. De
-plus, une équipe SAV reste à l'écoute du besoin des clients ce qui permet à
-l'entreprise de concevoir des solutions encore plus spécifiques et
-personnalisées.
+savoir faire quant à la gestion de la plupart des systèmes de payements
+disponibles sur le marché. De plus, une équipe SAV reste à l'écoute du besoin
+des clients ce qui permet à l'entreprise de concevoir des solutions encore plus
+spécifiques et personnalisées.
 
 Un des gros atouts de la société est son savoir faire concernant l'utilisation
 des cartes électroniques. En effet, les bornes CKsquare sont toutes équipées de
@@ -198,7 +198,7 @@ Cependant, ces cartes doivent assurer beaucoup de fonctionnalités et gérer un
 grand nombre de composants ce qui pose de gros problèmes en terme d'optimisation
 du stockage. De plus, l'utilisation d'outils de payements implique encore plus
 de contraintes comme par exemple la nécessité de s'assurer que toutes les ventes
-sont correctement enregistrées puis envoyées sur le serveur.
+sont correctement enregistrées puis envoyées sur le serveur. % j'aime moins la fin
 
 \section{Travail demandé}
 
@@ -253,11 +253,26 @@ fonctionnement des composants simulés et non celui du code de la société.
 
 \section{Environnement et outils à disposition}
 
-parler de l'environnement dans l'entreprise... et des outils
-- travail seul
-- aide disponible
-- pc sous linux
-- accès à la documentation
+Concernant les conditions de travail durant le stage il faut noter que ce projet
+se réalisait seul. Cependant, les développeurs de CKsquare étaient présents pour
+répondre aux différentes questions, guider le projet ou pour faire les choix
+importants.
+
+Les horaires de travail ont été fixées de neuf heures à dix-sept heures avec une
+pause de une heure pour manger. Le travail a été réalisé entièrement en
+présentiel. De plus, les stagiaires étaient tous conviés aux réunions le
+mercredi, dans lesquelles chaque développeur parle pendant deux minutes du
+travail qu'il a réalisé et de ce qu'il compte faire ensuite.
+
+Quant au matériel, un bureau avec un PC sous Ubuntu a été mis à disposition. La
+session sur le PC possédait les privilèges administrateur pour faciliter
+l'installation des différents logiciels utilisés pour le développement
+(compilateur, éditeur de texte, doxygen, ...). De plus, il a été fourni une
+boite mail ainsi qu'un compte Gitlab. Un projet Gitlab a aussi été créé pour
+permettre de tester les frameworks de test. Il a aussi servit à stocker les
+notes prise sur le projet ainsi que la documentation. Enfin, la documentation
+des différents éléments comme les protocoles (Cctalk, Mdb) était disponible à la
+demande.
 
 \clearpage
 %***************************************************************************}}}
@@ -279,7 +294,7 @@ quand aux différentes bibliothèques de test utilisables. Le premier travail a
 été de faire un listing des bibliothèques et frameworks de tests existants pour
 ensuite pouvoir les comparer. Une liste des frameworks disponibles sur Wikipédia
 \cite{enwikiframeworks}. Ce travail de recherche à permis de faire un prés tri
-et d'éliminer les framework incomplets ou trop peut utilisés. Une fois le
+et d'éliminer les framework incomplets ou trop peu utilisés. Une fois le
 listing terminé, il a fallut trouver des critères pour comparer les frameworks.
 \\
 
@@ -330,17 +345,25 @@ autre fonctionnalité intéressante est que les frameworks exécutent les tests
 dans des threads séparer ce qui permet de tester des signaux ou encore de ne pas
 stopper tous les tester pour un plantage.
 
-% TODO: résumé des frameworks
+\subsection{Les frameworks}
 
-\section{Organisation du projet}
+Dans cette section, nous allons faire une revue de tous les frameworks de tests
+étudiés pendant le début du stage. Une fois ceci fait, nous présenterons le
+choix final.
 
-\subsection{Découverte du code}
+% ...
 
-Découverte du code sur un projet simple.
-config (solution personnalisée) = premier difficulté, il faut savoir comment
-configurer le projet.
+\subsubsection{}
+
+\subsection{Le choix final}
+
+\section{Organisation du projet} % pas sûr de cette partie, elle fait un peu fourre-tout
 
 \subsection{Organisation des fichiers}
+
+Découverte du code sur un projet simple.
+Config (solution personnalisée) = premier difficulté, il faut savoir comment
+configurer le projet.
 
 - myosismonnayeur
 - fichiers de bases
@@ -351,6 +374,8 @@ configurer le projet.
 \subsection{Contrainte pour compiler}
 
 \subsection{Machines à états}
+
+Le code de CKsquare utilise principalement des machines à états.
 
 \section{Les premiers tests}
 
@@ -365,7 +390,7 @@ sans les bibliothèques et le compilateur de la carte.
 
 \subsubsection{Cashregister et machines: tester des machines à états}
 
-contrainte => pas d'acces aux états, ... on doit tester l'environnement
+Contrainte => pas d'acces aux états, ... on doit tester l'environnement
 
 \subsection{Versions tests}
 
@@ -403,6 +428,22 @@ décide de lancer une communication en utilisant un des protocoles cités
 précédemment). Une fois le composant appelé, la machine à états permettait
 d'assurer la communication. Pour que les composants simulés s'exécutent en même
 temps que le programme principale, ils s'exécutaient dans des threads séparés.
+\\
+
+Le problème des threads réside dans la synchronisation de ces derniers. Il y a
+différentes méthodes pour synchroniser des threads. Sur ce projet, il a au
+départ été utiliser des boucles infinies qui permettait de faire attendre les
+threads. Par exemple, le programme principale était stoppé par une boucle pour
+attendre que le les composants émulés s'exécutent et le débloque. Cette solution
+a été utilisée au départ car ce genre de boucles été déjà présentes dans
+l'implémentation de l'I²C. Par la suite, cette solution s'est avérée complexe
+d'utilisation et peu élégante, les boucles ont donc étaient remplacées par des % todo: expliquer les sémaphores
+sémaphores. Au final, la synchronisation des threads est devenue trop compliquée
+et très peu fiable (l'exécution du programme ne donnait pas toujours les même
+résultats). L'objectif du projet étant de concevoir un outil qui soit facilement
+réutilisable, cette solution était trop complexe et donc pas adaptée. Il a donc
+été décidé de ne plus les utiliser les threads même si la nouvelle solution
+devait être moins pratique d'utilisation au niveau de l'écriture des tests.
 
 \subsection{Interface I²C}
 
@@ -412,9 +453,22 @@ temps que le programme principale, ils s'exécutaient dans des threads séparés
 
 \subsection{Le protocole}
 
+\subsection{Le code de l'entreprise}
+
 \subsection{Émulation des composants}
 
+\subsubsection{Émulation bas niveau}
+
+Faite en premier car permettait de mieux comprendre le protocole et le
+fonctionnement du code. De plus, c'est la partie la plus importante car elle
+permet de tester tous les éléments du code ce qui n'est pas le cas de l'autre
+version.
+
+\subsubsection{Émulation haut niveau}
+
 \section{Le MDB}
+
+\subsection{Le code de l'entreprise}
 
 \subsection{Le protocole}
 
@@ -426,13 +480,42 @@ temps que le programme principale, ils s'exécutaient dans des threads séparés
 
 \subsubsection{Gestion de version}
 
-utilisation de git / version modifiée de gitflow. Je suis seul mais j'ai quand
-même organiser mes branche de façon similaire à gitflow pour ne jamais casser du
-code qui marche en mergant ou en tentant d implémenté du code qui marche pas.
+Pour la réalisation du projet, le gestionnaire de version utilisé été Git. À
+noter que la société n'utilise Git que depuis un ans, le gestionnaire de version
+qu'ils utilisaient avant été SVN.
 
-\subsubsection{Gitlab}
+L'avantage de Git est qu'il est assez simple d'utilisation mais propose tout de
+même des fonctionnalités très complexes. De plus, par rapport à SVN, Git est
+décentralisé et permet de faire des branches ce qui a été très utile pour éviter
+que le projet de tests pose problème.
 
-ci/cd
+La philosophie de travail utilisé a consisté en une version réadapté de Gitflow.
+Le principe de Gitflow est d'avoir une branche \lstinline{master} qui va
+contenir les versions du projet. Ensuite, il y a une branche \lstinline{dev} qui
+est utilisée pendant le développement. La branche \lstinline{dev} contient du
+code fonctionnel mais qui n'est pas encore déployé sur \lstinline{master}. Entre
+les branches \lstinline{master} et \lstinline{dev} il doit normalement y avoir
+une branche \lstinline{release} qui contient des prés-versions mais elle n'a pas
+été utile ici. Enfin, à partir de la branche \lstinline{dev}, on créer des
+branches de \lstinline{features} sur lesquelles on développe les nouvelles
+fonctionnalités. Étant donné que le travail se faisait seul, le fait d'utiliser
+Gitflow avec autant de branche n'était pas vraiment nécessaire. Cependant, cette
+méthode permet d'être très organisé. Cela permet par exemple de toujours avoir
+du code fonctionnel présentable à un collègue. De plus, cette organisation des
+branches permet de ne pas se perdre et de ne jamais caser du code fonctionnel.
+L'avantage des branches est que l'on peut facilement faire des tests pour savoir
+si une solution est réalisable.
+
+À noter que l'équipe de développement de CKsquare utilise l'application
+\textbf{gitahead}. Cette application n'a pas été utilisée pendant le
+développement du projet de tests. C'est l'interface en ligne de commande de Git
+qui a été privilégiée ainsi que l'utilisation du plugin \textbf{fugitive} sur
+neovim.
+
+\subsubsection{Doxygen}
+
+Génération automatique de la documentation à partir des commentaires laissés
+dans le code.
 
 \subsubsection{Compilation}
 
@@ -458,7 +541,11 @@ de la compilation séparer ce qui à permis de gagner du temps pendant le
 développement étant donner le fait que seuls les fichiers modifiés sont
 recompilés lors de l'écriture des tests.
 
-\subsubsection{nvim}
+\subsubsection{GDB}
+
+Un des objectifs de ce stage été de progresser sur l'outil GDB.
+
+\subsubsection{Neovim}
 
 I use vim btw
 
