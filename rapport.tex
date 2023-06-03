@@ -279,7 +279,7 @@ demande.
 % Réalisation et conception ************************************************{{{
 \part{Réalisation et conception}
 
-\section{Choix du framework de test}
+\section{Choix du framework de test}%{{{
 
 Le but du projet est de concevoir un outil permettant de tester du code, la
 première tâche à donc été de choisir un framework de test. Le framework de test
@@ -287,7 +287,7 @@ constitue la base de l'outil, c'est donc un choix assez important. Dans cette
 partie nous traiterons de la procédure qui a été utilisée pour trouver et
 comparer des frameworks et des bibliothèques de test.
 
-\subsection{Les critères de comparaison}
+\subsection{Les critères de comparaison}%{{{
 
 Étant donné le fait que le langage C est très utilisé, il y a beaucoup de choix
 quand aux différentes bibliothèques de test utilisables. Le premier travail a
@@ -351,21 +351,110 @@ rendre le code beaucoup plus simple, elles peuvent aussi être source de
 problèmes (elles ont parfois un comportement non souhaité et elles sont très
 compliqué à déboguer). Le frameworks qui a été choisi possède ce défaut et nous
 verrons les problème que cela pose lorsque nous détaillerons ce framework.
-
-\subsection{Les frameworks}
+%}}}
+\subsection{Les frameworks}%{{{
 
 Dans cette section, nous allons faire une revue de tous les frameworks de tests
 étudiés pendant le début du stage. Une fois ceci fait, nous présenterons le
 choix final.
 
-% ...
+\subsubsection*{Check}
 
-\subsubsection{}
+Le premier framework de la liste est Check, il propose un interface simple pour
+l'écriture des tests, cependant, toute la mise en place des suites de tests est
+plus complexe mais peut être changée facilement. Check permet d'exécuter les
+tests dans des zones mémoires séparées ce qui permet de ne pas s'arrêter lors de
+l'émission d'un signal comme SIGSEV. La bibliothèque Check est disponible avec
+un paquet aptitude, ce qui le rend simple à installer. C'est aussi une bonne
+preuve de la popularité de cette bibliothèque. Check est assez complet et donne
+un rapport clair et facile à utiliser après l'exécution des tests. Le framework
+permet de construire une structure de tests classique où l'on groupe les tests
+dans des suites. Par contre, Check n'est pas compatible avec le C++.
 
-\subsection{Le choix final}
+\subsubsection*{CUnit}
 
-TODO: problème macros
+Le second framework est CUnit, il est aussi disponible avec un paquet aptitude
+cependant. Le frameworks est assez complet et fourni beaucoup de fonctions
+d'assertion. CUnit permet de construire la même structure de tests que Check, et
+utilise des pointeurs de fonctions pour construire les suites. Pour chaque suite
+de tests, on peut fournir deux fonctions qui seront exécutées avant et après les
+tests pour permettre d'initialiser l'environnement de tests (ces fonctions sont
+généralement appelées \textbf{setup} et \textbf{teardown}). Ce framework ne sera
+pas compatible avec C++. Le framework CCPUnit est similaire à CUnit et permet
+aussi de tester du code C, cependant, il est nécessaire d'utiliser des classes
+C++ ce qui rend les tests plus complexes à mettre en place.
 
+\subsubsection*{Criterion}
+
+Le framework suivant est Criterion qui est assez récent et aussi disponible avec
+un paquet aptitude. Il propose une interface très simple pour écrire des tests
+et des suites de tests. On peut facilement ajouter les fonctions de setup et
+teardown (pour les tests et les suites de tests) et les tests peuvent êtres
+paramétrés. Comme Check, les tests sont exécutés dans des zones mémoires
+séparées. On peut aussi facilement tester si un signal (comme SIGSEV) est émis
+ou pas. De plus, le framework propose beaucoup de macros permettant de faire des
+assertions non seulement sur les types primitifs, mais aussi sur les tableaux.
+Enfin, Criterion possède aussi une interface C++.
+
+À noter tout de même que la simplicité de l'interface de Criterion vient du fait
+que le frameworks utilise beaucoup les macros ce qui peut poser problème.
+
+\subsubsection*{Minunit}
+
+Minunit est la plus simple des bibliothèques de tests trouvée. Elle ne se
+compose que d'un fichier d'entête. L'interface proposée est très simple mais
+très basique, elle permet seulement l'écriture de tests et de suites de tests.
+Cette bibliothèque est une collections de macros qui pourraient être utilisées
+pour créer un framework de test plus complet. La bibliothèque fourni aussi
+quelque fonctions d'assertion.
+
+\subsubsection*{Munit}
+
+Munit propose une interface plus complexe car cela nécessite d'utiliser des
+tableaux et des structures. Pour les tests, les fonctions de tests sont très
+simple à écrire et il y a la possibilités d'avoir différents types de retours.
+Pour chaque test, on peut associer les fonctions de setup et de teardown. Les
+tests peuvent aussi être paramétrés. Le framework propose aussi une interface
+CLI, il est donc possible de donner des paramètres au programme pour choisir
+quels tests sont exécutés. Il est aussi possible de construire une structure de
+test plus complexe cas on peut avoir des suites de suites de tests. Le framework
+propose aussi des fonctions de génération de nombres aléatoires.
+
+\subsubsection*{Unity}
+
+Framework de test spécialisé pour les systèmes embarqué, léger et simple. Il ne
+permet pas de construire une structure de tests très complexe (seulement de
+simple tests) mais possède beaucoup de fonctions d'assertion. En terme
+d'interface, le framework propose une collection de macros simples et lisibles.
+Le framework fourni aussi un script pour faciliter la mise en place des tests
+(en revanche ce script est assez mauvais car il ne génère un runner que pour une
+seule suite).
+
+Le framework possède beaucoup de fonctions d'assertions mais il ne possède pas
+beaucoup plus de fonctionnalités. Il ne sera pas utilisable pour tester du code
+qui utilise des fonctionnalités propres à c++ comme les exceptions par exemple.
+
+\subsubsection*{Tau}
+
+Très léger, le framework ne se compose que de fichiers d'entête. Il permet de
+construire une structure de tests avec des tests et des suites de tests. Les
+tests sont écrits en utilisant des macros, ce qui rend l'interface très simple.
+Tau permet facilement d'avoir plusieurs fichiers de tests en générant son propre
+main. Par contre, il ne permettra pas de tester les exceptions en C++.
+%}}}
+\subsection{Le choix final}%{{{
+
+Le choix final s'est porté sur Criterion car le framework possède beaucoup
+d'avantage. Tout d'abord, il est le seul à être complètement compatible avec le
+C++ et ce, sans proposer une interface nécessitant la mise en place de classe
+comme ce que l'on pourrais voir avec CPPUnit. De plus, ce framework est très
+simple d'utilisation, il permet d'écrire des tests clairs facilement et
+rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité de
+générer des logs, les tests paramétrés, les théories (tests des vecteurs
+d'entrées et de sorties) et possède aussi une interface CLI permettant de passer
+des options en paramètres du programme.
+%}}}
+%}}}
 \section{Organisation d'un projet CKsquare}
 
 L'outil créé pendant ce stage a été testé sur un projet de l'entreprise. Cela a
@@ -376,6 +465,18 @@ organisés les projets de CKsquare. Cela permettra une meilleur compréhension d
 choix qui ont été fait par la suite.
 
 \subsection{Organisation des fichiers}
+
+Dans cette partie, nous allons détailler comment sont organisés les fichiers
+dans un projet CKsquare puis nous traiterons le fonctionnement du code dans la
+partie suivante. On rappel que ce projet d'intégration continue ne concerne que
+la partie du code qui est commune à tous les projet et qui est incluse sous la
+forme de sous modules git.
+
+Chaque projet contient un répertoire \lstinline{CKLibs} dans lequel se trouve
+deux sous modules git. Le premier sous module se nomme \lstinline{commun\_global}
+et il contient la partie du code qui est commune à tous les projet C \textbf{et}
+C++. Le second sous module est \lstinline{dev\_pic} et comme son nom l'indique,
+ce dernier ne concerne que la partie C qui s'exécute sur un PIC.
 
 Découverte du code sur un projet simple.
 Config (solution personnalisée) = premier difficulté, il faut savoir comment
@@ -391,23 +492,34 @@ configurer le projet.
 
 Résumé synthétique du fonctionnement global du code.
 
-Le code de CKsquare utilise principalement des machines à états.
+TODO: Le code de CKsquare utilise principalement des machines à états...
 
-machines à état:
-contraintes => pas accès aux états dans les tests
+Machines à état: contraintes => pas accès aux états dans les tests
+\cite{teststatemachines}.
 
 \section{Organisation des tests}
 
 Dans cette partie, nous allons détailler la structure du projet de tests. Cette
-structure s'appuie sur celle des projets de l'entreprise.
+structure s'appuie sur celle des projets de l'entreprise. À noter que le projet
+de test est placé dans un répertoire \lstinline{Tests} qui se trouve dans
+\lstinline{CKLibs} car il sera utilisé comme sous module git dans la pipeline.
 
 \subsection{Faux projet et gcc}
 
+TODO: détail de \lstinline{FakeProject} et \lstinline{gcc}.
+
 \subsection{Les versions test}
+
+TODO: détail de \lstinline{TestLibraries}.
+TODO: détail de la création d'une version test (reprendre la doc d'IOS)
 
 \subsection{L'émulation}
 
+TODO: détail de \lstinline{Emulation}.
+
 \subsection{Les tests}
+
+TODO: détail de \lstinline{tests}.
 
 \section{Simulation du stockage}
 
@@ -457,15 +569,49 @@ devait être moins pratique d'utilisation au niveau de l'écriture des tests.
 
 \subsection{Interface I²C}
 
+Dans cette partie, nous allons voir le fonctionnement de l'émulation de
+l'interface I²C du stockage.
+
+\subsubsection*{Le protocole I²C}
+
+TODO: protocole \cite{mankar2014review}
+
+\subsubsection*{Émulation}
+
 \subsection{Interface SPI}
+
+\subsubsection*{Le protocole SPI}
+
+TODO: \cite{dhaker2018introduction} et \cite{li2014design}
+
+\subsubsection*{Émulation}
 
 \section{Le Cctalk}
 
+Une partie des composants utilisé sur la carte ont été interfacés avec le
+protocole Cctalk. Dans cette pratie, nous commencerons par détailler les grands
+principe de ce protocole puis nous verrons comment les périphériques Cctalk ont
+été simulés.
+
 \subsection{Le protocole}
+
+TODO: explication rapide du protocole
+
+La documentation est en 3 parties:
+- \cite{cctalkpt1}: présentation du protocole
+- \cite{cctalkpt2}: headers
+- \cite{cctalkpt3}: commandes
 
 \subsection{Le code de l'entreprise}
 
+TODO: détail du fonctionnement du code de l'entreprise (modélisation des
+commandes, les fichier \lstinline{CctalkMaster.c} et
+\lstinline{CctalkMasterSerial.c}).
+
 \subsection{Émulation des composants}
+
+TODO: 1 fichier par composant, trois fonctions (Control, Run et HandleResponse),
+2 utilisations possibles, ...
 
 \subsubsection{Émulation bas niveau}
 
@@ -598,6 +744,8 @@ conclusion
 \section{L'outil final}
 
 Description de l'outil final réalisé à la fin du stage.
+
+TODO: Rétrospective sur le choix du framework (problème macros, ...).
 
 \clearpage
 
