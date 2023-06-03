@@ -19,21 +19,18 @@
 \usepackage{glossaries}
 %\usepackage{titletoc}% http://ctan.org/pkg/titletoc
 \usepackage{qtree}
-\usepackage{listings}
-\usepackage{xcolor}
+\usepackage{color}
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{titlesec}
 \usepackage{chngcntr}
+\usepackage{pgfgantt}
+\usepackage{listings}
+\usepackage{minted}
 \counterwithin*{section}{part}
 
 \addbibresource{refs.bib}
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{backpink}{rgb}{1,0.94,0.95}
 
 %===========style & geometry===========
 %\lstset{style=mystyle}
@@ -370,6 +367,56 @@ preuve de la popularité de cette bibliothèque. Check est assez complet et donn
 un rapport clair et facile à utiliser après l'exécution des tests. Le framework
 permet de construire une structure de tests classique où l'on groupe les tests
 dans des suites. Par contre, Check n'est pas compatible avec le C++.
+
+Pour présenter les framework aux développeurs de la société, des exemples de
+codes ont été présentés pour permettre d'avoir une idée de comment le framework
+s'utilise. Sur le listing \ref{check-example} on peut voir un exemple
+d'utilisation de Check.
+
+\textbf{TODO:} mettre ça en annexe
+
+\begin{listing}[h!]
+\begin{minted}{C}
+#include <check.h>
+
+START_TEST(test_name)
+{
+  ck_assert(1 == 1);
+  ck_assert_msg(2 == 2, "Should be a success");
+}
+END_TEST
+
+Suite *simple_suite(void) {
+  Suite *s;
+  TCase *tc_core;
+
+  s = suite_create("suite name");
+  tc = tcase_create("test case name");
+
+  tcase_add_test(tc_core, test_name); // adding tests
+  suite_add_tcase(s, tc_core); // create the suite
+
+  return s;
+}
+
+int main(void) {
+  int number_failed;
+  Suite *s;
+  SRunner *sr;
+
+  s = simple_suite();
+  sr = srunner_create(s);
+
+  srunner_run_all(sr, CK_NORMAL);
+  number_failed = srunner_ntests_failed(sr);
+  srunner_free(sr);
+  return (number_failed == 0) ? 0 : 1;
+}
+\end{minted}
+\caption{Check: Exemple simple}
+\label{check-example}
+\end{listing}
+\clearpage
 
 \subsubsection*{CUnit}
 
@@ -806,6 +853,7 @@ Test affichage biblio:
 %   \caption{Diagramme de Gantt prévisionnel.}
 %   \end{center}
 % \end{figure}
+
 %---------------------------------------------------------------------------}}}
 % Diagramme de Gantt réel --------------------------------------------------{{{
 \clearpage{}

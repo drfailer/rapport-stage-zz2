@@ -1,9 +1,9 @@
 pfd: rapport.tex refs.bib
-	pdflatex rapport.tex
+	pdflatex -shell-escape rapport.tex
 	makeglossaries rapport
 	biber rapport
-	pdflatex rapport.tex
-	pdflatex rapport.tex
+	pdflatex -shell-escape rapport.tex
+	pdflatex -shell-escape rapport.tex
 
 
 clean:
