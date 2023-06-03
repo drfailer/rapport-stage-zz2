@@ -153,7 +153,7 @@ plan !
 % Contexte du projet *******************************************************{{{
 \part{Contexte du projet}
 
-\section{CKsquare}
+\section{CKsquare}%{{{
 
 CKsquare est une entreprise d'ingénierie, d'étude et de conseil spécialisée dans
 la conception de systèmes de payement automatisés. La société, au départ nommée
@@ -199,8 +199,8 @@ grand nombre de composants ce qui pose de gros problèmes en terme d'optimisatio
 du stockage. De plus, l'utilisation d'outils de payements implique encore plus
 de contraintes comme par exemple la nécessité de s'assurer que toutes les ventes
 sont correctement enregistrées puis envoyées sur le serveur. % j'aime moins la fin
-
-\section{Travail demandé}
+%}}}
+\section{Travail demandé}%{{{
 
 % TODO: faire un condencé de tout ça
 
@@ -250,8 +250,8 @@ création d'un nouveau composant.
 À noter que l'objectif du projet n'est pas d'écrire des tests. Des tests ont été
 écrits durant le projet mais ces derniers ont pour objectif de valider le bon
 fonctionnement des composants simulés et non celui du code de la société.
-
-\section{Environnement et outils à disposition}
+%}}}
+\section{Environnement et outils à disposition}%{{{
 
 Concernant les conditions de travail durant le stage il faut noter que ce projet
 se réalisait seul. Cependant, les développeurs de CKsquare étaient présents pour
@@ -273,7 +273,7 @@ permettre de tester les frameworks de test. Il a aussi servit à stocker les
 notes prise sur le projet ainsi que la documentation. Enfin, la documentation
 des différents éléments comme les protocoles (Cctalk, Mdb) était disponible à la
 demande.
-
+%}}}
 \clearpage
 %***************************************************************************}}}
 % Réalisation et conception ************************************************{{{
@@ -291,12 +291,13 @@ comparer des frameworks et des bibliothèques de test.
 
 Étant donné le fait que le langage C est très utilisé, il y a beaucoup de choix
 quand aux différentes bibliothèques de test utilisables. Le premier travail a
-été de faire un listing des bibliothèques et frameworks de tests existants pour
-ensuite pouvoir les comparer. Une liste des frameworks disponibles sur Wikipédia
-\cite{enwikiframeworks}. Ce travail de recherche à permis de faire un prés tri
-et d'éliminer les framework incomplets ou trop peu utilisés. Une fois le
-listing terminé, il a fallut trouver des critères pour comparer les frameworks.
-\\
+été de comparer bibliothèques et frameworks de tests existants. Une liste des
+frameworks disponibles sur Wikipédia \cite{enwikiframeworks} a permis de prendre
+connaissance des frameworks disponibles pour ensuite pouvoir faire plus de
+recherches. Ce travail de recherche à permis de faire un prés tri et d'éliminer
+les framework incomplets ou trop peu utilisés. Une fois la liste des meilleurs
+frameworks terminée, il a fallut trouver des critères pour comparer les
+frameworks. \\
 
 Tout d'abord, l'équipe de développement souhaitait pouvoir tester à la fois du
 code \textbf{C} et du code \textbf{C++} pour certaines parties développées par
@@ -330,20 +331,26 @@ En effet, lorsque l'on souhaite utiliser un outil, une question importante à se
 poser est de savoir ce que l'on peut faire en cas de problème. Ici, il a fallut
 regarder la taille, la popularité et l'age des projets. En effet, plus un projet
 est populaire plus il sera facile de trouver de l'aide en cas de problème. De
-plus, les projet important on souvent beaucoup plus de collaborateurs ce qui
-peut accélérer la corrections des bugs. Enfin la dates de dernières mis à jours
-ont aussi été répertoriées car là aussi, il est beaucoup plus simple de résoudre
-les problèmes sur un projet qui est encore activement maintenu.
+plus, les projet important ont souvent beaucoup plus de collaborateurs ce qui
+peut accélérer la corrections des bugs ou la vitesse de réponse au issue. Enfin
+la dates de dernières mis à jours ont aussi été répertoriées car là aussi, il
+est beaucoup plus simple de résoudre les problèmes sur un projet qui est encore
+activement maintenu.
 
 % TODO: mal dit
 D'autres critères ont permis de démarquer les frameworks comme par exemple le
-fait que les frameworks fournisse des fonctionnalités supplémentaires comme le
-fait de pouvoir exporter les résultats des tests dans différents format comme
-TAP ou XML (utile pour faire des rapport) ou encore des générateur de nombres
-pseudo aléatoires pour faire des tests avec des entrée aléatoires, \dots Une
-autre fonctionnalité intéressante est que les frameworks exécutent les tests
-dans des threads séparer ce qui permet de tester des signaux ou encore de ne pas
-stopper tous les tester pour un plantage.
+fait que les frameworks fournissent des fonctionnalités supplémentaires comme
+l'export des résultats des tests dans différents format comme TAP ou XML (utile
+pour faire des rapports) ou encore des générateur de nombres pseudo aléatoires
+pour faire des tests avec des entrée aléatoires, \dots Une autre fonctionnalité
+intéressante est que les frameworks exécutent les tests dans des threads séparer
+ce qui permet de tester des signaux ou encore de ne pas stopper tous les tests à
+cause d'une sortie erreur. Le fait que les frameworks utilisent beaucoup de
+macros à aussi été pris en compte car bien que ces dernières permettent de
+rendre le code beaucoup plus simple, elles peuvent aussi être source de
+problèmes (elles ont parfois un comportement non souhaité et elles sont très
+compliqué à déboguer). Le frameworks qui a été choisi possède ce défaut et nous
+verrons les problème que cela pose lorsque nous détaillerons ce framework.
 
 \subsection{Les frameworks}
 
@@ -357,7 +364,16 @@ choix final.
 
 \subsection{Le choix final}
 
-\section{Organisation du projet} % pas sûr de cette partie, elle fait un peu fourre-tout
+TODO: problème macros
+
+\section{Organisation d'un projet CKsquare}
+
+L'outil créé pendant ce stage a été testé sur un projet de l'entreprise. Cela a
+permis dans un premier temps de pouvoir voir et comprendre comment le code à
+tester fonctionne puis ensuite cela à permet de vérifier la bonne intégration de
+l'outil dans le projet. Dans cette partie, nous détaillerons comment sont
+organisés les projets de CKsquare. Cela permettra une meilleur compréhension des
+choix qui ont été fait par la suite.
 
 \subsection{Organisation des fichiers}
 
@@ -371,33 +387,27 @@ configurer le projet.
   - Fichiers à tester (commun\_global, dev\_pic)
 - les fichiers de Tests
 
-\subsection{Contrainte pour compiler}
+\subsection{Fonctionnement du projet}
 
-\subsection{Machines à états}
+Résumé synthétique du fonctionnement global du code.
 
 Le code de CKsquare utilise principalement des machines à états.
 
-\section{Les premiers tests}
+machines à état:
+contraintes => pas accès aux états dans les tests
 
-Tools, machines, cashregister
+\section{Organisation des tests}
 
-Fichiers simples au départ car il était très compliquer de compiler le projet
-sans les bibliothèques et le compilateur de la carte.
+Dans cette partie, nous allons détailler la structure du projet de tests. Cette
+structure s'appuie sur celle des projets de l'entreprise.
 
-\subsection{Différents types de fichiers à tester}
+\subsection{Faux projet et gcc}
 
-\subsubsection{Tools: fonctions basiques}
+\subsection{Les versions test}
 
-\subsubsection{Cashregister et machines: tester des machines à états}
+\subsection{L'émulation}
 
-Contrainte => pas d'acces aux états, ... on doit tester l'environnement
-
-\subsection{Versions tests}
-
-\subsection{Organisation du projet de test}
-
-Organisation du répertoire, philosophie quand à la copie de fichiers lorsqu'il y
-a des modifications à faire, substitution des bibliothèques.
+\subsection{Les tests}
 
 \section{Simulation du stockage}
 
