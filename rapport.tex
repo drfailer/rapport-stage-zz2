@@ -195,7 +195,18 @@ locaux et évitera les voyages en voiture pour se rendre dans les grandes
 surfaces. Ce projet permettra à l'entreprise de faire face au déclin des
 stations de lavage auto auxquelles on impose des restrictions à cause des
 sécheresses de plus en plus fréquentes. Aujourd'hui, plus de 40000 stations de
-lavage auto sont équipées de bornes CKsquare.
+lavage auto sont équipées de bornes CKsquare. On peut voir sur la figure
+\ref{bornes-intro} un exemple de produits conques par l'entreprise.
+
+% [bornes] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.2]{./img/bornes.png}
+  \caption{Produits CKsquare}
+    \label{bornes-intro}
+  \end{center}
+\end{figure}
+%}}}
 
 CKsquare est un groupe composé de cinq sociétés qui travaillent en
 collaboration. Parmi ces entreprises, on compte la société M-Innov qui se charge
@@ -204,11 +215,11 @@ aires de services, campings, parking ou hôtels. La société Mecasystem
 International, elle, se charge de la tôlerie et de la mécanique pour les bornes
 CKsquare et M-Innov. La société Ehrse, née au sein même de CKsquare, se charge
 de la fabrication des cartes électroniques. Enfin, il y a la société Logawin,
-société fille de CKsquare qui regroupe les développeurs. La société Logawin est
-composée de deux pôles, Logawin France basé à Clermont-Ferrand et Logawin
-Tunisie basé à Tunis. Ces cinq sociétés travaillent en coopération ce qui
-permet au groupe CKsquare d'avoir la maitrise de la conception et de la
-fabrication de tous les composants des produits.
+société fille de CKsquare qui est une entreprise de développement informatique.
+La société Logawin est composée de deux pôles, Logawin France basé à
+Clermont-Ferrand et Logawin Tunisie basé à Tunis. Ces cinq sociétés travaillent
+en coopération ce qui permet au groupe CKsquare d'avoir la maitrise de la
+conception et de la fabrication de tous les composants des produits.
 
 L'objectif de la société CKsquare est de pouvoir fournir des produits
 configurables et adaptables aux besoins des différents clients. C'est pour cela
@@ -241,13 +252,12 @@ faire, il faudra émuler les interactions avec le matériel en créant des
 fonctions et des structures de données qui réagiront comme les composants
 électroniques. Par exemple, si une fonction doit modifier un registre sur une
 carte, il faut pouvoir émuler le registre pour vérifier que les bonnes
-modifications ont été apportées. Il faudra aussi des fonctionnalités permettant
-de simuler l'interaction d'un utilisateur avec un composant pendant les tests.
-Par exemple, on doit pouvoir faire en sorte de tester le comportement du système
-lorsqu'un utilisateur appuie sur une séquence de touches. Il sera donc
-nécessaire d'émuler la mémoire des composants électroniques, les fonctions qui % note: pas clair ici
-permettent d'interagir avec. Il faudra aussi des fonctions permettant de simuler
-les actions d'un utilisateur.
+modifications ont été apportées dessus. Il faudra aussi des fonctionnalités
+permettant de simuler l'interaction d'un utilisateur avec un composant pendant
+les tests. Par exemple, on doit pouvoir faire en sorte de tester le comportement
+du système lorsqu'un utilisateur appuie sur une séquence de touches. Il sera
+donc nécessaire d'émuler la mémoire des composants électroniques, les fonctions % note: pas clair ici permettent d'interagir avec. Il faudra aussi des
+qui fonctions permettant de simuler les actions d'un utilisateur.
 
 La première tâche sera de trouver le framework de test adapté pour la conception
 de l'outil. Le code à tester est écrit en C, cependant, la société souhaiterait
@@ -401,46 +411,8 @@ dans des suites. Par contre, Check n'est pas compatible avec le C++.
 
 Pour présenter les framework aux développeurs de la société, des exemples de
 codes ont été présentés pour permettre d'avoir une idée de comment le framework
-s'utilise. Sur le listing \ref{check-example} on peut voir un exemple
-d'utilisation de Check.
-
-TODO: mettre en annexe ?
-
-\begin{minted}{C}
-#include <check.h>
-
-START_TEST(test_name)
-{
-  ck_assert(1 == 1);
-  ck_assert_msg(2 == 2, "Should be a success");
-}
-END_TEST
-
-Suite *simple_suite(void) {
-  Suite *s;
-  TCase *tc_core;
-  s = suite_create("suite name");
-  tc = tcase_create("test case name");
-  tcase_add_test(tc_core, test_name); // adding tests
-  suite_add_tcase(s, tc_core); // create the suite
-
-  return s;
-}
-
-int main(void) {
-  int number_failed;
-  Suite *s;
-  SRunner *sr;
-  s = simple_suite();
-  sr = srunner_create(s);
-  srunner_run_all(sr, CK_NORMAL);
-  number_failed = srunner_ntests_failed(sr);
-  srunner_free(sr);
-  return (number_failed == 0) ? 0 : 1;
-}
-\end{minted}
-\captionof{listing}{Check: Exemple simple}
-\label{check-example}
+s'utilise. Sur le listing \ref{check-example} de l'annexe
+\ref{appendix:frameworks-code} on peut voir un exemple d'utilisation de Check.
 
 \subsubsection*{CUnit}
 
@@ -454,6 +426,9 @@ généralement appelées \textbf{setup} et \textbf{teardown}). Ce framework ne s
 pas compatible avec C++. Le framework CCPUnit est similaire à CUnit et permet
 aussi de tester du code C, cependant, il est nécessaire d'utiliser des classes
 C++ ce qui rend les tests plus complexes à mettre en place.
+
+On peut voir sur le listing \ref{cunit-example} de l'annexe
+\ref{appendix:frameworks-code} un extrait de code utilisant CUnit.
 
 \subsubsection*{Criterion}
 
@@ -470,6 +445,9 @@ Enfin, Criterion possède aussi une interface C++.
 À noter tout de même que la simplicité de l'interface de Criterion vient du fait
 que le frameworks utilise beaucoup les macros ce qui peut poser problème.
 
+On peut voir sur le listing \ref{criterion-example} de l'annexe
+\ref{appendix:frameworks-code} un example de tests écrits avec Criterion.
+
 \subsubsection*{Minunit}
 
 Minunit est la plus simple des bibliothèques de tests trouvée. Elle ne se
@@ -478,6 +456,9 @@ très basique, elle permet seulement l'écriture de tests et de suites de tests.
 Cette bibliothèque est une collections de macros qui pourraient être utilisées
 pour créer un framework de test plus complet. La bibliothèque fourni aussi
 quelque fonctions d'assertion.
+
+On peut voir sur le listing \ref{minunit-example} de l'annexe
+\ref{appendix:frameworks-code} un exemple d'utilisation de Minunit.
 
 \subsubsection*{Munit}
 
@@ -490,6 +471,9 @@ CLI, il est donc possible de donner des paramètres au programme pour choisir
 quels tests sont exécutés. Il est aussi possible de construire une structure de
 test plus complexe cas on peut avoir des suites de suites de tests. Le framework
 propose aussi des fonctions de génération de nombres aléatoires.
+
+On peut voir sur le listing \ref{munit-example} de l'annexe
+\ref{appendix:frameworks-code} comment s'utilise Munit.
 
 \subsubsection*{Unity}
 
@@ -505,6 +489,9 @@ Le framework possède beaucoup de fonctions d'assertions mais il ne possède pas
 beaucoup plus de fonctionnalités. Il ne sera pas utilisable pour tester du code
 qui utilise des fonctionnalités propres à c++ comme les exceptions par exemple.
 
+On peut voir sur le listing \ref{unity-example} de l'annexe
+\ref{appendix:frameworks-code} un exemple de test utilisant Unity.
+
 \subsubsection*{Tau}
 
 Très léger, le framework ne se compose que de fichiers d'entête. Il permet de
@@ -512,6 +499,9 @@ construire une structure de tests avec des tests et des suites de tests. Les
 tests sont écrits en utilisant des macros, ce qui rend l'interface très simple.
 Tau permet facilement d'avoir plusieurs fichiers de tests en générant son propre
 main. Par contre, il ne permettra pas de tester les exceptions en C++.
+
+On peut voir sur le listing \ref{tau-example} de l'annexe
+\ref{appendix:frameworks-code} un extrait de code utilisant Tau.
 %}}}
 \subsection{Le choix final}%{{{
 
@@ -570,7 +560,7 @@ TODO: Le code de CKsquare utilise principalement des machines à états...
 Machines à état: contraintes => pas accès aux états dans les tests
 \cite{teststatemachines}.
 %}}}
-\section{Organisation des tests}%{{{
+\section{Organisation du projet de tests}%{{{
 
 Dans cette partie, nous allons détailler la structure du projet de tests. Cette
 structure s'appuie sur celle des projets de l'entreprise. À noter que le projet
@@ -583,7 +573,7 @@ TODO: détail de \lstinline{FakeProject} et \lstinline{gcc}.
 
 \subsection{Les versions test}
 
-TODO: détail de \lstinline{TestLibraries}.
+TODO: détail de \lstinline{TestLibraries}.\\
 TODO: détail de la création d'une version test (reprendre la doc d'IOS)
 
 \subsection{L'émulation}
@@ -741,6 +731,21 @@ TODO: Il n'est pas certain que cette partie paresse dans le rapport final
 %}}}
 \section{Les historiques}
 
+Dans cette section, nous allons nous intéresser aux historiques. Les historiques
+(de payement, d'évènements) sont stockés dans une base de donnée circulaire.
+C'est un élément important car la sauvegarde des historiques est juridiquement
+obligatoire quand ils concernent la monétique. Dans cette partie, nous
+commencerons, dans un premier temps, par détailler le fonction de la structure
+de donnée et des tests qui ont été fait dessus. Dans un second temps, nous
+traiterons le fonctionnement des historiques.
+
+\subsection{Les CDBs}
+
+\subsection{Tests des historiques}
+
+TODO: pour conclure cette partie dire que c'est un problème avec les historiques
+qui a donnée l'idée du stage à l'entreprise.
+
 \section{Déroulement du projet}
 
 \subsection{Les outils utilisés}%{{{
@@ -822,16 +827,13 @@ TODO: nvim -> vim-fugitive, clangd (détail rapide sur ma config)
 
 On voit ça sur le gantt.
 
-Ce diagramme est disponible en index \ref{appendix:expectedgantt} pour
-plus de lisibilité.
-
 % [expected gantt] {{{
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[scale=0.35]{./img/expected-gantt.png}
-%   \caption{Diagramme de Gantt prévisionnel}
-%   \end{center}
-% \end{figure}
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.6]{./img/expected-gantt.png}
+  \caption{Diagramme de Gantt prévisionnel}
+  \end{center}
+\end{figure}
 %}}}
 
 Mais en fait on a fait ça parce que
@@ -919,28 +921,271 @@ Test affichage biblio:
 %------------------------------------------------------------------------------%
 \appendixwithtoc
 
-% Diagramme de Gantt prévisionnel ------------------------------------------{{{
+% Extraits de codes pour les frameworks -------------------------------------{{{
 \clearpage{}
-\section{Diagramme de Gantt prévisionnel}\label{appendix:expectedgantt}
+\section{Extraits de codes pour les frameworks}\label{appendix:frameworks-code}
 
-% \begin{figure}[h!]
-%   \begin{center}
-%   \rotatebox[origin=c]{90}{\includegraphics[scale=0.5]{./img/expected-gantt.png}}
-%   \caption{Diagramme de Gantt prévisionnel.}
-%   \end{center}
-% \end{figure}
+\subsection{Check}
 
-%---------------------------------------------------------------------------}}}
-% Diagramme de Gantt réel --------------------------------------------------{{{
+\begin{listing}[ht!]
+\begin{minted}{C}
+#include <check.h>
+
+START_TEST(test_name)
+{
+  ck_assert(1 == 1);
+  ck_assert_msg(2 == 2, "Should be a success");
+}
+END_TEST
+
+Suite *simple_suite(void) {
+  Suite *s;
+  TCase *tc_core;
+  s = suite_create("suite name");
+  tc = tcase_create("test case name");
+  tcase_add_test(tc_core, test_name); // adding tests
+  suite_add_tcase(s, tc_core); // create the suite
+
+  return s;
+}
+
+int main(void) {
+  int number_failed;
+  Suite *s;
+  SRunner *sr;
+  s = simple_suite();
+  sr = srunner_create(s);
+  srunner_run_all(sr, CK_NORMAL);
+  number_failed = srunner_ntests_failed(sr);
+  srunner_free(sr);
+  return (number_failed == 0) ? 0 : 1;
+}
+\end{minted}
+\caption{Check: Exemple simple}
+\label{check-example}
+\end{listing}
+
 \clearpage{}
-\section{Diagramme de Gantt réel}\label{appendix:realgantt}
+\subsection{CUnit}
 
-% \begin{figure}[h!]
-%   \begin{center}
-%   \rotatebox[origin=c]{90}{\includegraphics[scale=0.5]{./img/real-project.png}}
-%   \caption{Diagramme de Gantt réel.}
-%   \end{center}
-% \end{figure}
+\begin{listing}[ht!]
+\begin{minted}{C}
+/******************************************************************************/
+/*                                   tests                                    */
+/******************************************************************************/
+
+void test_function(void) {
+  CU_ASSERT(0 == 0);
+}
+
+/******************************************************************************/
+/*                              setup & teardown                              */
+/******************************************************************************/
+
+int init_suite(void) {
+  return 0; // -1 for error
+}
+
+int clean_suite(void) {
+  return 0; // -1 for error
+}
+
+/******************************************************************************/
+/*                            lancement des tests                             */
+/******************************************************************************/
+
+int main(void)
+{
+  CU_pSuite pSuite = NULL;
+  /* initialize the CUnit test registry */
+  if (CUE_SUCCESS != CU_initialize_registry())
+    return CU_get_error();
+  /* add a suite to the registry */
+  pSuite = CU_add_suite("suite name", init_suite, clean_suite);
+  if (NULL == pSuite) {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+  /* Adding to the test suite */
+  if ((NULL == CU_add_test(pSuite, "description", test_function)))
+  {
+    CU_cleanup_registry();
+    return CU_get_error();
+  }
+  /* Run all tests using the CUnit Basic interface */
+  CU_basic_set_mode(CU_BRM_VERBOSE);
+  /* Run tests */
+  CU_basic_run_tests();
+  /* withdraw error number (for returning to pipeline) */
+  unsigned int nb_errors = CU_get_number_of_suites_failed();
+  /* registry cleanup */
+  CU_cleanup_registry();
+  return 0;
+}
+\end{minted}
+\caption{CUnit: exemple simple}
+\label{cunit-example}
+\end{listing}
+
+\clearpage{}
+\subsection{Criterion}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+// test basique
+Test(suite_name, test_name) {
+  cr_assert(1 == 1);
+}
+
+// avec des fonctions de setup et teardown
+Test(suite_name, test_name, .init = setup_function, .fini = teardown_function) {
+  unsigned char Expected[3] = {1, 2, 3};
+  unsigned char Founded[3] = {1, 2, 3};
+  cr_assert(eq(u8[3], Founded, Expected));
+}
+
+// This test will pass
+Test(sample, passing, .signal = SIGSEGV) {
+    int *ptr = NULL;
+    *ptr = 42;
+}
+\end{minted}
+\caption{Criterion: exemple simple}
+\label{criterion-example}
+\end{listing}
+
+\subsection{Minunit}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+MU_TEST(test_name) {
+  mu_check(0 == 0); // ce test doit échouer
+}
+
+MU_TEST_SUITE(suite_name) {
+  MU_RUN_TEST(test_name);
+}
+
+int main(void)
+{
+  MU_RUN_SUITE(test_suite);
+  MU_REPORT();
+  return MU_EXIT_CODE;
+}
+\end{minted}
+\caption{Minunit: exemple simple}
+\label{minunit-example}
+\end{listing}
+
+\clearpage{}
+\subsection{Munit}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+MunitResult test_function() {
+  munit_assert_true(0 == 0);
+  return MUNIT_OK;
+}
+
+/******************************************************************************/
+/*                                 test setup                                 */
+/******************************************************************************/
+
+// setup all the tests
+MunitTest tests[] = {
+  {
+    "test_name",
+    test_function,
+    NULL,                   // setup function
+    NULL,                   // teardown function
+    MUNIT_TEST_OPTION_NONE, // options
+    NULL,                   // test parameters
+  },
+  { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL } // end of the tests list
+};
+
+/******************************************************************************/
+/*                              test suite setup                              */
+/******************************************************************************/
+
+static const MunitSuite suite = {
+  "simple-test",
+  tests,
+  NULL, // no sub-suites
+  1,    // iterations (utile avec les générateur de random number)
+  MUNIT_SUITE_OPTION_NONE // no options
+};
+
+/******************************************************************************/
+/*                                    main                                    */
+/******************************************************************************/
+
+int main(void)
+{
+  return munit_suite_main(&suite, NULL, 0, NULL);
+}
+\end{minted}
+\caption{Munit: exemple simple}
+\label{munit-example}
+\end{listing}
+
+\clearpage{}
+\subsection{Unity}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+#include "unity.h"
+#include "file_to_test.h"
+
+void setUp(void) {
+    // set stuff up here
+}
+
+void tearDown(void) {
+    // clean stuff up here
+}
+
+void test_function(void) {
+    //test stuff
+}
+
+// not needed when using generate_test_runner.rb
+int main(void) {
+    UNITY_BEGIN();
+    RUN_TEST(test_function);
+    return UNITY_END();
+}
+\end{minted}
+\caption{Unity: exemple simple}
+\label{unity-example}
+\end{listing}
+
+\subsection{Tau}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+#include <tau/tau.h>
+
+TEST(foo, bar1) {
+    int a = 42;
+    int b = 13;
+    CHECK_GE(a, b); // pass :)
+    CHECK_LE(b, 8); // fail - Test suite not aborted
+}
+
+TEST(foo, bar2) {
+    char* a = "foo";
+    char* b = "foobar";
+    REQUIRE_STREQ(a, a); // pass :)
+    REQUIRE_STREQ(a, b); // fail - Test suite aborted
+}
+
+TAU_MAIN() // sets up Tau (+ main function)
+\end{minted}
+\caption{Tau: exemple simple}
+\label{tau-example}
+\end{listing}
+
 %---------------------------------------------------------------------------}}}
 
 \end{document}
