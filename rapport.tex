@@ -180,23 +180,24 @@ plan !
 \section{CKsquare}%{{{
 
 CKsquare est une entreprise d'ingénierie, d'étude et de conseil spécialisée dans
-la conception de systèmes de payement automatisés. La société, au départ nommée
+la conception de systèmes de paiement automatisés. La société, au départ nommée
 cbsquare, a été créée en 2003 par Emmanuel Bertrand et compte aujourd'hui plus
 de 30 employés. Au départ, l'entreprise se tourne vers le secteur des stations
 de lavage auto en créant une gamme de distributeurs de jetons. Par la suite,
 elle élargie sa collection de produits articulés autour de la monétique et se
 lance dans la conception de ses propres cartes électroniques.
 
-L'entreprise conçoit des bornes principalement les stations de lavage auto ainsi
-que les laveries mais s'intéresse aussi à d'autres marchés comme l'hôtellerie.
-Un projet de casiers automatisés est aussi en train de se mettre en place. Ce
-nouveau projet innovent et écologique, car il privilégiera les producteurs
-locaux et évitera les voyages en voiture pour se rendre dans les grandes
-surfaces. Ce projet permettra à l'entreprise de faire face au déclin des
-stations de lavage auto auxquelles on impose des restrictions à cause des
-sécheresses de plus en plus fréquentes. Aujourd'hui, plus de 40000 stations de
-lavage auto sont équipées de bornes CKsquare. On peut voir sur la figure
-\ref{bornes-intro} un exemple de produits conques par l'entreprise.
+L'entreprise conçoit des bornes principalement pour les stations de lavage auto
+ainsi que les laveries mais s'intéresse aussi à d'autres marchés comme
+l'hôtellerie. Un projet de casiers automatisés, qui a été présenté sur TF1, est
+aussi en train de se mettre en place. Ce nouveau projet est innovent et
+écologique, car il privilégiera les producteurs locaux et évitera les voyages en
+voiture pour se rendre dans les grandes surfaces. Ce projet permettra à
+l'entreprise de faire face au déclin des stations de lavage auto auxquelles on
+impose des restrictions à cause des sécheresses de plus en plus fréquentes.
+Aujourd'hui, plus de 40000 stations de lavage auto sont équipées de bornes
+CKsquare. On peut voir sur la figure \ref{bornes-intro} un exemple de produits
+conçues par l'entreprise.
 
 % [bornes] {{{
 \begin{figure}[h!]
@@ -208,40 +209,43 @@ lavage auto sont équipées de bornes CKsquare. On peut voir sur la figure
 \end{figure}
 %}}}
 
-CKsquare est un groupe composé de cinq sociétés qui travaillent en
-collaboration. Parmi ces entreprises, on compte la société M-Innov qui se charge
-de la conception et de l'installation des bornes et systèmes monétiques pour les
-aires de services, campings, parking ou hôtels. La société Mecasystem
-International, elle, se charge de la tôlerie et de la mécanique pour les bornes
-CKsquare et M-Innov. La société Ehrse, née au sein même de CKsquare, se charge
-de la fabrication des cartes électroniques. Enfin, il y a la société Logawin,
-société fille de CKsquare qui est une entreprise de développement informatique.
-La société Logawin est composée de deux pôles, Logawin France basé à
-Clermont-Ferrand et Logawin Tunisie basé à Tunis. Ces cinq sociétés travaillent
-en coopération ce qui permet au groupe CKsquare d'avoir la maitrise de la
-conception et de la fabrication de tous les composants des produits.
+CKsquare fait partie du groupe le Petit Poucet (LPP) composé de cinq sociétés
+qui travaillent en collaboration. Parmi ces entreprises, on compte la société
+M-Innov qui se charge de la conception et de l'installation des bornes et
+systèmes monétiques pour les aires de services, campings, parking ou hôtels. La
+société Mecasystem International, elle, se charge de la tôlerie et de la
+mécanique pour les bornes CKsquare et M-Innov. La société Ehrse, née au sein
+même de CKsquare, se charge des tests, du prés-montage et du câblage des cartes
+électroniques. Enfin, il y a la société Logawin, société fille de CKsquare qui
+est une entreprise de développement informatique. La société Logawin est
+composée de deux pôles, Logawin France basé à Clermont-Ferrand et Logawin
+Tunisie basé à Tunis. Ces cinq sociétés travaillent en coopération ce qui permet
+au groupe CKsquare d'avoir la maitrise de la conception et de la fabrication de
+tous les composants des produits.
 
 L'objectif de la société CKsquare est de pouvoir fournir des produits
 configurables et adaptables aux besoins des différents clients. C'est pour cela
 que les bornes possèdent beaucoup d'options et que l'entreprise entretient un
-savoir faire quant à la gestion de la plupart des systèmes de payements
+savoir faire quant à la gestion de la plupart des systèmes de paiements
 disponibles sur le marché. De plus, une équipe SAV reste à l'écoute du besoin
 des clients ce qui permet à l'entreprise de concevoir des solutions encore plus
 spécifiques et personnalisées.
 
 Un des gros atouts de la société est son savoir faire concernant l'utilisation
-des cartes électroniques. En effet, les bornes CKsquare sont toutes équipées de
-cartes électroniques beaucoup plus fiables et moins énergivores que des PC.
+des cartes électroniques. En effet, presque toutes bornes CKsquare sont équipées
+de cartes électroniques beaucoup plus fiables et moins énergivores que des PC.
 Cependant, ces cartes doivent assurer beaucoup de fonctionnalités et gérer un
 grand nombre de composants ce qui pose de gros problèmes en terme d'optimisation
-du stockage. En plus, la gestion de systèmes de payements bancaires implique
-encore plus de contraintes en terme de sécurité et de collection des données
-comme les historiques de ventes par exemple.
+du stockage. En plus, la gestion de systèmes de paiements bancaires implique
+encore plus de contraintes. Par exemple, la loi finance de 2016 (appliquée en
+2018) a imposer la collection et la sauvegarde sécurisée des historiques de
+paiement.
 %}}}
 \section{Travail demandé}%{{{
 
 % TODO: faire un condencé de tout ça
 
+% note: pas clair ici permettent d'interagir avec. Il faudra aussi des qui
 L'objectif est de réaliser un outil servant à faire de l'intégration continue
 pour valider les fichiers de la partie commune du code utilisé sur les bornes.
 L'outil doit permettre l'écriture de tests pour valider le code et doit pouvoir
@@ -256,24 +260,21 @@ modifications ont été apportées dessus. Il faudra aussi des fonctionnalités
 permettant de simuler l'interaction d'un utilisateur avec un composant pendant
 les tests. Par exemple, on doit pouvoir faire en sorte de tester le comportement
 du système lorsqu'un utilisateur appuie sur une séquence de touches. Il sera
-donc nécessaire d'émuler la mémoire des composants électroniques, les fonctions % note: pas clair ici permettent d'interagir avec. Il faudra aussi des
-qui fonctions permettant de simuler les actions d'un utilisateur.
+donc nécessaire d'émuler la mémoire des composants électroniques, les fonctions
+permettant de simuler les actions d'un utilisateur et les interfaces des
+composants en utilisant divers protocoles de communication comme l'I²C et le SPI
+mais aussi le Cctalk et le MDB.
+
+Étant donné que les tests seront exécutés dans une pipeline (donc dans un
+docker), il faudra s'assurer que le code puisse compiler sous Linux. De plus,
+pour que le code fonctionne dans la pipeline, il faudra compiler avec gcc ce qui
+nécessitera de remplacer une partie des bibliothèques de la carte, faites pour
+être compilées avec le compilateur fourni avec MPLAB.
 
 La première tâche sera de trouver le framework de test adapté pour la conception
 de l'outil. Le code à tester est écrit en C, cependant, la société souhaiterait
 aussi pouvoir tester les bibliothèques écrites par l'équipe Qt. Il serait donc
 intéressant que l'outil soit aussi adapté au C++.
-
-% NOTE: redite sur l'émulation ici
-Étant donné que les tests seront exécutés dans une pipeline (donc dans un
-docker), il faudra s'assurer que le code puisse compiler sous Linux. De plus, le
-code étant à la base fait pour s'exécuter sur une carte électronique, cela
-nécessitera d'émuler les composants pour que le code puisse fonctionner
-correctement. Il sera aussi nécessaire de simuler les interfaces permettant au
-code d'interagir avec les composants émulés en utilisant différents protocoles
-de communication comme le SPI ou encore le Cctalk. En plus de cela, il faudra
-pouvoir remplacer une partie des bibliothèques de la carte pour pouvoir simuler
-les composants.
 
 % validé
 Le résultat final doit être un outil qui doit pouvoir être facilement
@@ -284,9 +285,12 @@ structure soit suffisamment simple et générique pour pouvoir être copiée pou
 création d'un nouveau composant.
 
 % validé
-À noter que l'objectif du projet n'est pas d'écrire des tests. Des tests ont été
-écrits durant le projet mais ces derniers ont pour objectif de valider le bon
-fonctionnement des composants simulés et non celui du code de la société.
+À noter que l'objectif du projet n'est pas d'écrire des tests.  Des tests ont
+été écrits durant le projet mais ces derniers ont pour objectif de valider le
+bon fonctionnement des composants simulés et non celui du code de la société.
+Par contre, il faudra fournir une documentation complète décrivant comment
+tester les programmes. Cette documentation devra présenter le framework de test
+et décrire le fonctionnement des composants simulés ainsi que leur utilisation.
 %}}}
 \section{Environnement et outils à disposition}%{{{
 
@@ -295,12 +299,10 @@ se réalisait seul. Cependant, les développeurs de CKsquare étaient présents 
 répondre aux différentes questions, guider le projet ou pour faire les choix
 importants.
 
-Les horaires de travail ont été fixées de neuf heures à dix-sept heures avec une
-pause de une heure pour manger. Le travail a été réalisé entièrement en
-présentiel. De plus, les stagiaires étaient tous conviés aux réunions qui
-permettent de faire le point au niveau des équipes de développement. Dans ces
-réunion chaque développeur parle pendant deux minutes du travail qu'il a réalisé
-et de ce qu'il compte faire ensuite.
+Le travail a été réalisé entièrement en présentiel. De plus, les stagiaires
+étaient tous conviés aux réunions qui permettent de faire le point au niveau des
+équipes de développement. Dans ces réunion chaque développeur parle pendant deux
+minutes du travail qu'il a réalisé et de ce qu'il compte faire ensuite.
 
 Quant au matériel, un bureau avec un PC sous Ubuntu a été mis à disposition. La
 session sur le PC possédait les privilèges administrateur pour faciliter
@@ -466,11 +468,11 @@ Munit propose une interface plus complexe car cela nécessite d'utiliser des
 tableaux et des structures. Pour les tests, les fonctions de tests sont très
 simple à écrire et il y a la possibilités d'avoir différents types de retours.
 Pour chaque test, on peut associer les fonctions de setup et de teardown. Les
-tests peuvent aussi être paramétrés. Le framework propose aussi une interface
-CLI, il est donc possible de donner des paramètres au programme pour choisir
-quels tests sont exécutés. Il est aussi possible de construire une structure de
-test plus complexe cas on peut avoir des suites de suites de tests. Le framework
-propose aussi des fonctions de génération de nombres aléatoires.
+tests peuvent aussi être paramétrés. Le framework propose aussi une interface en
+ligne de commande, il est donc possible de donner des paramètres au programme
+pour choisir quels tests sont exécutés. Il est aussi possible de construire une
+structure de test plus complexe cas on peut avoir des suites de suites de tests.
+Le framework propose aussi des fonctions de génération de nombres aléatoires.
 
 On peut voir sur le listing \ref{munit-example} de l'annexe
 \ref{appendix:frameworks-code} comment s'utilise Munit.
@@ -512,8 +514,8 @@ comme ce que l'on pourrais voir avec CPPUnit. De plus, ce framework est très
 simple d'utilisation, il permet d'écrire des tests clairs facilement et
 rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité de
 générer des logs, les tests paramétrés, les théories (tests des vecteurs
-d'entrées et de sorties) et possède aussi une interface CLI permettant de passer
-des options en paramètres du programme.
+d'entrées et de sorties) et possède aussi une interface en ligne de commande
+permettant de passer des options en paramètres du programme.
 %}}}
 %}}}
 \section{Organisation d'un projet CKsquare}%{{{
@@ -732,7 +734,7 @@ TODO: Il n'est pas certain que cette partie paresse dans le rapport final
 \section{Les historiques}
 
 Dans cette section, nous allons nous intéresser aux historiques. Les historiques
-(de payement, d'évènements) sont stockés dans une base de donnée circulaire.
+(de paiement, d'évènements) sont stockés dans une base de donnée circulaire.
 C'est un élément important car la sauvegarde des historiques est juridiquement
 obligatoire quand ils concernent la monétique. Dans cette partie, nous
 commencerons, dans un premier temps, par détailler le fonction de la structure
@@ -740,6 +742,18 @@ de donnée et des tests qui ont été fait dessus. Dans un second temps, nous
 traiterons le fonctionnement des historiques.
 
 \subsection{Les CDBs}
+
+Tous les historiques sont stockés dans un base de donnée circulaire (CDB
+signifie \textit{Circular Data Base}). La première partie des tests concernant
+les historiques va porté sur la validation du bon fonctionnement de cette
+base. Un point important concernant cette structure est que les CDB sont stockées
+en mémoire (généralement sur des eeproms). Les tests qui vont être réalisés sur
+cette structure vont permettre de valider le fonctionnement de l'émulation du
+stockage. De plus, ils vont constituer un exemple intéressant qui pourra être
+décrit dans la documentation.
+
+TODO: fonctionnement des CDB.\\
+TODO: réutilisation du stockage.
 
 \subsection{Tests des historiques}
 
