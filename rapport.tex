@@ -299,10 +299,12 @@ se réalisait seul. Cependant, les développeurs de CKsquare étaient présents 
 répondre aux différentes questions, guider le projet ou pour faire les choix
 importants.
 
-Le travail a été réalisé entièrement en présentiel. De plus, les stagiaires
-étaient tous conviés aux réunions qui permettent de faire le point au niveau des
-équipes de développement. Dans ces réunion chaque développeur parle pendant deux
-minutes du travail qu'il a réalisé et de ce qu'il compte faire ensuite.
+Le projet a été démaré de zéro, aucun projet de test similaire n'avait été
+amorcé auparavant. Le travail a été réalisé entièrement en présentiel. De plus,
+les stagiaires étaient tous conviés aux réunions qui permettent de faire le
+point au niveau des équipes de développement. Dans ces réunion chaque
+développeur parle pendant deux minutes du travail qu'il a réalisé et de ce qu'il
+compte faire ensuite.
 
 Quant au matériel, un bureau avec un PC sous Ubuntu a été mis à disposition. La
 session sur le PC possédait les privilèges administrateur pour faciliter
@@ -836,10 +838,19 @@ TODO: Un des objectifs de ce stage été de progresser sur l'outil GDB.
 TODO: nvim -> vim-fugitive, clangd (détail rapide sur ma config)
 %}}}
 \subsection{Rédaction de la documentation}%{{{
+\clearpage
 %}}}
 \subsection{Planification des tâches}%{{{
 
-On voit ça sur le gantt.
+Les tâches prévues lors du stage étaient les suivantes. Au départ, il était
+prévu de faire le choix du framework de tests puis de faire une revue des
+éléments du code à tester. Ensuite, il était prévu de faire des tests sur des
+fichiers simples pour s'habituer au code de l'entreprise et aussi permettre de
+compiler une première partie du projet. Une fois le projet pris en mains,
+l'objectif était de s'attaquer aux grandes parties qui étaient tout d'abord le
+stockage, puis le Cctalk et le MDB. Les historiques devaient être testés à la
+fin du fait de leur dépendance au stockage. Il était aussi prévu de réaliser de
+la documentation en parallèle tout au long du projet.
 
 % [expected gantt] {{{
 \begin{figure}[h!]
@@ -850,20 +861,28 @@ On voit ça sur le gantt.
 \end{figure}
 %}}}
 
-Mais en fait on a fait ça parce que
+L'organisation de ces tâche a été faite sans connaissance de la complexité du
+code. Certains des composants de l'outil final ont été refait plusieurs fois car
+les résultats ne satisfaisaient pas les critère nécessaire à leur validation.
+C'est le cas du stockage où au départ il avait été fait le choix d'utiliser des
+threads, un choix qui a été remis en cause par la suite. Un autre exemple serait
+celui du Cctalk dont certaines parties ont été réécrites suite à
+l'implémentation de l'émulation des composants MDB pour ajouter plus de
+cohérence. Malgré le fait que certains éléments ont été refaits, le
+développement a pris moins de temps que prévu. Les tâches ont été surévaluées du
+fait du manque de connaissances sur certains éléments comme les protocoles par
+exemples.
 
-On peut retrouver ce diagramme en index \ref{appendix:realgantt}.
+NOTE: diagramme actuel
 
-% [real gantt] {{{
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[scale=0.35]{./img/real-project.png}
-%   \caption{Diagramme de Gantt réel.}
-%   \end{center}
-% \end{figure}~\\
+% [current gantt] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.6]{./img/current-gantt.png}
+  \caption{Diagramme de Gantt actuel.}
+  \end{center}
+\end{figure}~\\
 %}}}
-
-conclusion
 %}}}
 \clearpage
 %***************************************************************************}}}
@@ -883,6 +902,14 @@ TODO: Rétrospective sur le choix du framework (problème macros, ...).
 Regard sur ce qui a été fait et comment cela a été fait (parler de l'échec
 des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou a
 améliorer.
+
+\clearpage
+
+\section{Développement durable}
+
+NOTE: Je ne sais pas comment nommer cette partie, elle doit correspondre à la
+réflexion sur les enjeux actuels liés à la responsabilité sociétale et
+environnementale demandée par la CTI.
 
 \clearpage
 
