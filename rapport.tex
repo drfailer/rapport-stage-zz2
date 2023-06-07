@@ -679,6 +679,11 @@ TODO: \cite{dhaker2018introduction} et \cite{li2014design}
 \subsubsection*{Émulation}
 
 TODO: comment fonctionne l'émulation du SPI
+
+\subsection{Système d'évènements}
+
+TODO: explication du système d'évènement qui permet de vérifier le respect du
+protocole et la bonne utilisation des fonctions bas niveau.
 %}}}
 \section{Les interfaces des composant}%{{{
 
@@ -739,6 +744,8 @@ TODO: \cite{mdbdoc}
 \subsubsection{Le code de l'entreprise}
 
 \subsubsection{Émulation des composants}
+
+\subsubsection{Système de scénarios}
 %}}}
 \subsection{L'interface TCPIP}%{{{
 
@@ -778,6 +785,11 @@ qui a donnée l'idée du stage à l'entreprise.
 
 \subsection{Les outils utilisés}%{{{
 
+Dans cette partie, nous allons faire une revue des outils utilisés pendant le
+stage. Les outils les plus utilisés ne seront pas détaillé, par contre, cette
+partie a pour but de mettre en lumière les avantages qu'il y a à connaitre et
+configurer ses outils de travail.
+
 \subsubsection{Gestion de version}
 
 Pour la réalisation du projet, le gestionnaire de version utilisé été Git. À
@@ -815,39 +827,42 @@ neovim.
 \subsubsection{Doxygen}
 
 TODO: Génération automatique de la documentation à partir des commentaires
-laissés dans le code.
+laissés dans le code. Présentation rapide de doxygen
 
-\subsubsection{Compilation}
+% \subsubsection{Compilation}
 
-L'objectif étant de pouvoir automatiser les tests dans une pipeline Gitlab, il
-fallait obligatoirement que les tests puissent compiler sur un docker et donc
-sur un Linux. L'outil le plus adapté pour ce genre de tache est
-\textbf{Makefile} qui a été utilisé en début de projet. Le défaut de Makefile
-est qu'il reste assez proche du script et qu'il faut obligatoirement détailler
-toutes les commandes. Étant donné le fait qu'il y avait beaucoup de fichiers, le
-Makefile est vite devenu très compliqué et illisible et ce même si aucune
-compilation séparé n'a été mise en place au début du projet. Quand de plus en
-plus de fichiers ont été ajoutés au projet de test, il a fallut mettre en place
-de la compilation séparée pour ne pas tout recompiler à chaque fois. Faire cela
-avec Makefile est tout à fait possible mais cela aurait pris beaucoup de temps     % rep cela
-et le fichier final aurait été assez peu lisible et surtout assez compliqué à
-comprendre. Le but étant de faire un outil facilement compréhensible et
-utilisable par tous les membres de l'entreprise, il fallait trouver une solution
-plus simple. La syntaxe de \textbf{CMake} à permis de simplement lister les
-fichiers à compiler ainsi que les répertoires à inclure sans avoir besoin de
-détailler les option de gcc. Cet outil permet de générer un Makefile complet
-avec un syntaxe beaucoup plus simple. De plus, CMake permet nativement de faire
-de la compilation séparer ce qui à permis de gagner du temps pendant le
-développement étant donner le fait que seuls les fichiers modifiés sont
-recompilés lors de l'écriture des tests.
+% L'objectif étant de pouvoir automatiser les tests dans une pipeline Gitlab, il
+% fallait obligatoirement que les tests puissent compiler sur un docker et donc
+% sur un Linux. L'outil le plus adapté pour ce genre de tache est
+% \textbf{Makefile} qui a été utilisé en début de projet. Le défaut de Makefile
+% est qu'il reste assez proche du script et qu'il faut obligatoirement détailler
+% toutes les commandes. Étant donné le fait qu'il y avait beaucoup de fichiers, le
+% Makefile est vite devenu très compliqué et illisible et ce même si aucune
+% compilation séparé n'a été mise en place au début du projet. Quand de plus en
+% plus de fichiers ont été ajoutés au projet de test, il a fallut mettre en place
+% de la compilation séparée pour ne pas tout recompiler à chaque fois. Faire cela
+% avec Makefile est tout à fait possible mais cela aurait pris beaucoup de temps     % rep cela
+% et le fichier final aurait été assez peu lisible et surtout assez compliqué à
+% comprendre. Le but étant de faire un outil facilement compréhensible et
+% utilisable par tous les membres de l'entreprise, il fallait trouver une solution
+% plus simple. La syntaxe de \textbf{CMake} à permis de simplement lister les
+% fichiers à compiler ainsi que les répertoires à inclure sans avoir besoin de
+% détailler les option de gcc. Cet outil permet de générer un Makefile complet
+% avec un syntaxe beaucoup plus simple. De plus, CMake permet nativement de faire
+% de la compilation séparer ce qui à permis de gagner du temps pendant le
+% développement étant donner le fait que seuls les fichiers modifiés sont
+% recompilés lors de l'écriture des tests.
 
 \subsubsection{GDB}
 
-TODO: Un des objectifs de ce stage été de progresser sur l'outil GDB.
+TODO: Un des objectifs de ce stage été de progresser sur l'outil GDB.\\
+TODO: utilisation avancée de gdb\\
+TODO: configuration de gdb
 
 \subsubsection{IDE}
 
-TODO: nvim -> vim-fugitive, clangd (détail rapide sur ma config)
+TODO: nvim -> vim-fugitive, clangd, l'intégration de gdb ... Présentation rapide
+de ma configuration.
 %}}}
 \subsection{Rédaction de la documentation}%{{{
 \clearpage
