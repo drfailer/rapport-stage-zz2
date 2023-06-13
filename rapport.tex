@@ -531,6 +531,34 @@ rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité 
 générer des logs, les tests paramétrés, les théories (tests des vecteurs
 d'entrées et de sorties) et possède aussi une interface en ligne de commande
 permettant de passer des options en paramètres du programme.
+
+Par contre, la simplicité d'utilisation de ce framework cache une grande
+complexité au niveau de son implémentation. Le framework a posé quelques
+problèmes mineurs dans la suite du projet. Tout d'abord, la simulation des
+composant nécessite l'appel de fonctions d'initialisation au préalable et cela
+aurait été pratique de le faire dans la fonction \lstinline{main}. Comme
+expliqué dans les parties précédentes, le framework génère son propre point
+d'entré, cependant il est possible d'écrire la fonction \lstinline{main} à la
+main si besoin. Le problème est que pour une raison inconnue, cela n'a pas
+marché lors des essais au début du projet (d'après le message d'erreur, le
+problème venait des threads). Ce n'est pas un problème grave car Criterion
+propose beaucoup d'outils qui permettent de mettre en place des solutions
+alternatives mais c'est tout de même un point important à noter. De plus, le
+fait que le framework utilise beaucoup de macros pose parfois problème car ces
+dernière peuvent avoir des comportements indésirables. Par exemple, il peut
+arriver qu'un test basique d'égalité avec la fonction d'assertion principale ne
+compile plus lorsque l'on échange les expressions de par et d'autre de
+l'opérateur \lstinline{==}. Les macros peuvent être très utiles et très
+puissantes, elles permettent ici de rendre le code beaucoup plus lisible,
+cependant, il faut noter que les macros trop complexe sont très difficiles à
+écrire et à déboguer.
+
+Le framework choisit possède donc beaucoup de qualité mais aussi quelques
+défauts. Au final, bien que ce framework ne soit pas parfait, il remplit
+bien son rôle et il propose beaucoup de fonctionnalités très utiles pour
+écrire les tests. De plus, il faut noter que ce framework est assez récent, il
+est donc normal qu'il y ai encore des défaut qui seront certainement corrigés
+au fil des années de développement.
 %}}}
 %}}}
 \section{Organisation d'un projet CKsquare}%{{{
