@@ -85,10 +85,24 @@
     description={todo}
 }
 
-\newglossaryentry{sémaphore}
+\newglossaryentry{semaphore}
 {
     name=sémaphore,
     description={todo}
+}
+
+\newglossaryentry{smodg}
+{
+    name=sous modules git,
+    description={biblithèques qui on leur propre répertoire distant, elles sont
+    stockées dans un projet à part sur Gitlab.}
+}
+
+\newglossaryentry{pic}
+{
+    name=PIC,
+    description={(Peripheral Interface Controller) famille de microcontrôleurs
+    de l'entreprise Microship.}
 }
 %}}}
 
@@ -571,29 +585,94 @@ organisés les projets de CKsquare. Cela permettra une meilleur compréhension d
 choix qui ont été fait par la suite.
 
 \subsection{Organisation des fichiers}
+\label{orgaprojck}
 
 Dans cette partie, nous allons détailler comment sont organisés les fichiers
 dans un projet CKsquare puis nous traiterons le fonctionnement du code dans la
 partie suivante. On rappel que ce projet d'intégration continue ne concerne que
 la partie du code qui est commune à tous les projet et qui est incluse sous la
-forme de sous modules git.
+forme d'un sous module git. \\
 
-Chaque projet contient un répertoire \lstinline{CKLibs} dans lequel se trouve
-deux sous modules git. Le premier sous module se nomme \lstinline{commun_global}
-et il contient la partie du code qui est commune à tous les projet C \textbf{et}
-C++. Le second sous module est \lstinline{dev_pic} et comme son nom l'indique,
-ce dernier ne concerne que la partie C qui s'exécute sur un PIC.
+Pour pouvoir penser le fonctionnement de l'outil de test à créer pendant ce
+stage, il était important de comprendre le fonctionnement général du projet.
+Avant de s'intéresser au fonctionnement, il faut comprendre comment le code est
+organisé. Cela permet deux choses, premièrement, cela permet de ne pas se perdre
+et de pouvoir facilement retrouver les fichiers. Pour comprendre le
+fonctionnement du code, il est important d'avoir un plan de l'organisation.
+Deuxièmement, il est aussi très important de comprendre comment s'est organisée
+l'entreprise pour pouvoir organiser le code de l'outil créé. En
+effet, l'organisation du projet de test doit suivre les principes de CKsquare
+pour rendre l'outil facile à utiliser et à maintenir pour les développeurs de
+l'entreprise.
 
-TODO:\\
-Découverte du code sur un projet simple.\\
-Config (solution personnalisée) = premier difficulté, il faut savoir comment
-configurer le projet.\\
+%TODO: glossaire PIC
+%TODO: dire que la config = challenge
+Sans s'attarder trop sur les détails, l'organisation d'un projet est la
+suivante. Chaque projet comporte une partie locale dans laquelle, tous les noms
+de fichiers commencent par un \textbf{l}. Dans cette partie, on retrouve trois
+fichiers principaux. Tout d'abord, il y a le fichier \lstinline{linit.c} qui
+permet d'initialiser le projet. Ensuite, il y a les fichiers \lstinline{lmain.c}
+et \lstinline{lloop.c} qui permettent de gérer la fonction \lstinline{main} et
+la boucle principale du projet. Le projet local contient aussi deux fichiers
+très importants car ils permettent de configurer le projet. Ces fichiers se
+nomment \lstinline{config.h} et \lstinline{config_hw_default.h}. Ce sont des
+fichiers d'entête à l'intérieur desquels sont définis des constantes
+préprocesseur. Les projet CKsquare fonctionnent beaucoup sur le principe de la
+compilation conditionnelle. Les constantes préprocesseurs sont gérées à la
+compilation pour inclure ou non des parties du code, ce qui permet d'ajouter ou
+d'enlever facilement des fonctionnalité. Lorsqu'une fonctionnalité est enlevée,
+elle n'est pas compilée et le code correspondant n'apparait pas dans
+l'exécutable. De ce fait, il n'impacte pas sa taille, ce qui est très
+intéressant du fait des limitations quand aux capacités de stockage sur les
+carte. Nous verrons dans les parties suivantes l'importance de ces configuration
+pour compiler les fichier et aussi pour tester les différentes parties du
+projet. Chaque projet contient aussi un répertoire \lstinline{CKLibs} dans
+lequel se trouvent des \gls{smodg}. Sur le projet d'étude qui a permis la mise
+en place du projet de test, il y avait deux sous modules. Le premier sous module
+se nomme \lstinline{commun_global} et il contient la partie du code qui est
+commune à tous les projet C \textbf{et} C++. Le second sous module est
+\lstinline{dev_pic} et comme son nom l'indique, ce dernier ne concerne que la
+partie C qui s'exécute sur un \gls{pic}.
 
-- myosismonnayeur\\
-- fichiers de bases\\
-  - Les fichiers locaux\\
-  - Fichiers à tester (commun\_global, dev\_pic)\\
-- les fichiers de Tests
+La partie que nous allons traiter se trouve dans le répertoire
+\lstinline{dev_pic}. Ce répertoire contient un sous répertoire
+\lstinline{commun} qui contient la partie du code à tester. Le sous répertoire
+\lstinline{commun} n'est pas la seule chose intéressante dans
+\lstinline{dev_pic} puisque ce dossier contient aussi les bibliothèques des
+différents compilateurs. L'entreprise CKsquare a réécrit une grande partie des
+bibliothèques des \gls{pic}s pour avoir plus de maitrise quand à la gestion des
+différents éléments. Ces bibliothèques ont été très utiles pour mettre en place
+une partie de l'émulation des composants dans le projet de test, nous traiterons
+cela plus loin dans ce rapport. Le reste des bibliothèques des microcontrôleurs
+a aussi été utilisé pour compiler avec gcc, là aussi, ce sera traiter dans les
+prochaines sections.
+
+Le code commun est organisé par catégories. Le répertoire \lstinline{commun} de
+\lstinline{dev_pic} contient des sous répertoires qui correspondent au
+catégories. Par exemple, on retrouve le dossier \lstinline{StorageDriver} qui
+contient les fichiers qui gèrent le stockage ou encore le dossier
+\lstinline{Payment} qui contient tous ce qui concerne le paiement (types de
+paiement, accepteur de pièce, \dots). L'objectif est de pouvoir faire des
+recherche par catégories et de garder les dépendance au plus proche des
+fichiers. Par exemple, plusieurs des sous répertoires de \lstinline{commun}
+contiennent un dossier \lstinline{Web} qui regroupe les dépendances web des
+fichiers de chaque catégories. On peut ainsi retrouver facilement les dépendance
+des fichiers.
+
+Pour résumer, les projets CKsquare sont composés d'une partie locale, spécifique
+au projet. Parmi ces fichier locaux, on retrouve le fichier responsable de
+l'initialisation, le point d'entrée, la boucle principale ainsi que la
+configuration du projet. Les projets incluent des bibliothèques sous la forme de
+\gls{smodg} stockées dans le répertoire \lstinline{CKLibs}. Parmi ces
+bibliothèques on retrouve le projet \lstinline{dev_pic} qui contient le code
+commun à la partie C qui s'exécute sur les cartes électroniques de l'entreprise,
+et c'est ce code que l'outil créé durant ce stage va testé. À noter qu'ici, on
+ne s'intéresse qu'à l'essentiel pour permettre une explication rapide du
+fonctionnement général du projet dans la partie suivante. Cependant, le projet
+comporte beaucoup d'autre fichiers qui ne sont pas décrit dans ce rapport.\\
+
+Maintenant que nous avons expliqué l'organisation générale du projet, nous
+allons pouvoir traiter le fonctionnement de ce dernier.
 
 \subsection{Fonctionnement du projet}
 
@@ -606,10 +685,16 @@ Machines à état: contraintes => pas accès aux états dans les tests
 %}}}
 \section{Organisation du projet de tests}%{{{
 
-Dans cette partie, nous allons détailler la structure du projet de tests. Cette
-structure s'appuie sur celle des projets de l'entreprise. À noter que le projet
-de test est placé dans un répertoire \lstinline{Tests} qui se trouve dans
-\lstinline{CKLibs} car il sera utilisé comme sous module git dans la pipeline.
+Dans cette partie, nous allons détailler la structure du projet de test. Cette
+structure s'appuie sur celle des projets de l'entreprise.
+
+Il est important de noter que l'organisation du projet de test à changée. Au
+départ, le projet de test devait être un projet à part. Ce dernier devait être
+cloné dans pipeline du projet \lstinline{dev_pic} pour pouvoir tester les
+fichiers. Au final, il a été décidé d'intégrer complètement le projet de test
+dans \lstinline{dev_pic}. L'organisation des tests suis les principes expliqués
+dans la section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité
+des fichiers testés.
 
 \subsection{Faux projet et gcc}
 
@@ -630,9 +715,15 @@ TODO: détail de \lstinline{tests}.
 
 \subsection{Cmake}
 
-TODO: projet commencé sur makefile puis passer sur cmake. Détailler le
-fonctionnement du cmake (important aussi pour l'équipe de dev)
-NOTE: peut-être enlever la section compilation dans les outils
+Dans cette partie nous allons voir comment est compilé le projet de test. Nous
+justifierons tout d'abord le choix de l'utilisation de CMake. Ensuite, nous
+détaillerons l'organisation et le fonctionnement de la configuration de cet
+outil.
+
+Au début du projet, l'outil choisit pour compiler était Makefile. L'avantage de
+Makefile est qu'il est assez proche du script, ce qui donne une grande
+flexibilité.
+
 %}}}
 \section{Simulation du stockage}%{{{
 
@@ -808,6 +899,8 @@ TODO: réutilisation du stockage.
 
 TODO: pour conclure cette partie dire que c'est un problème avec les historiques
 qui a donnée l'idée du stage à l'entreprise.
+
+\section{Mise en place de la pipeline}
 
 \section{Déroulement du projet}
 
