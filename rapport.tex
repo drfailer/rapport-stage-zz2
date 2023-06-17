@@ -722,7 +722,56 @@ outil.
 
 Au début du projet, l'outil choisit pour compiler était Makefile. L'avantage de
 Makefile est qu'il est assez proche du script, ce qui donne une grande
-flexibilité.
+flexibilité car on défini toutes les commandes à la main. Le défaut de Makefile
+est qu'il peut très vite devenir peu lisible. De plus, sur de gros projet, mettre
+en place de la compilation séparée peut être très complexe, or cela était
+nécessaire pour le développement du projet étant donnée le nombre de fichier à
+compiler. L'outil de test à créer devait être suffisamment simple à utiliser et à
+modifier, la complexité croissante du Makefile à mesure que le projet avançait a
+pousser à l'utilisation de CMake.
+
+CMake est un outil qui permet de générer un Makefile très complexe. Il permet de
+mettre en place de la compilation séparée sur de gros projets automatiquement.
+La configuration de CMake est assez simple et beaucoup plus lisible que celle de
+Makefile. De plus, CMake propose des fonctionnalités avancées comme la gestion
+automatique des bibliothèque ou encore \textbf{CTest}, qui permet d'automatiser
+l'exécution de tests. Détaillons à présent la configuration de cet outil.
+
+Le fichier de configuration de CMake est le fichier \lstinline{CMakeLists.txt}
+(il doit avoir exactement ce nom). Il faut un ficher de configuration par sous
+projet. Ici, il n'y a que le projet de tests alors ce fichier se trouve dans le
+répertoire \lstinline{commun/Tests}.
+
+La configuration comporte les six sections suivantes:
+
+\begin{itemize}
+  \item \textbf{configuration du projet}: cette partie contient la configuration
+    minimale de CMake. Ici, on spécifie la version minimale de CMake requise
+    ainsi que le nom du projet. Cette partie comprend aussi l'ajout du framework
+    Criterion à l'édition des liens ainsi que des options pour \lstinline{gcc}
+    comme l'option \lstinline{-g} par exemple (débogage avec gdb).
+  \item \textbf{jeux de tests}: dans cette partie, il y a plusieurs listes de
+    fichiers tests (stockées dans des variables réutilisables plus loin). Il y a
+    plusieurs jeux de tests car on souhaite générer plusieurs exécutables. Comme
+    dit précédemment, il y a plusieurs configurations du projet à tester. Chaque
+    exécutable correspond à une fonctionnalité qui nécessite une configuration
+    particulière.
+  \item \textbf{projet de test}: cette partie contient la liste des fichiers
+    relatifs au projet de test.
+  \item \textbf{projet commun}: ici on a une liste qui contient les fichiers du
+    projet \lstinline{dev_pic} qui sont à compilés avec tous les exécutables. Ce
+    sont les fichiers dont tous les jeux de tests ont besoin.
+  \item \textbf{exécutables}: dans cette partie, on génère les exécutables en
+    spécifiant les bonnes listes de fichiers à compiler. De plus, pour chaque
+    exécutable, on utilise une commande CMake qui permet de définir des
+    constantes préprocesseur lors de la compilation (option \lstinline{-D} de
+    gcc). Cela permet de choisir les configurations du projet pour les tests.
+  \item \textbf{tests}: dans cette section, on ajoute les exécutables à la liste
+    des tests. Ces tests pourront être lancé par \lstinline{CTest} après la
+    compilation.
+\end{itemize}
+
+%TODO: conclusion cmake
 
 %}}}
 \section{Simulation du stockage}%{{{
