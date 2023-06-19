@@ -273,6 +273,7 @@ paiement.
 % TODO: faire un condencé de tout ça
 
 % note: pas clair ici permettent d'interagir avec. Il faudra aussi des qui
+
 L'objectif est de réaliser un outil servant à faire de l'intégration continue
 pour valider les fichiers de la partie commune du code utilisé sur les bornes.
 L'outil doit permettre l'écriture de tests pour valider le code et doit pouvoir
@@ -709,6 +710,11 @@ TODO: détail de la création d'une version test (reprendre la doc d'IOS)
 
 TODO: détail de \lstinline{Emulation}.
 
+\subsection{Le répertoire Test principal}
+
+\subsubsection{Configuration de Criterion}
+\label{configuration-de-criterion}
+
 \subsection{Les tests}
 
 TODO: détail de \lstinline{tests}.
@@ -774,6 +780,57 @@ La configuration comporte les six sections suivantes:
 %TODO: conclusion cmake
 
 %}}}
+\section{Simulation des horloges}%{{{
+
+Le premier élément qui a été simulé était l'horloge principale du programme. Par
+la suite, c'est l'horloge Rtc qui a été simulée en suivant le même principe que
+pour l'horloge principale. Dans cette section nous allons traiter le
+fonctionnement de ces composants.\\
+
+Au début du projet, quelques tests simples ont été réalisés sur certains
+fichiers, cependant, il est rapidement devenu évident que certaines fonctions
+n'allaient pas pouvoir être testées à cause de l'horloge. En effet, à plusieurs
+endroits dans le code, on met en place des temps d'attente et le programme est
+bloqué tant que le temps d'attente n'est pas passé. L'horloge est gérée dans le
+code à travers une variable globale \lstinline{TIMER_Centieme} et cette dernière
+doit être incrémentée pour que le temps passe. Dans le cas contraire, le
+programme reste bloqué.
+
+Le problème technique que pose la simulation des horloges est qu'il faut que ces
+dernières fonctionnent en même temps que le programme principale tourne.
+L'implémentation la plus simple consiste à incrémenter les variables d'horloge
+dans les tests à chaque fois que l'on sait qu'un temps d'attente est mis en
+place. Cette solution n'était pas suffisamment pratique et réaliste. Pour ce
+problème, il a été très rapidement décidé d'utiliser des threads. L'objectif
+était d'incrémenter les variables des horloges dans des fonctions simples
+s'exécutant dans un processus séparé en même temps que le programme principal.
+
+Cette solution a été très simple et rapide à mettre en place étant donné que les
+processus n'avaient pas besoin d'être synchronies. Au final, les deux horloges
+fonctionnent sur le même principe. Pour chacun des fichiers on a une fonction
+\lstinline{Start} qui permet de créer le thread. Cette fonction possède une
+sécurité qui fait que l'on peut faire autant d'appels que l'on souhaite, le
+thread n'est créé qu'une seule fois (cela rend l'utilisation plus simple dans
+les tests). À noter que dans le cas du Rtc, l'horloge démarre à la date du jour.
+Les fichier comportent aussi une fonction \lstinline{Loop} qui est la fonction
+qui s'exécute dans le thread. De plus, des moyen d'interagir avec les horloges
+ont étaient ajoutés. Par exemple, à certains endroits du code, on met en place
+des temps d'attente relativement long. Pour éviter de bloquer le programme,
+chaque fichier propose une fonction \lstinline{Wait} qui permet d'incrémenter le
+compteur manuellement. Il est aussi possible de mettre les horloges en pause et
+de les relancer. Enfin, il y a une fonction \lstinline{Stop} qui permet de
+détruire les threads. Les fonctions \lstinline{Start} et \lstinline{Stop} sont
+appelées dans les fonctions d'initialisation et de terminaison globales décrites
+dans la section \ref{configuration-de-criterion}.\\
+
+Les horloges représentaient donc une partie importante du projet car elles sont
+énormément utilisées dans le code et si les compteurs ne sont pas incrémentés,
+il devient impossible de tester les fonctions. La solution qui a été trouvée est
+très simple et assez réaliste en plus d'être assez pratique à utiliser dans les
+tests. Dans la section suivante, nous traiterons le deuxième éléments qui a été
+simulé lors de la création de l'outil de test et qui propose une solution
+différente de celle utilisée avec les horloges.
+%}}}
 \section{Simulation du stockage}%{{{
 
 Une partie importante de l'émulation concerne le stockage et il y a plusieurs
@@ -783,24 +840,24 @@ simplement de tableaux de caractères non signés (codés sur 8 bits sur la plup
 des machines). La partie complexe de l'émulation du stockage concerne
 l'interface qui permet d'interagir avec les périphériques. Il y a deux
 protocoles qui sont utilisés avec le stockage. Tout d'abord il y a le protocole
-I²C qui est utilisé avec les registre et certaines eeproms. Ensuite il y a le
-protocole SPI qui est utilisé avec les eeproms et les mémoire flash.
+I²C qui est utilisé avec les registres et certaines eeproms. Ensuite il y a le
+protocole SPI qui est utilisé avec les eeproms et les mémoires flash.
 
 Dans cette partie nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
 \subsection{Échec des threads}
 
-La première solution qui a été implémentée utilisait des \textbf{threads}.
-L'objectif été de pouvoir simuler les composants de sorte à ce qu'ils se
-comportent comme les composants réels installés sur la carte. Pour se faire, il
-été souhaitable que les composants simulés soient actif en même temps que la
-carte (représentée ici par le programme à tester) et c'est pour cela que les
-threads ont été utilisés. Le principe était que les composants étaient
-représentés par des machines à états qui bouclaient dans un état de base jusqu'à
-ce que le composant soit appelé (donc jusqu'à ce que le programme principale
-décide de lancer une communication en utilisant un des protocoles cités
-précédemment). Une fois le composant appelé, la machine à états permettait
+La première solution qui a été implémentée utilisait des \textbf{threads} de la
+même façon que les horloges. L'objectif été de pouvoir simuler les composants de
+sorte à ce qu'ils se comportent comme les composants réels installés sur la
+carte. Pour se faire, il été souhaitable que les composants simulés soient actif
+en même temps que la carte (représentée ici par le programme à tester) et c'est
+pour cela que les threads ont été utilisés. Le principe était que les composants
+étaient représentés par des machines à états qui bouclaient dans un état de base
+jusqu'à ce que le composant soit appelé (donc jusqu'à ce que le programme
+principale décide de lancer une communication en utilisant un des protocoles
+cités précédemment). Une fois le composant appelé, la machine à états permettait
 d'assurer la communication. Pour que les composants simulés s'exécutent en même
 temps que le programme principale, ils s'exécutaient dans des threads séparés.
 \\
@@ -829,6 +886,7 @@ protocole I²C puis nous détaillerons le fonctionnement de la simulation.
 \subsubsection*{Le protocole I²C}
 
 TODO: protocole \cite{mankar2014review}
+TODO: parler des fichiers
 
 \subsubsection*{Émulation}
 
@@ -920,7 +978,7 @@ TODO: \cite{mdbdoc}
 TODO: Il n'est pas certain que cette partie paresse dans le rapport final
 %}}}
 %}}}
-\section{Les historiques}
+\section{Les historiques}%{{{
 
 Dans cette section, nous allons nous intéresser aux historiques. Les historiques
 (de paiement, d'évènements) sont stockés dans une base de donnée circulaire.
@@ -948,7 +1006,7 @@ TODO: réutilisation du stockage.
 
 TODO: pour conclure cette partie dire que c'est un problème avec les historiques
 qui a donnée l'idée du stage à l'entreprise.
-
+%}}}
 \section{Mise en place de la pipeline}
 
 \section{Déroulement du projet}
