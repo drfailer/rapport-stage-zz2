@@ -846,7 +846,7 @@ protocole SPI qui est utilisé avec les eeproms et les mémoires flash.
 Dans cette partie nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
-\subsection{Échec des threads}
+\subsection{Échec des threads}%{{{
 
 La première solution qui a été implémentée utilisait des \textbf{threads} de la
 même façon que les horloges. L'objectif été de pouvoir simuler les composants de
@@ -876,8 +876,8 @@ résultats). L'objectif du projet étant de concevoir un outil qui soit facileme
 réutilisable, cette solution était trop complexe et donc pas adaptée. Il a donc
 été décidé de ne plus les utiliser les threads même si la nouvelle solution
 devait être moins pratique d'utilisation au niveau de l'écriture des tests.
-
-\subsection{Interface I²C}
+%}}}
+\subsection{Interface I²C}%{{{
 
 Dans cette partie, nous allons voir le fonctionnement de l'émulation de
 l'interface I²C du stockage. Nous commencerons par voir les principes du
@@ -891,8 +891,8 @@ TODO: parler des fichiers
 \subsubsection*{Émulation}
 
 TODO: comment fonctionne la simulation de l'I²C
-
-\subsection{Interface SPI}
+%}}}
+\subsection{Interface SPI}%{{{
 
 Le second protocole utilisé avec le stockage est le protocole SPI. Comme pour le
 protocole I²C traité dans la partie précédente, nous commencerons par expliquer
@@ -905,11 +905,38 @@ TODO: \cite{dhaker2018introduction} et \cite{li2014design}
 \subsubsection*{Émulation}
 
 TODO: comment fonctionne l'émulation du SPI
-
+%}}}
 \subsection{Système d'évènements}
 
 TODO: explication du système d'évènement qui permet de vérifier le respect du
 protocole et la bonne utilisation des fonctions bas niveau.
+
+À la fin de la conception de la simulation des interfaces I²C et SPI, il restait
+un problème important. Ce problème était que l'on ne pouvait pas savoir depuis
+les machines à états si les protocoles étaient utilisés correctement. Par
+exemple, si un utilisateur oubliait de redémarrer la communication après le
+déplacement du curseur pour une lecture I²C, il pouvait être très compliqué de
+trouver l'origine du problème. Cela est du à la rigidité des machines à états
+pour la simulation des interfaces de ces deux protocoles. Si les étapes ne sont
+pas respectées à la lettre et que les bonnes fonctions ne sont pas appelées
+dans le bon ordre le résultat est indéterminé. C'est un énorme problème étant
+donnée le fait que l'on ne sait plus d'où viennent les erreurs, du code ou de la
+simulation? C'est une question qu'il est légitime de se poser étant donné la
+complexité de la simulation des interfaces du stockage.
+
+Pour tenter de résoudre ce problème, un système d'évènement a été pensé. Ce
+système est loin d'être parfait mais il peut éviter une partie des erreurs. Le
+principe est que les machines à états de l'I²C et du SPI enregistrent des
+évènements au fur et à mesure de l'exécution. Une fois que l'on a terminer une
+action, on peut vérifier si les évènements enregistrés sont bon. Par exemple, on
+peut essayer de faire un certain nombre de lectures avec le SPI. Le fichier du
+SPI fournit une fonction qui permet de générer la liste des évènements attendus
+pour $n$ lectures. Il suffit donc de comparer la suite d'évènements attendus à
+celle des évènements enregistrés pour savoir s'il y a un problème. Cela
+nécessite donc d'avoir un cas de test dédié qui fait la vérification des
+évènements pour chacune des actions possibles.
+
+TODO: détailler le système d'évènements
 %}}}
 \section{Les interfaces des composant}%{{{
 
@@ -1010,6 +1037,10 @@ qui a donnée l'idée du stage à l'entreprise.
 \section{Mise en place de la pipeline}
 
 \section{Déroulement du projet}
+
+Dans cette dernière section, nous allons nous intéresser aux méthodes de
+trivial et aux outils utilisés durant ce stage. Nous ferrons ensuite la
+comparaison entre le planning prévisionnel et le planning réel.
 
 \subsection{Les outils utilisés}%{{{
 
@@ -1221,7 +1252,7 @@ Test affichage biblio:
 \clearpage{}
 \section{Extraits de codes pour les frameworks}\label{appendix:frameworks-code}
 
-\subsection{Check}
+\subsection*{Check}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1262,7 +1293,7 @@ int main(void) {
 \end{listing}
 
 \clearpage{}
-\subsection{CUnit}
+\subsection*{CUnit}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1324,7 +1355,7 @@ int main(void)
 \end{listing}
 
 \clearpage{}
-\subsection{Criterion}
+\subsection*{Criterion}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1350,7 +1381,7 @@ Test(sample, passing, .signal = SIGSEGV) {
 \label{criterion-example}
 \end{listing}
 
-\subsection{Minunit}
+\subsection*{Minunit}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1374,7 +1405,7 @@ int main(void)
 \end{listing}
 
 \clearpage{}
-\subsection{Munit}
+\subsection*{Munit}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1426,7 +1457,7 @@ int main(void)
 \end{listing}
 
 \clearpage{}
-\subsection{Unity}
+\subsection*{Unity}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1456,7 +1487,7 @@ int main(void) {
 \label{unity-example}
 \end{listing}
 
-\subsection{Tau}
+\subsection*{Tau}
 
 \begin{listing}[ht!]
 \begin{minted}{C}
