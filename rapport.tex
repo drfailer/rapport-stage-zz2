@@ -104,6 +104,20 @@
     description={(Peripheral Interface Controller) famille de microcontrôleurs
     de l'entreprise Microship.}
 }
+
+\newglossaryentry{protoserie}
+{
+    name=protocole série,
+    description={protocole dont les éléments d'informations se succèdent sur une
+    seule voie entre deux points.}
+}
+
+\newglossaryentry{halfduplex}
+{
+    name=halfduplex,
+    description={deux éméteurs ne transmettent jamais des données en même
+    temps.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -751,30 +765,31 @@ répertoire \lstinline{commun/Tests}.
 La configuration comporte les six sections suivantes:
 
 \begin{itemize}
-  \item \textbf{configuration du projet}: cette partie contient la configuration
-    minimale de CMake. Ici, on spécifie la version minimale de CMake requise
-    ainsi que le nom du projet. Cette partie comprend aussi l'ajout du framework
-    Criterion à l'édition des liens ainsi que des options pour \lstinline{gcc}
-    comme l'option \lstinline{-g} par exemple (débogage avec gdb).
-  \item \textbf{jeux de tests}: dans cette partie, il y a plusieurs listes de
-    fichiers tests (stockées dans des variables réutilisables plus loin). Il y a
-    plusieurs jeux de tests car on souhaite générer plusieurs exécutables. Comme
-    dit précédemment, il y a plusieurs configurations du projet à tester. Chaque
-    exécutable correspond à une fonctionnalité qui nécessite une configuration
-    particulière.
-  \item \textbf{projet de test}: cette partie contient la liste des fichiers
-    relatifs au projet de test.
-  \item \textbf{projet commun}: ici on a une liste qui contient les fichiers du
-    projet \lstinline{dev_pic} qui sont à compilés avec tous les exécutables. Ce
-    sont les fichiers dont tous les jeux de tests ont besoin.
-  \item \textbf{exécutables}: dans cette partie, on génère les exécutables en
-    spécifiant les bonnes listes de fichiers à compiler. De plus, pour chaque
-    exécutable, on utilise une commande CMake qui permet de définir des
-    constantes préprocesseur lors de la compilation (option \lstinline{-D} de
-    gcc). Cela permet de choisir les configurations du projet pour les tests.
-  \item \textbf{tests}: dans cette section, on ajoute les exécutables à la liste
-    des tests. Ces tests pourront être lancé par \lstinline{CTest} après la
-    compilation.
+  \item[$\bullet$] \textbf{configuration du projet}: cette partie contient la
+    configuration minimale de CMake. Ici, on spécifie la version minimale de
+    CMake requise ainsi que le nom du projet. Cette partie comprend aussi
+    l'ajout du framework Criterion à l'édition des liens ainsi que des options
+    pour \lstinline{gcc} comme l'option \lstinline{-g} par exemple (débogage
+    avec gdb).
+  \item[$\bullet$] \textbf{jeux de tests}: dans cette partie, il y a plusieurs
+    listes de fichiers tests (stockées dans des variables réutilisables plus
+    loin). Il y a plusieurs jeux de tests car on souhaite générer plusieurs
+    exécutables. Comme dit précédemment, il y a plusieurs configurations du
+    projet à tester. Chaque exécutable correspond à une fonctionnalité qui
+    nécessite une configuration particulière.
+  \item[$\bullet$] \textbf{projet de test}: cette partie contient la liste des
+    fichiers relatifs au projet de test.
+  \item[$\bullet$] \textbf{projet commun}: ici on a une liste qui contient les
+    fichiers du projet \lstinline{dev_pic} qui sont à compilés avec tous les
+    exécutables. Ce sont les fichiers dont tous les jeux de tests ont besoin.
+  \item[$\bullet$] \textbf{exécutables}: dans cette partie, on génère les
+    exécutables en spécifiant les bonnes listes de fichiers à compiler. De plus,
+    pour chaque exécutable, on utilise une commande CMake qui permet de définir
+    des constantes préprocesseur lors de la compilation (option \lstinline{-D}
+    de gcc). Cela permet de choisir les configurations du projet pour les tests.
+  \item[$\bullet$] \textbf{tests}: dans cette section, on ajoute les exécutables
+    à la liste des tests. Ces tests pourront être lancé par \lstinline{CTest}
+    après la compilation.
 \end{itemize}
 
 %TODO: conclusion cmake
@@ -835,13 +850,18 @@ différente de celle utilisée avec les horloges.
 
 Une partie importante de l'émulation concerne le stockage et il y a plusieurs
 types composants à simuler, les registres, les eeproms, et la mémoire flash.
-L'émulation des périphériques des stockage est assez simple puisqu'il s'agit
-simplement de tableaux de caractères non signés (codés sur 8 bits sur la plupart
-des machines). La partie complexe de l'émulation du stockage concerne
-l'interface qui permet d'interagir avec les périphériques. Il y a deux
-protocoles qui sont utilisés avec le stockage. Tout d'abord il y a le protocole
-I²C qui est utilisé avec les registres et certaines eeproms. Ensuite il y a le
-protocole SPI qui est utilisé avec les eeproms et les mémoires flash.
+L'émulation des périphériques de stockage est assez simple puisqu'il s'agit
+juste de tableaux de caractères non signés (codés sur 8 bits sur la plupart des
+machines). La partie complexe de l'émulation du stockage concerne l'interface
+qui permet d'interagir avec les périphériques. Il y a deux protocoles qui sont
+utilisés avec le stockage. Tout d'abord il y a le protocole I²C qui est utilisé
+avec les registres et certaines eeproms. Ensuite il y a le protocole SPI qui est
+utilisé avec les eeproms et les mémoires flash. La simulation de ces deux
+interface a nécessité l'apprentissage des deux protocoles qui ne sont pas traité
+dans les cours de la filière 2 à l'ISIMA.
+
+TODO: mettre des images des composants (montrer l'objet au delà du code est
+intéressant)
 
 Dans cette partie nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
@@ -885,7 +905,53 @@ protocole I²C puis nous détaillerons le fonctionnement de la simulation.
 
 \subsubsection*{Le protocole I²C}
 
-TODO: protocole \cite{mankar2014review}
+Le protocole I²C (Inter Integrated Circuit) est un \gls{protoserie}
+bidirectionnel en \gls{halfduplex}. La plupart des connaissances sur l'I²C on
+été trouvées sur ce document \cite{mankar2014review} et de Wikipédia
+\cite{frwiki:197726464}, le reste vient des développeurs de l'entreprise. Ce
+protocole fonctionne en mode maître et esclave. Par exemple, la carte
+électronique est considérée comme le maître et elle pilote les périphériques qui
+eux sont les esclaves. Un esclave ne prend jamais la parole, c'est au maître de
+démarrer la communication et l'esclave répond lorsque c'est nécessaire. La
+connexion est réalisée par l'intermédiaire de deux fils, SDA (Serial Data Line)
+qui permet de transmettre les données et SCL (Serial Clock Line) qui correspond
+à l'horloge, quand SCL est à 1, on envoi un bit sur SDA. Ces deux lignes sont
+bidirectionnelles. Le schéma de la figure \ref{fig:schemai2c} illustre le
+principe de l'I²C.
+
+TODO: Schéma
+% [schéma i2c] {{{
+% \begin{figure}[h!]
+%   \begin{center}
+%   \includegraphics[scale=0.6]{./img/schema-i2c.png}
+%   \caption{}
+%   \label{fig:schemai2c}
+%   \end{center}
+% \end{figure}
+%}}}
+
+Pour démarrer la communication, le maître envoi un octet que l'on appel
+\textit{l'octet d'adresse}. Sur ce premier octet, les sept premiers bits
+corresponde à l'adresse du destinataire (l'esclave qui est appelé par le
+maître). Le dernier bit permet de spécifier le mode d'accès, s'il est à 0, le
+maître va envoyer des données à l'esclave. S'il est à 1, c'est l'esclave qui
+devra envoyer des données aux maître. Si on prend l'exemple du stockage, quand
+ce bit est à 0, la carte va envoyer des données à écrire, sinon, la carte
+souhaite lire les données écrites sur le composant. La suite de la communication
+va vairée en fonction de ce qui a été demandé par la carte.
+
+Pour résumer, ce protocole fonctionne en mode maître et esclaves avec deux
+lignes, SDA qui permet de transmettre des données et SCL qui correspond à
+l'horloge. Lors d'une communication, la carte électronique (le maître) va
+envoyer un permet octet contenant l'adresse du composant (l'esclave) auquel elle
+s'adresse ainsi que le mode d'accès. Ensuite, l'esclave et le maître se
+transmettent des données jusqu'à la fin de la communication. Ce protocole
+possède d'autre subtilités qui ne seront pas détaillées ici car elles n'ont pas
+été utiles pour la réalisation de ce projet. Dans la section suivante nous
+allons aborder le fonctionnement de l'implémentation du protocole par CKsquare
+puis nous traiterons les différents éléments qui permettent de simuler
+l'interface I²C pour le stockage.
+
 TODO: parler des fichiers
 
 \subsubsection*{Émulation}
