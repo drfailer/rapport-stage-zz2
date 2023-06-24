@@ -118,6 +118,12 @@
     description={deux éméteurs ne transmettent jamais des données en même
     temps.}
 }
+
+\newglossaryentry{fullduplex}
+{
+    name=fullduplex,
+    description={tous les éléments peuvent parler en même temps.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -712,8 +718,10 @@ dans la section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximi
 des fichiers testés.
 
 \subsection{Faux projet et gcc}
+\label{fakeprojgcc}
 
 TODO: détail de \lstinline{FakeProject} et \lstinline{gcc}.
+TODO: détail du fichier picvariable
 
 \subsection{Les versions test}
 
@@ -867,6 +875,7 @@ Dans cette partie nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
 \subsection{Échec des threads}%{{{
+\label{echecthread}
 
 La première solution qui a été implémentée utilisait des \textbf{threads} de la
 même façon que les horloges. L'objectif été de pouvoir simuler les composants de
@@ -919,15 +928,14 @@ qui permet de transmettre les données et SCL (Serial Clock Line) qui correspond
 bidirectionnelles. Le schéma de la figure \ref{fig:schemai2c} illustre le
 principe de l'I²C.
 
-TODO: Schéma
 % [schéma i2c] {{{
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[scale=0.6]{./img/schema-i2c.png}
-%   \caption{}
-%   \label{fig:schemai2c}
-%   \end{center}
-% \end{figure}
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.6]{./img/schema-i2c.png}
+    \caption{Liaison maître/esclave (I²C)}
+    \label{fig:schemai2c}
+  \end{center}
+\end{figure}
 %}}}
 
 Pour démarrer la communication, le maître envoi un octet que l'on appel
@@ -956,26 +964,131 @@ TODO: parler des fichiers
 
 \subsubsection*{Émulation}
 
-TODO: comment fonctionne la simulation de l'I²C
+Maintenant que nous avons abordé le fonctionnement du protocole I²C dans la
+première partie, intéressons nous à la façon dont l'interface a été simulée pour
+le stockage. Pour mettre en œuvre l'émulation, une étude du fonctionnement de
+l'implémentation du protocole par l'entreprise ainsi que son utilisation a été
+nécessaire. Pour ce faire, il a fallut s'intéresser à l'organisation des
+fichiers et aux fonctions qu'ils contiennent. À la demande des développeurs de
+l'entreprise, la simulation devait permettre de tester tout le code. C'est pour
+cette raison que la simulation a été placée au plus proche des bibliothèques de
+Microship (fournisseurs des cartes) au lieu de simplement remplacer des
+fichiers. Il était obligatoire de comprendre comment l'entreprise utilise l'I²C
+car le protocole en lui même ne décrit que la façon dont les composants
+communiquent en non les données qu'ils envoient. Par exemple, ce protocole peut
+être utilisé avec plusieurs types de composants, pas seulement du stockage. Pour
+deux types de composants différents, la communication suivant le même protocole
+n'aura pas la même forme car ces derniers ne proposent pas les même
+fonctionnalités. La simulation mise en place est donc spécifique au stockage sur
+les cartes Microship.
+
+Tout d'abord, commençons par nous intéresser au fonctionnement du code de
+l'entreprise. Comme dit précédemment, le répertoire \lstinline{dev_pic} contient
+les bibliothèques utilisées avec les différents compilateurs. Le compilateur le
+plus utilisé dans l'entreprise est le c32 et les fichiers le concernant sont
+stockés dans le répertoire \lstinline{C32} dans \lstinline{dev_pic}. Dans, ce
+répertoire se trouve le fichier permettant de gérer l'I²C. Ce fichier contient
+plusieurs fonctions permettant de démarrer et stopper la communication ainsi que
+d'envoyer des données. Ce fichier est relativement simple et reprend les étapes
+décrites par le protocole (début, fin, envoi en mode écriture, \dots). La
+communication en elle même est gérée par d'autres fichiers qui eux font partie
+du code commun. Les fonctions définies dans les fichiers ont permis de
+comprendre comment sont utilisés les périphériques de stockage. À noter qu'ici,
+la ligne permettant de transmettre des données est modélisée par une variable
+(globale). Cette variable est gérée par la bibliothèque du \gls{pic} et est
+définie dans le fichier \lstinline{PicVariables} mentionné dans la section
+\ref{fakeprojgcc}.
+
+Pour une écriture sur un composant, on commence par démarrer la communication
+puis on envoie l'adresse du périphérique de stockage auquel on s'adresse avec le
+bit de mode à 0 (comme le demande le protocole). Ensuite, on envoie une adresse
+qui va permettre de placer le curseur du composant. Cela va permettre de
+spécifier au composant à quelle adresse on souhaite écrire. Le nombre d'octets à
+envoyer pour le déplacement du curseur dépend du composant ciblé. Dans le cas
+d'un registre, on envoie un octet, dans le cas d'une eeprom 2. Les flash ne sont
+pas utilisées avec l'I²C. Enfin, on envoie les données à écrire sur le composant
+avant de terminer la communication. Toutes ces étape correspondent à des
+fonctions dans le fichier du répertoire \lstinline{C32}. La lecture suis le même
+principe sauf qu'ici, on ne spécifie pas la position du curseur. La subtilité
+est que si on souhaite lire à une certaine adresse, il faut commencer par
+écrire, déplacer le curseur du composant puis redémarre la communication en mode
+lecture.
+
+Maintenant que nous savons comment utiliser le protocole, intéressons nous à la
+simulation. Comme dit précédemment, la simulation doit se positionnée au niveau
+des bibliothèques du \gls{pic}, la meilleur option était donc de modifier les
+fichiers de cette bibliothèque. Comme nous l'avons vu dans la section
+\ref{echecthread} la première solution utilisait une machine a états qui
+s'exécutait dans un thread. Pour réaliser la nouvelle solution, il a été décidé
+de reprendre le code de la machine à état et d'en faire une fonction
+\lstinline{Control} similaire à ce que l'on peut trouver dans le code de
+CKsquare. Cette décision apportait deux avantages, le premier étant que le
+fonctionnement est très similaire à celui du code de l'entreprise, ce qui est
+intéressant étant donné le fait que l'outil est destiné à être utilisé par les
+développeurs de la société. Le deuxième avantage est le gain de temps du à la
+réutilisation du code de la solution précédente. Les appels à cette fonction
+\lstinline{Control} ont étaient fait dans une version modifiée pour les tests du
+fichier de \lstinline{C32} compilé à la place de l'original. Cela permet aux
+développeur des tests de ne pas avoir à se préoccuper de la simulation, de son
+point de vue, tout fonctionne comme sur la carte. Les états de la machine
+suivent les étapes du protocole.
+
+TODO: parler de la fonction init
+TODO: parler de comment on modifie les tableau de la simulation stockage
+TODO: diagramme d'états
 %}}}
 \subsection{Interface SPI}%{{{
 
 Le second protocole utilisé avec le stockage est le protocole SPI. Comme pour le
 protocole I²C traité dans la partie précédente, nous commencerons par expliquer
-le fonctionnement du protocole puis nous détaillerons l'émulation.
+le fonctionnement du protocole puis nous détaillerons l'émulation. Ce protocole
+est très similaire à l'I²C et il en est de même pour le fonctionnement de la
+simulation, 'il y aura donc beaucoup d'analogies avec la partie précédente.
+Ce protocole est très similaire à l'I²C et il en est de mémé pour le
+fonctionnement de la simulation, il y aura donc beaucoup d'analogies avec la
 
-\subsubsection*{Le protocole SPI}
+L'étude de ce protocole à était faite à l'aide de deux documents partie
+précédente. 'étude de ce protocole à était faite à l'aide de deux documents.
+\cite{dhaker2018introduction} et \cite{li2014design}. Le protocole SPI (Serial
+Peripheral Interface) est un \gls{protoserie} en \gls{fullduplex}. Là où l'I²C
+possédait seulement deux lignes, ici, il y en a au minimum quatre. Il y a tout
+d'abord SCLK qui permet de gérer l'horologe. Ensuite il y a MOSI (Master Out
+Slave In) et MISO (Master In Slave Out) qui permette d'envoyer des données. Ici,
+le fait d'utiliser deux lignes permet au maître et à l'esclave d'échanger des
+données en même temps. La dernière ligne, \overline{CS}, permet, quand elle est
+à zéro, de sélectionner le composant avec lequel on souhaite échanger. Cette
+ligne est relié à un seul composant, il faut donc autant de lignes \overline{CS}
+(Chip Select) que d'esclaves. Sur la figure \ref{fig:schemaspi}, on peut voir un
+schéma représentant la liaison entre la carte et un composant en SPI.
 
-TODO: \cite{dhaker2018introduction} et \cite{li2014design}
+% [schéma spi] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.6]{./img/schema-spi.png}
+    \caption{Liaison maître/esclave (SPI)}
+    \label{fig:schemaspi}
+  \end{center}
+\end{figure}
+%}}}
+
+Maintenant que nous avons vu les principes du protocole, intéressons à la
+simulation.
 
 \subsubsection*{Émulation}
 
-TODO: comment fonctionne l'émulation du SPI
+Pour réaliser la simulation de l'interface SPI, la démarche a était la même que
+pour l'I²C. La mise en place d'une solution a été précédée d'une étude du
+fonctionnement du code permettant d'utiliser le protocole.
+
+La gestion du protocole dans le codes est très similaire à celle de l'I²C. Il y
+a un fichier dans le répertoire \lstinline{C32} contenant les fonctions basiques
+du protocole. Là aussi, les lignes sont gérées à l'aide de variables globales
+définies dans le fichier \lstinline{PicVariables}. Les fichiers plus haut niveau
+du code commun ont permet de designer la machine a états au départ utilisée dans
+la solution avec les threads puis réutilisée dans la nouvelle solution.
+
 %}}}
 \subsection{Système d'évènements}
-
-TODO: explication du système d'évènement qui permet de vérifier le respect du
-protocole et la bonne utilisation des fonctions bas niveau.
 
 À la fin de la conception de la simulation des interfaces I²C et SPI, il restait
 un problème important. Ce problème était que l'on ne pouvait pas savoir depuis
