@@ -1080,12 +1080,27 @@ Pour réaliser la simulation de l'interface SPI, la démarche a était la même 
 pour l'I²C. La mise en place d'une solution a été précédée d'une étude du
 fonctionnement du code permettant d'utiliser le protocole.
 
-La gestion du protocole dans le codes est très similaire à celle de l'I²C. Il y
-a un fichier dans le répertoire \lstinline{C32} contenant les fonctions basiques
+La gestion du protocole dans le code est très similaire à celle de l'I²C. Il y a
+un fichier dans le répertoire \lstinline{C32} contenant les fonctions basiques
 du protocole. Là aussi, les lignes sont gérées à l'aide de variables globales
 définies dans le fichier \lstinline{PicVariables}. Les fichiers plus haut niveau
-du code commun ont permet de designer la machine a états au départ utilisée dans
-la solution avec les threads puis réutilisée dans la nouvelle solution.
+du code commun ont permis de designer la machine a états au départ utilisée dans
+la solution avec les threads puis réutilisée dans la nouvelle solution. Ici le
+fonctionnement est un peu plus complexe qu'avec l'I²C. Pour faire une écriture
+sur un composant, on commence par démarrer la communication puis on sélectionne
+le composant auquel on souhaite s'adresser. Ensuite, on envoi un code qui va
+permettre de choisir une action à réaliser. Parmi les actions possibles, il y a
+la lecture, l'écriture ou encore la possibilité de supprimer des données
+(erase). Il y a aussi un code permettant d'activer les droits d'écriture sur un
+composant. Il faut donc activer l'écriture à chaque fois que l'on souhaite
+modifier les données sur le stockage. Par exemple, pour faire une écriture sur
+un composant, on commence par sélectionner la cible. Ensuite, on envoi le code
+permettant d'activer l'écriture. Une fois fait, il faut redémarrer la
+communication puis envoyer le code permettant d'écrire. Avant de pouvoir envoyer
+les données à écrire, il faut déplacer le curseur du composant en envoyant une
+adresse sur deux où trois octets, les données serons ensuite écrites à partir de
+la nouvelle adresse du curseur. Lorsque l'on a fini d'envoyer les données, on
+arrête la communication en repassant \overline{CS} à 1.
 
 %}}}
 \subsection{Système d'évènements}
