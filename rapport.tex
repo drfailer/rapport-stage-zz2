@@ -93,7 +93,7 @@
 
 \newglossaryentry{smodg}
 {
-    name=sous modules git,
+    name=sous module git,
     description={biblithèques qui on leur propre répertoire distant, elles sont
     stockées dans un projet à part sur Gitlab.}
 }
@@ -571,9 +571,9 @@ Par contre, la simplicité d'utilisation de ce framework cache une grande
 complexité au niveau de son implémentation. Le framework a posé quelques
 problèmes mineurs dans la suite du projet. Tout d'abord, la simulation des
 composant nécessite l'appel de fonctions d'initialisation au préalable et cela
-aurait été pratique de le faire dans la fonction \lstinline{main}. Comme
+aurait été pratique de le faire dans la fonction \verb|main|. Comme
 expliqué dans les parties précédentes, le framework génère son propre point
-d'entré, cependant il est possible d'écrire la fonction \lstinline{main} à la
+d'entré, cependant il est possible d'écrire la fonction \verb|main| à la
 main si besoin. Le problème est que pour une raison inconnue, cela n'a pas
 marché lors des essais au début du projet (d'après le message d'erreur, le
 problème venait des threads). Ce n'est pas un problème grave car Criterion
@@ -583,7 +583,7 @@ fait que le framework utilise beaucoup de macros pose parfois problème car ces
 dernière peuvent avoir des comportements indésirables. Par exemple, il peut
 arriver qu'un test basique d'égalité avec la fonction d'assertion principale ne
 compile plus lorsque l'on échange les expressions de par et d'autre de
-l'opérateur \lstinline{==}. Les macros peuvent être très utiles et très
+l'opérateur \verb|==|. Les macros peuvent être très utiles et très
 puissantes, elles permettent ici de rendre le code beaucoup plus lisible,
 cependant, il faut noter que les macros trop complexe sont très difficiles à
 écrire et à déboguer.
@@ -600,7 +600,7 @@ au fil des années de développement.
 
 L'outil créé pendant ce stage a été testé sur un projet de l'entreprise. Cela a
 permis dans un premier temps de pouvoir voir et comprendre comment le code à
-tester fonctionne puis ensuite cela à permet de vérifier la bonne intégration de
+tester fonctionnait puis ensuite cela à permis de vérifier la bonne intégration de
 l'outil dans le projet. Dans cette partie, nous détaillerons comment sont
 organisés les projets de CKsquare. Cela permettra une meilleur compréhension des
 choix qui ont été fait par la suite.
@@ -611,8 +611,8 @@ choix qui ont été fait par la suite.
 Dans cette partie, nous allons détailler comment sont organisés les fichiers
 dans un projet CKsquare puis nous traiterons le fonctionnement du code dans la
 partie suivante. On rappel que ce projet d'intégration continue ne concerne que
-la partie du code qui est commune à tous les projet et qui est incluse sous la
-forme d'un sous module git. \\
+la partie du code qui est commune à tous les projets. Elles fait parties des
+bibliothèques ajoutés aux projets sous la forme de \gls{smodg}. \\
 
 Pour pouvoir penser le fonctionnement de l'outil de test à créer pendant ce
 stage, il était important de comprendre le fonctionnement général du projet.
@@ -621,62 +621,58 @@ organisé. Cela permet deux choses, premièrement, cela permet de ne pas se perd
 et de pouvoir facilement retrouver les fichiers. Pour comprendre le
 fonctionnement du code, il est important d'avoir un plan de l'organisation.
 Deuxièmement, il est aussi très important de comprendre comment s'est organisée
-l'entreprise pour pouvoir organiser le code de l'outil créé. En
+l'entreprise pour pouvoir structurer le code de l'outil créé. En
 effet, l'organisation du projet de test doit suivre les principes de CKsquare
 pour rendre l'outil facile à utiliser et à maintenir pour les développeurs de
 l'entreprise.
 
-%TODO: glossaire PIC
-%TODO: dire que la config = challenge
-Sans s'attarder trop sur les détails, l'organisation d'un projet est la
-suivante. Chaque projet comporte une partie locale dans laquelle, tous les noms
-de fichiers commencent par un \textbf{l}. Dans cette partie, on retrouve trois
-fichiers principaux. Tout d'abord, il y a le fichier \lstinline{linit.c} qui
-permet d'initialiser le projet. Ensuite, il y a les fichiers \lstinline{lmain.c}
-et \lstinline{lloop.c} qui permettent de gérer la fonction \lstinline{main} et
-la boucle principale du projet. Le projet local contient aussi deux fichiers
-très importants car ils permettent de configurer le projet. Ces fichiers se
-nomment \lstinline{config.h} et \lstinline{config_hw_default.h}. Ce sont des
-fichiers d'entête à l'intérieur desquels sont définis des constantes
-préprocesseur. Les projet CKsquare fonctionnent beaucoup sur le principe de la
-compilation conditionnelle. Les constantes préprocesseurs sont gérées à la
-compilation pour inclure ou non des parties du code, ce qui permet d'ajouter ou
-d'enlever facilement des fonctionnalité. Lorsqu'une fonctionnalité est enlevée,
-elle n'est pas compilée et le code correspondant n'apparait pas dans
-l'exécutable. De ce fait, il n'impacte pas sa taille, ce qui est très
-intéressant du fait des limitations quand aux capacités de stockage sur les
-carte. Nous verrons dans les parties suivantes l'importance de ces configuration
-pour compiler les fichier et aussi pour tester les différentes parties du
-projet. Chaque projet contient aussi un répertoire \lstinline{CKLibs} dans
+%TODO: expliquer brièvement le projet myosis et pk il a été choisi
+
+Chaque projet comporte une partie locale dans laquelle, tous les noms de
+fichiers commencent par un \textbf{l}. Dans cette partie, on retrouve trois
+fichiers principaux. Tout d'abord, il y a le fichier \verb|linit.c| qui permet
+d'initialiser le projet. Ensuite, il y a les fichiers \verb|lmain.c| et
+\verb|lloop.c| qui permettent de gérer la fonction \verb|main| et la boucle
+principale du projet. Le projet local contient aussi deux fichiers très
+importants car ils permettent de configurer le projet. Ces fichiers se nomment
+\verb|config.h| et \verb|config_hw_default.h|. Ce sont des fichiers d'entête à
+l'intérieur desquels sont définis des constantes préprocesseur. Les projet
+CKsquare fonctionnent beaucoup sur le principe de la compilation conditionnelle.
+Les constantes préprocesseurs sont gérées à la compilation pour inclure ou non
+des parties du code, ce qui permet d'ajouter ou d'enlever facilement des
+fonctionnalité. Lorsqu'une fonctionnalité est enlevée, elle n'est pas compilée
+et le code correspondant n'apparait pas dans l'exécutable. De ce fait, il
+n'impacte pas sa taille, ce qui est très intéressant du fait des limitations
+quand aux capacités de stockage sur les carte. La gestion de la configuration
+s'est avérée complexe du fait du grand nombre d'options qui ne sont pas toutes
+documentées. Chaque projet contient aussi un répertoire \verb|CKLibs| dans
 lequel se trouvent des \gls{smodg}. Sur le projet d'étude qui a permis la mise
 en place du projet de test, il y avait deux sous modules. Le premier sous module
-se nomme \lstinline{commun_global} et il contient la partie du code qui est
-commune à tous les projet C \textbf{et} C++. Le second sous module est
-\lstinline{dev_pic} et comme son nom l'indique, ce dernier ne concerne que la
-partie C qui s'exécute sur un \gls{pic}.
+se nomme \verb|commun_global| et il contient la partie du code qui est commune à
+tous les projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce
+dernier ne concerne que la partie C qui s'exécute sur un \gls{pic}.
 
-La partie que nous allons traiter se trouve dans le répertoire
-\lstinline{dev_pic}. Ce répertoire contient un sous répertoire
-\lstinline{commun} qui contient la partie du code à tester. Le sous répertoire
-\lstinline{commun} n'est pas la seule chose intéressante dans
-\lstinline{dev_pic} puisque ce dossier contient aussi les bibliothèques des
-différents compilateurs. L'entreprise CKsquare a réécrit une grande partie des
-bibliothèques des \gls{pic}s pour avoir plus de maitrise quand à la gestion des
-différents éléments. Ces bibliothèques ont été très utiles pour mettre en place
-une partie de l'émulation des composants dans le projet de test, nous traiterons
-cela plus loin dans ce rapport. Le reste des bibliothèques des microcontrôleurs
-a aussi été utilisé pour compiler avec gcc, là aussi, ce sera traiter dans les
-prochaines sections.
+La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|.
+Ce répertoire contient un sous répertoire \verb|commun| qui contient la partie
+du code à tester. Le sous répertoire \verb|commun| n'est pas la seule chose
+intéressante dans \verb|dev_pic| puisque ce dossier contient aussi les
+bibliothèques des différents compilateurs. L'entreprise CKsquare a réécrit une
+grande partie des bibliothèques des \gls{pic}s pour avoir plus de maitrise quand
+à la gestion des différents éléments. Ces bibliothèques ont été très utiles pour
+mettre en place une partie de l'émulation des composants dans le projet de test,
+nous traiterons cela plus loin dans ce rapport. Le reste des bibliothèques des
+microcontrôleurs a aussi été utilisé pour compiler avec gcc, là aussi, ce sera
+traiter dans les prochaines sections.
 
-Le code commun est organisé par catégories. Le répertoire \lstinline{commun} de
-\lstinline{dev_pic} contient des sous répertoires qui correspondent au
-catégories. Par exemple, on retrouve le dossier \lstinline{StorageDriver} qui
+Le code commun est organisé par catégories. Le répertoire \verb|commun| de
+\verb|dev_pic| contient des sous répertoires qui correspondent au
+catégories. Par exemple, on retrouve le dossier \verb|StorageDriver| qui
 contient les fichiers qui gèrent le stockage ou encore le dossier
-\lstinline{Payment} qui contient tous ce qui concerne le paiement (types de
+\verb|Payment| qui contient tous ce qui concerne le paiement (types de
 paiement, accepteur de pièce, \dots). L'objectif est de pouvoir faire des
 recherche par catégories et de garder les dépendance au plus proche des
-fichiers. Par exemple, plusieurs des sous répertoires de \lstinline{commun}
-contiennent un dossier \lstinline{Web} qui regroupe les dépendances web des
+fichiers. Par exemple, plusieurs des sous répertoires de \verb|commun|
+contiennent un dossier \verb|Web| qui regroupe les dépendances web des
 fichiers de chaque catégories. On peut ainsi retrouver facilement les dépendance
 des fichiers.
 
@@ -684,25 +680,74 @@ Pour résumer, les projets CKsquare sont composés d'une partie locale, spécifi
 au projet. Parmi ces fichier locaux, on retrouve le fichier responsable de
 l'initialisation, le point d'entrée, la boucle principale ainsi que la
 configuration du projet. Les projets incluent des bibliothèques sous la forme de
-\gls{smodg} stockées dans le répertoire \lstinline{CKLibs}. Parmi ces
-bibliothèques on retrouve le projet \lstinline{dev_pic} qui contient le code
+\gls{smodg} stockées dans le répertoire \verb|CKLibs|. Parmi ces
+bibliothèques on retrouve le projet \verb|dev_pic| qui contient le code
 commun à la partie C qui s'exécute sur les cartes électroniques de l'entreprise,
 et c'est ce code que l'outil créé durant ce stage va testé. À noter qu'ici, on
 ne s'intéresse qu'à l'essentiel pour permettre une explication rapide du
 fonctionnement général du projet dans la partie suivante. Cependant, le projet
-comporte beaucoup d'autre fichiers qui ne sont pas décrit dans ce rapport.\\
+comporte beaucoup d'autres fichiers qui ne sont pas décrit dans ce rapport.\\
 
 Maintenant que nous avons expliqué l'organisation générale du projet, nous
 allons pouvoir traiter le fonctionnement de ce dernier.
 
-\subsection{Fonctionnement du projet}
+\subsection*{Fonctionnement du projet}
 
-Résumé synthétique du fonctionnement global du code.
+Le code commun comporte deux branches, une branche principale et une branche
+plus récente sur laquelle le code fonctionne avec un système d'évènement. La
+branche sur l'événementiel a été traitée en deuxième partie de stage.
 
-TODO: Le code de CKsquare utilise principalement des machines à états...
+Sur les deux branches, le code est géré par des machines à états. Elles sont
+utilisées autant du côté du C que de celui du C++. Les machines à état sont un
+outil très puissant est très pratique car elles permettent d'avoir un meilleur
+contrôle sur l'exécution du code et ont un fonctionnement assez intuitif. De
+plus, elles peuvent permettre de rendre le code plus clair en particulier quand
+il y a beaucoup de cas à traiter. Enfin, elles permettent de gérer les erreurs
+simplement en évitant la duplication de code.
 
-Machines à état: contraintes => pas accès aux états dans les tests
-\cite{teststatemachines}.
+\subsubsection*{Branche principale}
+
+Cette branche a été la première créée par les développeurs de la société, elle
+est utilisée sur la plupart des bornes. Le principe est que chaque fichier
+fournit une fonction \verb|Control| (exemple: \verb|BILLVALIDATOR_Control|). Ces
+fonctions sont des machines à états qui permettent de contrôler une
+fonctionnalité. Par exemple, pour un accepteur de billet, la fonction
+\verb|Control| aura des états qui seront utilisés au début et qui vont permettre
+de faire de l'initialisation. Ces états peuvent faire des requêtes au composant
+pour récupérer sa configuration. La machine à états aura aussi un état servant à
+faire du \textit{polling} pour interroger le composant durant sont exécution,
+pour par exemple savoir si il y a un billet à traiter.
+
+Les fonctions \verb|Control| sont appelées par un gestionnaire
+(\verb|ControlManager|). À l'initialisation du programme, toutes les fonctions
+\verb|Control| sont ajoutées dans une liste et pour chacune d'entre elles, on
+précise la durée minimale entre deux appels. Ensuite, le gestionnaire est
+utilisé dans la boucle principale et va appeler toutes les fonctions qui ont été
+ajoutées lorsque c'est nécessaire. Par exemple, on peut ajouter la fonction de
+l'accepteur de billet à l'initialisation et spécifier que cette fonction soit
+appelée toutes les dix centièmes de seconde. Avec cette configuration, la
+fonction sera appelée par le gestionnaire et il y aura au minimum dix centièmes
+de seconde entre chaque appel.
+
+Les fonctions \verb|Control| vont être un élément très important à tester. Ces
+fonctions ont beaucoup servi lors des essais réalisé sur les fichiers pendant la
+création de l'outil. Elles sont très intéressantes car elles permettent de
+couvrir une grande quantifié de code et de tester la plupart des cas (pour le
+code de l'outil de test). À noter cependant que les machines à états sont très
+compliquées à tester puisqu'il ne faut normalement pas avoir accès aux états
+dans les tests \cite{teststatemachines}. Il faut donc être capable de manipuler
+l'environnement dans le code pour savoir dans quel états on se trouve et choisir
+l'état dans lequel se rendre. L'utilisation d'un débogueur a grandement facilité
+la mise en place des tests réalisés sur ces fonctions.
+
+\subsubsection{Branche événementiel}
+
+TODO: event\\
+TODO: inspiré de qt\\
+TODO: plus lisible mais plus lourd\\
+TODO: normalement plus rapide comme il n'y a pas trop d'appels à toutes les
+fonctions
+
 %}}}
 \section{Organisation du projet de tests}%{{{
 
@@ -710,27 +755,27 @@ Dans cette partie, nous allons détailler la structure du projet de test. Cette
 structure s'appuie sur celle des projets de l'entreprise.
 
 Il est important de noter que l'organisation du projet de test à changée. Au
-départ, le projet de test devait être un projet à part. Ce dernier devait être
-cloné dans pipeline du projet \lstinline{dev_pic} pour pouvoir tester les
-fichiers. Au final, il a été décidé d'intégrer complètement le projet de test
-dans \lstinline{dev_pic}. L'organisation des tests suis les principes expliqués
-dans la section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité
-des fichiers testés.
+départ, le projet de test devait être un géré à part. Ce dernier devait être
+cloné dans la pipeline du code commun pour pouvoir tester les fichiers. Au
+final, il a été décidé d'intégrer complètement l'outil de test dans
+\verb|dev_pic|. L'organisation des tests suis les principes expliqués dans la
+section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité des
+fichiers testés.
 
 \subsection{Faux projet et gcc}
 \label{fakeprojgcc}
 
-TODO: détail de \lstinline{FakeProject} et \lstinline{gcc}.
+TODO: détail de \verb|FakeProject| et \verb|gcc|.
 TODO: détail du fichier picvariable
 
 \subsection{Les versions test}
 
-TODO: détail de \lstinline{TestLibraries}.\\
+TODO: détail de \verb|TestLibraries|.\\
 TODO: détail de la création d'une version test (reprendre la doc d'IOS)
 
 \subsection{L'émulation}
 
-TODO: détail de \lstinline{Emulation}.
+TODO: détail de \verb|Emulation|.
 
 \subsection{Le répertoire Test principal}
 
@@ -739,7 +784,7 @@ TODO: détail de \lstinline{Emulation}.
 
 \subsection{Les tests}
 
-TODO: détail de \lstinline{tests}.
+TODO: détail de \verb|tests|.
 
 \subsection{Cmake}
 
@@ -765,10 +810,10 @@ Makefile. De plus, CMake propose des fonctionnalités avancées comme la gestion
 automatique des bibliothèque ou encore \textbf{CTest}, qui permet d'automatiser
 l'exécution de tests. Détaillons à présent la configuration de cet outil.
 
-Le fichier de configuration de CMake est le fichier \lstinline{CMakeLists.txt}
+Le fichier de configuration de CMake est le fichier \verb|CMakeLists.txt|
 (il doit avoir exactement ce nom). Il faut un ficher de configuration par sous
 projet. Ici, il n'y a que le projet de tests alors ce fichier se trouve dans le
-répertoire \lstinline{commun/Tests}.
+répertoire \verb|commun/Tests|.
 
 La configuration comporte les six sections suivantes:
 
@@ -777,7 +822,7 @@ La configuration comporte les six sections suivantes:
     configuration minimale de CMake. Ici, on spécifie la version minimale de
     CMake requise ainsi que le nom du projet. Cette partie comprend aussi
     l'ajout du framework Criterion à l'édition des liens ainsi que des options
-    pour \lstinline{gcc} comme l'option \lstinline{-g} par exemple (débogage
+    pour \verb|gcc| comme l'option \verb|-g| par exemple (débogage
     avec gdb).
   \item[$\bullet$] \textbf{jeux de tests}: dans cette partie, il y a plusieurs
     listes de fichiers tests (stockées dans des variables réutilisables plus
@@ -788,15 +833,15 @@ La configuration comporte les six sections suivantes:
   \item[$\bullet$] \textbf{projet de test}: cette partie contient la liste des
     fichiers relatifs au projet de test.
   \item[$\bullet$] \textbf{projet commun}: ici on a une liste qui contient les
-    fichiers du projet \lstinline{dev_pic} qui sont à compilés avec tous les
+    fichiers du projet \verb|dev_pic| qui sont à compilés avec tous les
     exécutables. Ce sont les fichiers dont tous les jeux de tests ont besoin.
   \item[$\bullet$] \textbf{exécutables}: dans cette partie, on génère les
     exécutables en spécifiant les bonnes listes de fichiers à compiler. De plus,
     pour chaque exécutable, on utilise une commande CMake qui permet de définir
-    des constantes préprocesseur lors de la compilation (option \lstinline{-D}
+    des constantes préprocesseur lors de la compilation (option \verb|-D|
     de gcc). Cela permet de choisir les configurations du projet pour les tests.
   \item[$\bullet$] \textbf{tests}: dans cette section, on ajoute les exécutables
-    à la liste des tests. Ces tests pourront être lancé par \lstinline{CTest}
+    à la liste des tests. Ces tests pourront être lancé par \verb|CTest|
     après la compilation.
 \end{itemize}
 
@@ -815,7 +860,7 @@ fichiers, cependant, il est rapidement devenu évident que certaines fonctions
 n'allaient pas pouvoir être testées à cause de l'horloge. En effet, à plusieurs
 endroits dans le code, on met en place des temps d'attente et le programme est
 bloqué tant que le temps d'attente n'est pas passé. L'horloge est gérée dans le
-code à travers une variable globale \lstinline{TIMER_Centieme} et cette dernière
+code à travers une variable globale \verb|TIMER_Centieme| et cette dernière
 doit être incrémentée pour que le temps passe. Dans le cas contraire, le
 programme reste bloqué.
 
@@ -831,18 +876,18 @@ s'exécutant dans un processus séparé en même temps que le programme principa
 Cette solution a été très simple et rapide à mettre en place étant donné que les
 processus n'avaient pas besoin d'être synchronies. Au final, les deux horloges
 fonctionnent sur le même principe. Pour chacun des fichiers on a une fonction
-\lstinline{Start} qui permet de créer le thread. Cette fonction possède une
+\verb|Start| qui permet de créer le thread. Cette fonction possède une
 sécurité qui fait que l'on peut faire autant d'appels que l'on souhaite, le
 thread n'est créé qu'une seule fois (cela rend l'utilisation plus simple dans
 les tests). À noter que dans le cas du Rtc, l'horloge démarre à la date du jour.
-Les fichier comportent aussi une fonction \lstinline{Loop} qui est la fonction
+Les fichier comportent aussi une fonction \verb|Loop| qui est la fonction
 qui s'exécute dans le thread. De plus, des moyen d'interagir avec les horloges
 ont étaient ajoutés. Par exemple, à certains endroits du code, on met en place
 des temps d'attente relativement long. Pour éviter de bloquer le programme,
-chaque fichier propose une fonction \lstinline{Wait} qui permet d'incrémenter le
+chaque fichier propose une fonction \verb|Wait| qui permet d'incrémenter le
 compteur manuellement. Il est aussi possible de mettre les horloges en pause et
-de les relancer. Enfin, il y a une fonction \lstinline{Stop} qui permet de
-détruire les threads. Les fonctions \lstinline{Start} et \lstinline{Stop} sont
+de les relancer. Enfin, il y a une fonction \verb|Stop| qui permet de
+détruire les threads. Les fonctions \verb|Start| et \verb|Stop| sont
 appelées dans les fonctions d'initialisation et de terminaison globales décrites
 dans la section \ref{configuration-de-criterion}.\\
 
@@ -983,10 +1028,10 @@ fonctionnalités. La simulation mise en place est donc spécifique au stockage s
 les cartes Microship.
 
 Tout d'abord, commençons par nous intéresser au fonctionnement du code de
-l'entreprise. Comme dit précédemment, le répertoire \lstinline{dev_pic} contient
+l'entreprise. Comme dit précédemment, le répertoire \verb|dev_pic| contient
 les bibliothèques utilisées avec les différents compilateurs. Le compilateur le
 plus utilisé dans l'entreprise est le c32 et les fichiers le concernant sont
-stockés dans le répertoire \lstinline{C32} dans \lstinline{dev_pic}. Dans, ce
+stockés dans le répertoire \verb|C32| dans \verb|dev_pic|. Dans, ce
 répertoire se trouve le fichier permettant de gérer l'I²C. Ce fichier contient
 plusieurs fonctions permettant de démarrer et stopper la communication ainsi que
 d'envoyer des données. Ce fichier est relativement simple et reprend les étapes
@@ -996,7 +1041,7 @@ du code commun. Les fonctions définies dans les fichiers ont permis de
 comprendre comment sont utilisés les périphériques de stockage. À noter qu'ici,
 la ligne permettant de transmettre des données est modélisée par une variable
 (globale). Cette variable est gérée par la bibliothèque du \gls{pic} et est
-définie dans le fichier \lstinline{PicVariables} mentionné dans la section
+définie dans le fichier \verb|PicVariables| mentionné dans la section
 \ref{fakeprojgcc}.
 
 Pour une écriture sur un composant, on commence par démarrer la communication
@@ -1008,7 +1053,7 @@ envoyer pour le déplacement du curseur dépend du composant ciblé. Dans le cas
 d'un registre, on envoie un octet, dans le cas d'une eeprom 2. Les flash ne sont
 pas utilisées avec l'I²C. Enfin, on envoie les données à écrire sur le composant
 avant de terminer la communication. Toutes ces étape correspondent à des
-fonctions dans le fichier du répertoire \lstinline{C32}. La lecture suis le même
+fonctions dans le fichier du répertoire \verb|C32|. La lecture suis le même
 principe sauf qu'ici, on ne spécifie pas la position du curseur. La subtilité
 est que si on souhaite lire à une certaine adresse, il faut commencer par
 écrire, déplacer le curseur du composant puis redémarre la communication en mode
@@ -1021,14 +1066,14 @@ fichiers de cette bibliothèque. Comme nous l'avons vu dans la section
 \ref{echecthread} la première solution utilisait une machine a états qui
 s'exécutait dans un thread. Pour réaliser la nouvelle solution, il a été décidé
 de reprendre le code de la machine à état et d'en faire une fonction
-\lstinline{Control} similaire à ce que l'on peut trouver dans le code de
+\verb|Control| similaire à ce que l'on peut trouver dans le code de
 CKsquare. Cette décision apportait deux avantages, le premier étant que le
 fonctionnement est très similaire à celui du code de l'entreprise, ce qui est
 intéressant étant donné le fait que l'outil est destiné à être utilisé par les
 développeurs de la société. Le deuxième avantage est le gain de temps du à la
 réutilisation du code de la solution précédente. Les appels à cette fonction
-\lstinline{Control} ont étaient fait dans une version modifiée pour les tests du
-fichier de \lstinline{C32} compilé à la place de l'original. Cela permet aux
+\verb|Control| ont étaient fait dans une version modifiée pour les tests du
+fichier de \verb|C32| compilé à la place de l'original. Cela permet aux
 développeur des tests de ne pas avoir à se préoccuper de la simulation, de son
 point de vue, tout fonctionne comme sur la carte. Les états de la machine
 suivent les étapes du protocole.
@@ -1055,11 +1100,12 @@ possédait seulement deux lignes, ici, il y en a au minimum quatre. Il y a tout
 d'abord SCLK qui permet de gérer l'horologe. Ensuite il y a MOSI (Master Out
 Slave In) et MISO (Master In Slave Out) qui permette d'envoyer des données. Ici,
 le fait d'utiliser deux lignes permet au maître et à l'esclave d'échanger des
-données en même temps. La dernière ligne, \overline{CS}, permet, quand elle est
-à zéro, de sélectionner le composant avec lequel on souhaite échanger. Cette
-ligne est relié à un seul composant, il faut donc autant de lignes \overline{CS}
-(Chip Select) que d'esclaves. Sur la figure \ref{fig:schemaspi}, on peut voir un
-schéma représentant la liaison entre la carte et un composant en SPI.
+données en même temps. La dernière ligne, $\overline{CS}$, permet, quand elle
+est à zéro, de sélectionner le composant avec lequel on souhaite échanger. Cette
+ligne est relié à un seul composant, il faut donc autant de lignes
+$\overline{CS}$ (Chip Select) que d'esclaves. Sur la figure \ref{fig:schemaspi},
+on peut voir un schéma représentant la liaison entre la carte et un composant en
+SPI.
 
 % [schéma spi] {{{
 \begin{figure}[h!]
@@ -1081,9 +1127,9 @@ pour l'I²C. La mise en place d'une solution a été précédée d'une étude du
 fonctionnement du code permettant d'utiliser le protocole.
 
 La gestion du protocole dans le code est très similaire à celle de l'I²C. Il y a
-un fichier dans le répertoire \lstinline{C32} contenant les fonctions basiques
+un fichier dans le répertoire \verb|C32| contenant les fonctions basiques
 du protocole. Là aussi, les lignes sont gérées à l'aide de variables globales
-définies dans le fichier \lstinline{PicVariables}. Les fichiers plus haut niveau
+définies dans le fichier \verb|PicVariables|. Les fichiers plus haut niveau
 du code commun ont permis de designer la machine a états au départ utilisée dans
 la solution avec les threads puis réutilisée dans la nouvelle solution. Ici le
 fonctionnement est un peu plus complexe qu'avec l'I²C. Pour faire une écriture
@@ -1100,7 +1146,7 @@ communication puis envoyer le code permettant d'écrire. Avant de pouvoir envoye
 les données à écrire, il faut déplacer le curseur du composant en envoyant une
 adresse sur deux où trois octets, les données serons ensuite écrites à partir de
 la nouvelle adresse du curseur. Lorsque l'on a fini d'envoyer les données, on
-arrête la communication en repassant \overline{CS} à 1.
+arrête la communication en repassant $\overline{CS}$ à 1.
 
 %}}}
 \subsection{Système d'évènements}
@@ -1154,8 +1200,8 @@ La documentation est en 3 parties:
 \subsubsection{Le code de l'entreprise}
 
 TODO: détail du fonctionnement du code de l'entreprise (modélisation des
-commandes, les fichier \lstinline{CctalkMaster.c} et
-\lstinline{CctalkMasterSerial.c}).
+commandes, les fichier \verb|CctalkMaster.c| et
+\verb|CctalkMasterSerial.c|).
 
 \subsubsection{Émulation des composants}
 
@@ -1255,14 +1301,14 @@ décentralisé et permet de faire des branches ce qui a été très utile pour �
 que le projet de tests pose problème.
 
 La philosophie de travail utilisé a consisté en une version réadapté de Gitflow.
-Le principe de Gitflow est d'avoir une branche \lstinline{master} qui va
-contenir les versions du projet. Ensuite, il y a une branche \lstinline{dev} qui
-est utilisée pendant le développement. La branche \lstinline{dev} contient du
-code fonctionnel mais qui n'est pas encore déployé sur \lstinline{master}. Entre
-les branches \lstinline{master} et \lstinline{dev} il doit normalement y avoir
-une branche \lstinline{release} qui contient des prés-versions mais elle n'a pas
-été utile ici. Enfin, à partir de la branche \lstinline{dev}, on créer des
-branches de \lstinline{features} sur lesquelles on développe les nouvelles
+Le principe de Gitflow est d'avoir une branche \verb|master| qui va
+contenir les versions du projet. Ensuite, il y a une branche \verb|dev| qui
+est utilisée pendant le développement. La branche \verb|dev| contient du
+code fonctionnel mais qui n'est pas encore déployé sur \verb|master|. Entre
+les branches \verb|master| et \verb|dev| il doit normalement y avoir
+une branche \verb|release| qui contient des prés-versions mais elle n'a pas
+été utile ici. Enfin, à partir de la branche \verb|dev|, on créer des
+branches de \verb|features| sur lesquelles on développe les nouvelles
 fonctionnalités. Étant donné que le travail se faisait seul, le fait d'utiliser
 Gitflow avec autant de branche n'était pas vraiment nécessaire. Cependant, cette
 méthode permet d'être très organisé. Cela permet par exemple de toujours avoir
