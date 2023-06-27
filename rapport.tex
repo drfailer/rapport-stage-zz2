@@ -124,6 +124,13 @@
     name=fullduplex,
     description={tous les éléments peuvent parler en même temps.}
 }
+
+\newglossaryentry{des}
+{
+    name=DES,
+    description={(Data Encryption Standard) algorithme de chiffrement
+    symétrique.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -762,6 +769,9 @@ final, il a été décidé d'intégrer complètement l'outil de test dans
 section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité des
 fichiers testés.
 
+TODO: tree\\
+TODO: reprendre la doc
+
 \subsection{Faux projet et gcc}
 \label{fakeprojgcc}
 
@@ -976,7 +986,7 @@ principe de l'I²C.
 % [schéma i2c] {{{
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[scale=0.6]{./img/schema-i2c.png}
+    \includegraphics[scale=0.4]{./img/schema-i2c.png}
     \caption{Liaison maître/esclave (I²C)}
     \label{fig:schemai2c}
   \end{center}
@@ -1005,8 +1015,6 @@ allons aborder le fonctionnement de l'implémentation du protocole par CKsquare
 puis nous traiterons les différents éléments qui permettent de simuler
 l'interface I²C pour le stockage.
 
-TODO: parler des fichiers
-
 \subsubsection*{Émulation}
 
 Maintenant que nous avons abordé le fonctionnement du protocole I²C dans la
@@ -1028,20 +1036,20 @@ fonctionnalités. La simulation mise en place est donc spécifique au stockage s
 les cartes Microship.
 
 Tout d'abord, commençons par nous intéresser au fonctionnement du code de
-l'entreprise. Comme dit précédemment, le répertoire \verb|dev_pic| contient
-les bibliothèques utilisées avec les différents compilateurs. Le compilateur le
-plus utilisé dans l'entreprise est le c32 et les fichiers le concernant sont
-stockés dans le répertoire \verb|C32| dans \verb|dev_pic|. Dans, ce
-répertoire se trouve le fichier permettant de gérer l'I²C. Ce fichier contient
-plusieurs fonctions permettant de démarrer et stopper la communication ainsi que
-d'envoyer des données. Ce fichier est relativement simple et reprend les étapes
-décrites par le protocole (début, fin, envoi en mode écriture, \dots). La
-communication en elle même est gérée par d'autres fichiers qui eux font partie
-du code commun. Les fonctions définies dans les fichiers ont permis de
-comprendre comment sont utilisés les périphériques de stockage. À noter qu'ici,
-la ligne permettant de transmettre des données est modélisée par une variable
-(globale). Cette variable est gérée par la bibliothèque du \gls{pic} et est
-définie dans le fichier \verb|PicVariables| mentionné dans la section
+l'entreprise. Comme dit précédemment, le répertoire \verb|dev_pic| contient les
+bibliothèques utilisées avec les différents compilateurs. Le compilateur le plus
+utilisé (et le plus récent) dans l'entreprise est le c32 et les fichiers le
+concernant sont stockés dans le répertoire \verb|C32| dans \verb|dev_pic|. Dans,
+ce répertoire se trouve le fichier permettant de gérer l'I²C. Ce fichier
+contient plusieurs fonctions permettant de démarrer et stopper la communication
+ainsi que d'envoyer des données. Ce fichier est relativement simple et reprend
+les étapes décrites par le protocole (début, fin, envoi en mode écriture,
+\dots). La communication en elle même est gérée par d'autres fichiers qui eux
+font partie du code commun. Les fonctions définies dans les fichiers ont permis
+de comprendre comment sont utilisés les périphériques de stockage. À noter
+qu'ici, la ligne permettant de transmettre des données est modélisée par une
+variable (globale). Cette variable est gérée par la bibliothèque du \gls{pic} et
+est définie dans le fichier \verb|PicVariables| mentionné dans la section
 \ref{fakeprojgcc}.
 
 Pour une écriture sur un composant, on commence par démarrer la communication
@@ -1050,20 +1058,19 @@ bit de mode à 0 (comme le demande le protocole). Ensuite, on envoie une adresse
 qui va permettre de placer le curseur du composant. Cela va permettre de
 spécifier au composant à quelle adresse on souhaite écrire. Le nombre d'octets à
 envoyer pour le déplacement du curseur dépend du composant ciblé. Dans le cas
-d'un registre, on envoie un octet, dans le cas d'une eeprom 2. Les flash ne sont
-pas utilisées avec l'I²C. Enfin, on envoie les données à écrire sur le composant
-avant de terminer la communication. Toutes ces étape correspondent à des
-fonctions dans le fichier du répertoire \verb|C32|. La lecture suis le même
-principe sauf qu'ici, on ne spécifie pas la position du curseur. La subtilité
-est que si on souhaite lire à une certaine adresse, il faut commencer par
-écrire, déplacer le curseur du composant puis redémarre la communication en mode
-lecture.
+d'un registre, on envoie un octet, dans le cas d'une eeprom 2 (les flash ne sont
+pas utilisées avec l'I²C). Enfin, on envoie les données à écrire sur le
+composant avant de terminer la communication. Toutes ces étapes sont gérées par
+des fonctions dans le fichier de \verb|C32|. La lecture suis le même principe
+sauf qu'ici, on ne spécifie pas la position du curseur. La subtilité est que si
+on souhaite lire à une certaine adresse, il faut commencer par écrire, déplacer
+le curseur du composant puis redémarre la communication en mode lecture.
 
 Maintenant que nous savons comment utiliser le protocole, intéressons nous à la
 simulation. Comme dit précédemment, la simulation doit se positionnée au niveau
 des bibliothèques du \gls{pic}, la meilleur option était donc de modifier les
 fichiers de cette bibliothèque. Comme nous l'avons vu dans la section
-\ref{echecthread} la première solution utilisait une machine a états qui
+\ref{echecthread}, la première solution utilisait une machine a états qui
 s'exécutait dans un thread. Pour réaliser la nouvelle solution, il a été décidé
 de reprendre le code de la machine à état et d'en faire une fonction
 \verb|Control| similaire à ce que l'on peut trouver dans le code de
@@ -1078,9 +1085,24 @@ développeur des tests de ne pas avoir à se préoccuper de la simulation, de so
 point de vue, tout fonctionne comme sur la carte. Les états de la machine
 suivent les étapes du protocole.
 
-TODO: parler de la fonction init
-TODO: parler de comment on modifie les tableau de la simulation stockage
-TODO: diagramme d'états
+Pour utiliser cette simulation, il faut commencer par configurer les composants
+en modifiant la fonction d'initialisation. Dans cette fonction, on ajoute les
+périphériques de stockage à une liste en spécifiant leurs types (eeprom ou
+registre) ainsi leurs adresses (utilisée pour reconnaitre le périphérique
+choisi). Il faut aussi donner les indices des composants dans les tableaux
+mémoire. Comme dit précédent, la mémoire est simulée à l'aide de tableaux à deux
+dimensions. Ces tableaux correspondent à des listes de mémoires dont la taille
+varie en fonction du type du composant. Par exemple, il y a un tableau
+représentant la liste des mémoires pour les eeprom (dont la taille correspond à
+la taille d'une eeprom). Lors de la configuration, pour ajouter un composant, il
+faut lui attribuer une mémoire (un indice dans le tableau). Ensuite, le code
+testé va interagir avec la machine à états de la simulation qui va utiliser la
+mémoire simulée. Pour vérifier le contenu de la mémoire après une opération, on
+peut utiliser les tableaux de la simulation auxquels on a accès depuis les
+tests.
+
+TODO: faire un schéma
+
 %}}}
 \subsection{Interface SPI}%{{{
 
@@ -1148,6 +1170,12 @@ adresse sur deux où trois octets, les données serons ensuite écrites à parti
 la nouvelle adresse du curseur. Lorsque l'on a fini d'envoyer les données, on
 arrête la communication en repassant $\overline{CS}$ à 1.
 
+Comme pour lI²C, il y a une fonction \verb|Control| qui est une machine à états
+qui reprend les étapes décrites dans le paragraphe précédent. Là aussi, pour
+utiliser la simulation, il faut modifier la fonction d'initialisation en
+ajoutant les composant de façon similaire à l'I²C. À noter que la simulation de
+la mémoire ne change pas et que l'on peut très bien configurer le même composant
+à la fois sur lI²C et le SPI.
 %}}}
 \subsection{Système d'évènements}
 
@@ -1177,12 +1205,23 @@ nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 évènements pour chacune des actions possibles.
 
 TODO: détailler le système d'évènements
+\\~\\
+TODO: CONCLUSION sur le stockage
 %}}}
-\section{Les interfaces des composant}%{{{
+\section{Protocoles monétiques}%{{{
+
+Nous avons vu dans la partie précédente que les périphériques de stockage
+étaient interfacés avec les protocoles I²C et SPI qui sont deux protocoles assez
+courant dans les systèmes embarqués. La société CKsquare est spécialisée dans la
+monétique et utilise donc beaucoup de périphériques interfacés avec des
+protocoles spécifiques à ce domaine. Une grosse partie du stage a été passée à
+la simulation d'interfaces utilisant deux protocoles très connus dans le milieux
+de la monétique, le Cctalk et le MDB. Dans cette section, nous allons présenter
+ces deux protocoles ainsi la solution proposée pour l'outil de test.
 
 \subsection{L'interface Cctalk}%{{{
 
-Une partie des composants utilisé sur la carte ont été interfacés avec le
+Une partie des composants utilisés sur la carte ont été interfacés avec le
 protocole Cctalk. Dans cette section, nous commencerons par détailler les grands
 principes de ce protocole puis nous verrons l'implémentation du protocole par
 l'entreprise. Enfin, nous expliquerons comment les périphériques Cctalk ont été
@@ -1190,7 +1229,37 @@ simulés.
 
 \subsubsection{Le protocole}
 
-TODO: explication rapide du protocole
+Le Cctalk est un protocole utilisé dans la monétique dont la première version a
+été réalisée en 1996 par la société \verb|Coin Controls| basée en Angleterre
+\cite{cctalkpt1}. Ce protocole est un \gls{protoserie} en \gls{halfduplex} créé
+pour être utilisé pour des communications à débit moyen. En 2010 a été ajouté la
+possibilité de chiffrer les trames (standard \gls{des}).
+
+Comme le SPI et l'I²C (et beaucoup d'autres protocoles utilisés en embarqué), le
+Cctalk fonctionne en mode maître et esclave. Ce standard utilise un système de
+d'entête pour transmettre des commandes. Par exemple, l'entête 253 permet de
+demander son adresse à un composant. Il y a en tout 255 entête différentes ce
+qui permet la transmission d'une entête sur un octet. Les entêtes de 20 à 100
+sont réservées pour les développeurs des applications utilisant le Cctalk, le
+reste est décrit dans la documentation \cite{cctalkpt2}. Sur la figure
+\ref{tramecctalk} on peut voir la composition d'une trame Cctalk. Une trame se
+compose des six éléments. Le premier est l'adresse du composant ciblé par la
+trame (l'adresse du destinataire). Cette adresse est suivit du nombre d'octets
+de données qui vont être envoyées. Ce nombre étant transmis sur un octet, on ne
+pourra jamais transmettre plus de 255 octets de données. Ensuite, on envoi
+l'adresse de la source (le composant qui a envoyé la trame) puis l'entête. Une
+fois l'entête envoyée, on transmet les données puis le checksum qui va permettre
+de vérifier l'intégrité des données à la réception.
+
+% [trame cctalk] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.6]{./img/trame-cctalk.png}
+  \caption{Trame Cctalk}
+    \label{tramecctalk}
+  \end{center}
+\end{figure}
+%}}}
 
 La documentation est en 3 parties:
 - \cite{cctalkpt1}: présentation du protocole \\
@@ -1239,10 +1308,6 @@ TODO: \cite{mdbdoc}
 \subsubsection{Émulation des composants}
 
 \subsubsection{Système de scénarios}
-%}}}
-\subsection{L'interface TCPIP}%{{{
-
-TODO: Il n'est pas certain que cette partie paresse dans le rapport final
 %}}}
 %}}}
 \section{Les historiques}%{{{
@@ -1447,7 +1512,7 @@ CONCLUSION
 %***************************************************************************}}}
 
 %------------------------------------------------------------------------------%
-%                                 bibliography                                 %
+%                                 bibliographie                                %
 %------------------------------------------------------------------------------%
 
 \section{Résumé biblio (WARN: section temporaire)}
@@ -1474,7 +1539,7 @@ Test affichage biblio:
 
 \clearpage{}
 \pagestyle{empty}
-\printbibliography[keyword={paper},title={Biliographie}]
+\printbibliography[keyword={paper},title={Bibliographie}]
 \printbibliography[keyword={web},title={Webographie}]
 
 %------------------------------------------------------------------------------%
