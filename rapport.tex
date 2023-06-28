@@ -615,6 +615,8 @@ choix qui ont été fait par la suite.
 \subsection{Organisation des fichiers}
 \label{orgaprojck}
 
+TODO: arborescence des fichier pour le projet global et pour \verb|dev_pic|
+
 Dans cette partie, nous allons détailler comment sont organisés les fichiers
 dans un projet CKsquare puis nous traiterons le fonctionnement du code dans la
 partie suivante. On rappel que ce projet d'intégration continue ne concerne que
@@ -767,7 +769,42 @@ cloné dans la pipeline du code commun pour pouvoir tester les fichiers. Au
 final, il a été décidé d'intégrer complètement l'outil de test dans
 \verb|dev_pic|. L'organisation des tests suis les principes expliqués dans la
 section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité des
-fichiers testés.
+fichiers testés. Sur la figure \ref{fig:integrtestcommun}, on peut voir une
+représentation de l'arborescence des fichiers dans le projet commun.
+
+% TODO: une partie de l'arborescence est normalement présenté dans la partie
+% précédente
+
+% [Intégration des tests dans le code commun] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.7]{./img/arborescence-commun.png}
+    \caption{Intégration des tests dans le code commun}
+    \label{fig:integrtestcommun}
+  \end{center}
+\end{figure}
+%}}}
+
+Cette arborescence montre une partie du contenu du répertoire
+\verb|dev_pic/commun|. Ici, on peut voir trois des catégories qui ont été
+mentionnées dans la section \ref{orgaprojck}. Il y a le dossier \verb|Cctalk|
+qui contient le code qui permet de gérer le protocole Cctalk que nous aborderons
+dans une prochaine partie. Le dossier \verb|His| lui contient le code qui permet
+de gérer l'historique. Enfin, le répertoire \verb|Test| a été ajouté lors de
+l'intégration du projet de test dans le projet commun. À noter qu'il y a un
+autre répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même
+niveau que \verb|commun|. Ce dernier contient la simulation des interfaces pour
+le stockage. Étant donné que le stockage est un élément assez général, il a été
+mis à part. Comme on peut le voir ici, tous les fichiers ayant un lien entre eux
+sont stockés ensemble et il en est de même pour les tests. C'est une structure
+assez atypique pour du C puisque les tests sont habituellement mis à part,
+généralement dans un répertoire \verb|test| à côté du projet. Ici, les tests
+sont intégrés dans code à la demande des développeurs de la société. C'est un
+choix assez intéressant puisque cela permet d'avoir accès aux tests très
+rapidement et de bien voir à quels éléments du code les tests sont liés.
+
+Maintenant que nous avons définie une carte générale du projet, détaillons les
+parties les plus imporantes
 
 TODO: tree\\
 TODO: reprendre la doc
@@ -1101,7 +1138,8 @@ mémoire simulée. Pour vérifier le contenu de la mémoire après une opératio
 peut utiliser les tableaux de la simulation auxquels on a accès depuis les
 tests.
 
-TODO: faire un schéma
+TODO: faire un schéma\\
+TODO: parler des graphs dans la doc
 
 %}}}
 \subsection{Interface SPI}%{{{
@@ -1233,13 +1271,15 @@ Le Cctalk est un protocole utilisé dans la monétique dont la première version
 été réalisée en 1996 par la société \verb|Coin Controls| basée en Angleterre
 \cite{cctalkpt1}. Ce protocole est un \gls{protoserie} en \gls{halfduplex} créé
 pour être utilisé pour des communications à débit moyen. En 2010 a été ajouté la
-possibilité de chiffrer les trames (standard \gls{des}).
+possibilité de chiffrer les trames (standard \gls{des}). Ce protocole est
+destiné à être utilisé pour assurer la communication entre différents composants
+reliés à une même carte.
 
 Comme le SPI et l'I²C (et beaucoup d'autres protocoles utilisés en embarqué), le
 Cctalk fonctionne en mode maître et esclave. Ce standard utilise un système de
 d'entête pour transmettre des commandes. Par exemple, l'entête 253 permet de
-demander son adresse à un composant. Il y a en tout 256 entêtes différentes
-,numérotées de 0 à 255 ce qui permet la transmission d'une entête sur un octet.
+demander son adresse à un composant. Il y a en tout 256 entêtes différentes,
+numérotées de 0 à 255 ce qui permet la transmission d'une entête sur un octet.
 Les entêtes de 20 à 100 sont réservées pour les développeurs des applications
 utilisant le Cctalk, le reste est décrit dans la documentation \cite{cctalkpt2}.
 Sur la figure \ref{tramecctalk} on peut voir la composition d'une trame Cctalk
@@ -1276,6 +1316,7 @@ de la borne ou encore l'écran tactile. Il y a un fichier pour chacun des
 composants interfacé en Cctalk et ces derniers permettent de gérer la partie
 maître.
 
+% note vérifier pour le role de master
 Il y a deux fichier principaux, \verb|CctalkMaster.c| qui permet de gérer la
 structure de données qui modélise les commandes et le fichier
 \verb|CctalkMasterSerial.c| qui gère la communication. Ce second fichier sert de
@@ -1312,10 +1353,29 @@ gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
 rendre cela possible, le code utilise des drivers qui stockent des pointeurs de
 fonctions.
 
-TODO: détail du fonctionnement du code de l'entreprise (modélisation des
-commandes, les fichier \verb|CctalkMaster.c| et \verb|CctalkMasterSerial.c|).
-
 \subsubsection{Émulation des composants}
+
+Comme expliqué dans la partie précédente, le répertoire \verb|Cctalk| contient
+les fichiers qui permettent de gérer la partie maître pour chacun des
+composants interfacés en Cctalk. Pour cette simulation, il fallait mettre en
+place du code permettant de simuler le comportement des esclaves (donc des
+composants) lors de la réception de trame. L'objectif des composants simulés est
+simplement de répondre aux commandes Cctalk qu'ils reçoivent. Ces commandes
+peuvent être automatiques ou paramétrées dans les tests. Un effet de bord
+souhaitable pour la simulation est aussi la récupération de la trame reçue, de
+sorte à ce que l'on puisse vérifier que les bonnes commandes sont envoyées dans
+les tests.
+
+Pour simuler les composants, il a été décidé d'utiliser un fichier par
+composant. Lors du développement, il a été jugé plus simple et plus sage
+d'adapter les principes utilisés lors de la simulation du stockage. Cette
+décision a pour objectif d'apporter un maximum de cohérence dans le
+fonctionnement de l'outil, cela pourra faciliter la maintenance ainsi que
+les modifications. De plus, les tests réalisés sur le stockage ont prouver le
+bon fonctionnement de la solution. Enfin, pour faciliter la copie, les fichiers
+de la simulation adopte une forme standard que nous détaillerons plus loin. La
+documentation met même à disposition un patron qu'il suffit de copier et
+de modifier pour simuler un nouveau composant.
 
 TODO: 1 fichier par composant, trois fonctions (Control, Run et HandleResponse),
 2 utilisations possibles, ...\\
