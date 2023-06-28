@@ -1177,7 +1177,7 @@ ajoutant les composant de façon similaire à l'I²C. À noter que la simulation
 la mémoire ne change pas et que l'on peut très bien configurer le même composant
 à la fois sur lI²C et le SPI.
 %}}}
-\subsection{Système d'évènements}
+\subsection{Système d'évènements}%{{{
 
 À la fin de la conception de la simulation des interfaces I²C et SPI, il restait
 un problème important. Ce problème était que l'on ne pouvait pas savoir depuis
@@ -1205,6 +1205,7 @@ nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 évènements pour chacune des actions possibles.
 
 TODO: détailler le système d'évènements
+%}}}
 \\~\\
 TODO: CONCLUSION sur le stockage
 %}}}
@@ -1223,9 +1224,8 @@ ces deux protocoles ainsi la solution proposée pour l'outil de test.
 
 Une partie des composants utilisés sur la carte ont été interfacés avec le
 protocole Cctalk. Dans cette section, nous commencerons par détailler les grands
-principes de ce protocole puis nous verrons l'implémentation du protocole par
-l'entreprise. Enfin, nous expliquerons comment les périphériques Cctalk ont été
-simulés.
+principes de ce protocole puis nous verrons son implémentation par l'entreprise.
+Enfin, nous expliquerons comment les périphériques Cctalk ont été simulés.
 
 \subsubsection{Le protocole}
 
@@ -1238,12 +1238,12 @@ possibilité de chiffrer les trames (standard \gls{des}).
 Comme le SPI et l'I²C (et beaucoup d'autres protocoles utilisés en embarqué), le
 Cctalk fonctionne en mode maître et esclave. Ce standard utilise un système de
 d'entête pour transmettre des commandes. Par exemple, l'entête 253 permet de
-demander son adresse à un composant. Il y a en tout 255 entête différentes ce
-qui permet la transmission d'une entête sur un octet. Les entêtes de 20 à 100
-sont réservées pour les développeurs des applications utilisant le Cctalk, le
-reste est décrit dans la documentation \cite{cctalkpt2}. Sur la figure
-\ref{tramecctalk} on peut voir la composition d'une trame Cctalk. Une trame se
-compose des six éléments. Le premier est l'adresse du composant ciblé par la
+demander son adresse à un composant. Il y a en tout 256 entêtes différentes
+,numérotées de 0 à 255 ce qui permet la transmission d'une entête sur un octet.
+Les entêtes de 20 à 100 sont réservées pour les développeurs des applications
+utilisant le Cctalk, le reste est décrit dans la documentation \cite{cctalkpt2}.
+Sur la figure \ref{tramecctalk} on peut voir la composition d'une trame Cctalk
+qui comprend six éléments. Le premier est l'adresse du composant ciblé par la
 trame (l'adresse du destinataire). Cette adresse est suivit du nombre d'octets
 de données qui vont être envoyées. Ce nombre étant transmis sur un octet, on ne
 pourra jamais transmettre plus de 255 octets de données. Ensuite, on envoi
@@ -1254,12 +1254,14 @@ de vérifier l'intégrité des données à la réception.
 % [trame cctalk] {{{
 \begin{figure}[h!]
   \begin{center}
-  \includegraphics[scale=0.6]{./img/trame-cctalk.png}
+  \includegraphics[scale=0.4]{./img/trame-cctalk.png}
   \caption{Trame Cctalk}
     \label{tramecctalk}
   \end{center}
 \end{figure}
 %}}}
+
+TODO: exemple de communication
 
 La documentation est en 3 parties:
 - \cite{cctalkpt1}: présentation du protocole \\
@@ -1268,9 +1270,50 @@ La documentation est en 3 parties:
 
 \subsubsection{Le code de l'entreprise}
 
+Dans le code de l'entreprise, le Cctalk est utilisé avec beaucoup de composants
+comme un accepteur de billets, un lecteur de cartes, mais aussi le système vocal
+de la borne ou encore l'écran tactile. Il y a un fichier pour chacun des
+composants interfacé en Cctalk et ces derniers permettent de gérer la partie
+maître.
+
+Il y a deux fichier principaux, \verb|CctalkMaster.c| qui permet de gérer la
+structure de données qui modélise les commandes et le fichier
+\verb|CctalkMasterSerial.c| qui gère la communication. Ce second fichier sert de
+pont entre le code haut niveau des communs et le code bas niveau des
+bibliothèques du \gls{pic}. Pour l'envoi des trames, le fichier
+\verb|CctalkMasterSerial.c| utilise deux machines à états, une \textit{haut
+niveau} et une autre \textit{bas niveau}. La machine à états \textit{bas niveau}
+communique directement avec la bibliothèque de la carte, elle se charge de la
+transmission et de la réception des données (envoi d'une trame et réception de
+la réponse). La machine à états \textit{haut niveau} va permettre l'envoi de
+différents types de trames. En effet, les trames Cctalk transmises par la
+machine \textit{bas niveau} sont limités à 255 octets de données. Pour palier à
+ce problème, la machine à états \textit{haut niveau} permet d'envoyer des trames
+étendues. Le principe est de décomposer la trame à envoyer en plusieurs sous
+trames. Pour que le composant sache que la trame est une trame étendue, il faut
+envoyer deux trames supplémentaires avec une entête de début et une entête de
+fin. L'envoi d'une commande se fait donc de la façon suivante: on commence par
+appeler la fonction d'envoi de commande qui va ajouter la nouvelle commande à
+une liste chaînée. Ensuite, le \verb|Control Manager| va appeler la machine à
+états \textit{haut niveau} qui va utiliser l'autre machine à état pour envoyer
+une ou plusieurs trames en fonction du type de trame à transmettre (simple ou
+étendue).
+
+L'implémentation par CKsquare du Cctalk propose beaucoup d'autres
+fonctionnalités qui n'ont pas été traité lors du stage. Par exemple, pour
+limiter le polling sur certains composants comme l'écran tactile, les
+développeurs ont mis en place un système permettant à la carte de passer en mode
+esclave. L'interface du Cctalk est aussi utilisé avec le TCPIP. En effet, le
+Cctalk est fait pour assurer la communication entre les composants reliés à une
+même carte. Il peut arriver que l'on ai besoin de lier des composants qui ne
+sont pas directement connecté et pour ce faire on utilise le protocole TCPIP qui
+est le plus adapté. Le code de la société propose une abstraction qui permet de
+gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
+rendre cela possible, le code utilise des drivers qui stockent des pointeurs de
+fonctions.
+
 TODO: détail du fonctionnement du code de l'entreprise (modélisation des
-commandes, les fichier \verb|CctalkMaster.c| et
-\verb|CctalkMasterSerial.c|).
+commandes, les fichier \verb|CctalkMaster.c| et \verb|CctalkMasterSerial.c|).
 
 \subsubsection{Émulation des composants}
 
