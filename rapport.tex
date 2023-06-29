@@ -1301,12 +1301,27 @@ de vérifier l'intégrité des données à la réception.
 \end{figure}
 %}}}
 
-TODO: exemple de communication
+Prenons l'exemple de l'écran créé par la société. Ici, on souhaite afficher du
+texte sur l'écran, pour cela, on va utiliser l'entête 203 qui permet de
+contrôler ce composant \cite{cctalkpt2}. Pour sélectionner l'action à réaliser,
+il faut utiliser une sous-entête. Dans le cas de l'écran, il y a cinq
+sous-entêtes permettant de réaliser des actions spécifiques à ce composant comme
+effacer l'affichage par exemple. Dans notre exemple, on souhaite envoyer du
+texte à afficher, pour ce faire, il faut utiliser la sous-entête 3. Ici, on va
+donc envoyer une trame dont l'entête sera 203 et les données seront la
+sous-entête 3 suivie du texte à afficher. L'écran doit normalement répondre par
+un acquittement (entête 0).
 
-La documentation est en 3 parties:
-- \cite{cctalkpt1}: présentation du protocole \\
-- \cite{cctalkpt2}: headers \\
-- \cite{cctalkpt3}: commandes
+Une exemple plus complexe est celui du système vocal. Ici, on va demander au
+système vocal de lire un fichier audio. Là, il n'y a pas d'entête dédiée, la
+société à donc utilisé une des entêtes mise à disposition des développeur:
+l'entête 34. Cette entête ne sert que pour réaliser cette action, il n'y a donc
+pas de sous-entête à envoyer. La trame qui sera transmise au système vocal sera
+donc composée de l'entête 34 et des données requises à la lecture du fichier
+comme le nom du fichier à lire, le nombre de répétitions, \dots
+
+Maintenant que nous avons expliqué le fonctionnement général du protocole, nous
+allons nous intéresser au fonctionnement du code de l'entreprise.
 
 \subsubsection{Le code de l'entreprise}
 
@@ -1314,31 +1329,38 @@ Dans le code de l'entreprise, le Cctalk est utilisé avec beaucoup de composants
 comme un accepteur de billets, un lecteur de cartes, mais aussi le système vocal
 de la borne ou encore l'écran tactile. Il y a un fichier pour chacun des
 composants interfacé en Cctalk et ces derniers permettent de gérer la partie
-maître.
+maître. Comme pour le stockage, la simulation a au départ été pensée pour se
+situer au plus proche des fichiers du compilateur. Cela a nécessiter une
+compréhension de toute la chaine d'instruction qui permet la transmission des
+trames.
 
 % note vérifier pour le role de master
-Il y a deux fichier principaux, \verb|CctalkMaster.c| qui permet de gérer la
-structure de données qui modélise les commandes et le fichier
-\verb|CctalkMasterSerial.c| qui gère la communication. Ce second fichier sert de
-pont entre le code haut niveau des communs et le code bas niveau des
-bibliothèques du \gls{pic}. Pour l'envoi des trames, le fichier
-\verb|CctalkMasterSerial.c| utilise deux machines à états, une \textit{haut
-niveau} et une autre \textit{bas niveau}. La machine à états \textit{bas niveau}
-communique directement avec la bibliothèque de la carte, elle se charge de la
-transmission et de la réception des données (envoi d'une trame et réception de
-la réponse). La machine à états \textit{haut niveau} va permettre l'envoi de
-différents types de trames. En effet, les trames Cctalk transmises par la
-machine \textit{bas niveau} sont limités à 255 octets de données. Pour palier à
-ce problème, la machine à états \textit{haut niveau} permet d'envoyer des trames
-étendues. Le principe est de décomposer la trame à envoyer en plusieurs sous
-trames. Pour que le composant sache que la trame est une trame étendue, il faut
-envoyer deux trames supplémentaires avec une entête de début et une entête de
-fin. L'envoi d'une commande se fait donc de la façon suivante: on commence par
-appeler la fonction d'envoi de commande qui va ajouter la nouvelle commande à
-une liste chaînée. Ensuite, le \verb|Control Manager| va appeler la machine à
-états \textit{haut niveau} qui va utiliser l'autre machine à état pour envoyer
-une ou plusieurs trames en fonction du type de trame à transmettre (simple ou
-étendue).
+Pour l'implémentation du Cctalk, il y a deux fichier principaux. Tout d'abord,
+il y a le fichier \verb|CctalkMaster.c| qui permet de gérer la structure de
+données qui modélise les commandes. Ce fichier possède aussi une fonction
+\verb|Control| qui permet de gérer les \textit{Core Commands}, qui sont des
+commandes généralement exécutées à l'initialisation et qui permettent d'obtenir
+des informations sur les composant (constructeur, numéro de version, \dots).
+Ensuite, il y a le fichier \verb|CctalkMasterSerial.c| qui gère la
+communication. Ce second fichier sert de pont entre le code haut niveau des
+communs et le code bas niveau des bibliothèques du \gls{pic}. Pour l'envoi des
+trames, le fichier \verb|CctalkMasterSerial.c| utilise deux machines à états,
+une \textit{haut niveau} et une autre \textit{bas niveau}. La machine à états
+\textit{bas niveau} communique directement avec la bibliothèque de la carte,
+elle se charge de la transmission et de la réception des données (envoi d'une
+trame et réception de la réponse). La machine à états \textit{haut niveau} va
+permettre l'envoi de différents types de trames. En effet, les trames Cctalk
+transmises par la machine \textit{bas niveau} sont limités à 255 octets de
+données. Pour palier à ce problème, la machine à états \textit{haut niveau}
+permet d'envoyer des trames étendues. Le principe est de décomposer la trame à
+envoyer en plusieurs sous trames. Pour que le composant sache que la trame est
+une trame étendue, il faut envoyer deux trames supplémentaires avec une entête
+de début et une entête de fin. L'envoi d'une commande se fait donc de la façon
+suivante: on commence par appeler la fonction d'envoi de commande qui va ajouter
+la nouvelle commande à une liste chaînée. Ensuite, le \verb|Control Manager| va
+appeler la machine à états \textit{haut niveau} qui va utiliser l'autre machine
+à état pour envoyer une ou plusieurs trames en fonction du type de trame à
+transmettre (simple ou étendue).
 
 L'implémentation par CKsquare du Cctalk propose beaucoup d'autres
 fonctionnalités qui n'ont pas été traité lors du stage. Par exemple, pour
@@ -1350,8 +1372,8 @@ même carte. Il peut arriver que l'on ai besoin de lier des composants qui ne
 sont pas directement connecté et pour ce faire on utilise le protocole TCPIP qui
 est le plus adapté. Le code de la société propose une abstraction qui permet de
 gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
-rendre cela possible, le code utilise des drivers qui stockent des pointeurs de
-fonctions.
+rendre cela possible, le code utilise des drivers qui fonctionnent à l'aide de
+pointeurs de fonctions.
 
 \subsubsection{Émulation des composants}
 
@@ -1370,26 +1392,65 @@ Pour simuler les composants, il a été décidé d'utiliser un fichier par
 composant. Lors du développement, il a été jugé plus simple et plus sage
 d'adapter les principes utilisés lors de la simulation du stockage. Cette
 décision a pour objectif d'apporter un maximum de cohérence dans le
-fonctionnement de l'outil, cela pourra faciliter la maintenance ainsi que
-les modifications. De plus, les tests réalisés sur le stockage ont prouver le
-bon fonctionnement de la solution. Enfin, pour faciliter la copie, les fichiers
-de la simulation adopte une forme standard que nous détaillerons plus loin. La
-documentation met même à disposition un patron qu'il suffit de copier et
-de modifier pour simuler un nouveau composant.
+fonctionnement de l'outil, cela pourra faciliter la maintenance ainsi que les
+modifications. De plus, les tests réalisés sur le stockage ont prouvé le bon
+fonctionnement de la solution. Enfin, pour faciliter la copie, les fichiers de
+la simulation adoptent une forme standard que nous détaillerons plus loin. La
+documentation met même à disposition un patron qu'il suffit de copier et de
+modifier pour simuler un nouveau composant.
+
+Comme pour le stockage, la simulation devait se situer au plus proche des
+bibliothèques du compilateur. Cette approche a permis d'avoir une simulation
+très réaliste qui pousse à l'utilisation du tous le code créé pour gérer le
+Cctalk. C'est la première solution qui a été mise en place et qui a nécessité la
+compréhension de toute l'implémentation du protocole. Bien qu'il soit
+intéressant d'avoir une simulation réaliste permettant de faire des tests
+d'intégration qui valident toute la chaine d'instruction, cette solution était
+relativement complexe et poussait les tests à dépendre de l'entièreté du code.
+Cela n'est pas souhaitable dans le cas où l'on veut faire des tests unitaires
+sur un fichier sans se préoccuper du reste de l'implémentation. Cela est
+intéressant car il permet de mieux repérer l'origine des problème car le code
+testé est isolé, ce qui fait que les échecs des tests sont dus uniquement aux
+erreurs dans le fichier testé et non aux erreurs dans le reste du code. C'est
+pour cette raison qu'une deuxième solution à été mise en place, permettant ainsi
+de faire à la fois des tests unitaires et des tests d'intégration. Pour mettre
+en place cette solution, une version modifiée du fichier
+\verb|CctalkMasterSerial.c| a été crée. Dans cette version, les machines à états
+sont supprimées et sauvegarde de la trame reçue ainsi que l'envoi de la réponse
+du composant est géré directement depuis la fonction qui permet d'envoyer les
+commandes. De ce fait, quand un élément du code testé envoie une commande
+Cctalk, cette dernière est enregistrée et la réponse est directement envoyée. On
+ne passe donc plus par les machines à états, ni par les fichier du compilateur,
+le code testé est donc bien isolé. Il est possible de passer d'une
+implémentation de la simulation à une autre en définissant une constante
+préprocesseur. À noter que c'est deux solutions ont été pensées pour être
+interchangeables, de sorte à ce que les mêmes tests fonctionnent peu importe
+l'implémentation de la simulation.
+
+Comme nous l'avons mentionné dans un précédent paragraphe, tous les fichiers de
+la simulation ont la même forme. Après plusieurs tests, une \textit{forme
+standard} pour la simulation a été crée. Chaque fichier se compose des trois
+fonctions suivantes:
+\begin{itemize}
+  \item[$\bullet$] \verb|Control|: Cette fonctions est utilisée avec la
+    simulation bas niveau qui est la première solution crée. Cette fonction est
+    une machine qui se compose de trois états. Dans le premier état, la machine
+    fait la vérification de l'adresse sur la commande envoyée sur le bus par le
+    code testé. Si cette adresse ne correspond pas à l'adresse du composant
+    simulé, la machine s'arrête. Dans le cas contraire, la machine commence par
+    récupérer la trame sur le bus pour que cette dernière soit accessible depuis
+    les tests. Ensuite, elle envoi un écho qui permet de spécifier au maître que
+    la trame a bien été reçu. Enfin, la machine à état envoi la réponse au
+    maître en fonctions des données qu'il a reçu, en utilisant les fonction du
+    compilateur. % TODO: code en annexe
+  \item[$\bullet$] \verb|Run|:
+  \item[$\bullet$] \verb|HandleResponse|:
+\end{itemize}
 
 TODO: 1 fichier par composant, trois fonctions (Control, Run et HandleResponse),
 2 utilisations possibles, ...\\
 TODO: parler de comment cette solution final à été trouvée et des premières
 version créées (cf: notes week 9)\\
-
-Émulation bas niveau:\\
-
-TODO: Faite en premier car permettait de mieux comprendre le protocole et le
-fonctionnement du code. De plus, c'est la partie la plus importante car elle
-permet de tester tous les éléments du code ce qui n'est pas le cas de l'autre
-version.\\
-
-Émulation haut niveau\\
 
 TODO: l'interface cctalk a été réécrite pour envoyer directement les réponse aux
 commande dans une seconde version de la fonction CmdSnd ... (TestLibraries++)
