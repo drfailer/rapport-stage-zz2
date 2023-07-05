@@ -661,20 +661,20 @@ se nomme \verb|commun_global| et il contient la partie du code qui est commune �
 tous les projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce
 dernier ne concerne que la partie C qui s'exécute sur un \gls{pic}.
 
-La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|.
-Ce répertoire contient un sous répertoire \verb|commun| qui contient la partie
-du code à tester. Le sous répertoire \verb|commun| n'est pas la seule chose
-intéressante dans \verb|dev_pic| puisque ce dossier contient aussi les
-bibliothèques des différents compilateurs. L'entreprise CKsquare a réécrit une
-grande partie des bibliothèques des \gls{pic}s pour avoir plus de maitrise quand
-à la gestion des différents éléments. Ces bibliothèques ont été très utiles pour
-mettre en place une partie de l'émulation des composants dans le projet de test,
-nous traiterons cela plus loin dans ce rapport. Le reste des bibliothèques des
-microcontrôleurs a aussi été utilisé pour compiler avec gcc, là aussi, ce sera
-traiter dans les prochaines sections.
+La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|
+(aussi appelé codes communs). Ce répertoire contient un sous répertoire
+\verb|commun| qui contient la partie du code à tester. À la racine des communs,
+se trouvent aussi une partie des bibliothèques des différents compilateurs.
+L'entreprise CKsquare a réécrit une grande partie des bibliothèques des
+\gls{pic}s pour avoir plus de maitrise quand à la gestion des différents
+éléments. Ces bibliothèques ont été très utiles pour mettre en place une partie
+de l'émulation des composants dans le projet de test, nous traiterons cela plus
+loin dans ce rapport. Le reste des bibliothèques des microcontrôleurs a aussi
+été utilisé pour compiler avec gcc, là aussi, ce sera traiter dans les
+prochaines sections.
 
 Le code commun est organisé par catégories. Le répertoire \verb|commun| de
-\verb|dev_pic| contient des sous répertoires qui correspondent au
+\verb|dev_pic| contient des sous répertoires qui correspondent aux
 catégories. Par exemple, on retrouve le dossier \verb|StorageDriver| qui
 contient les fichiers qui gèrent le stockage ou encore le dossier
 \verb|Payment| qui contient tous ce qui concerne le paiement (types de
@@ -768,7 +768,7 @@ départ, le projet de test devait être un géré à part. Ce dernier devait êt
 cloné dans la pipeline du code commun pour pouvoir tester les fichiers. Au
 final, il a été décidé d'intégrer complètement l'outil de test dans
 \verb|dev_pic|. L'organisation des tests suis les principes expliqués dans la
-section \cite{orgaprojck}. De ce fait, les tests sont stocké à proximité des
+section \ref{orgaprojck}. De ce fait, les tests sont stocké à proximité des
 fichiers testés. Sur la figure \ref{fig:integrtestcommun}, on peut voir une
 représentation de l'arborescence des fichiers dans le projet commun.
 
@@ -791,11 +791,12 @@ mentionnées dans la section \ref{orgaprojck}. Il y a le dossier \verb|Cctalk|
 qui contient le code qui permet de gérer le protocole Cctalk que nous aborderons
 dans une prochaine partie. Le dossier \verb|His| lui contient le code qui permet
 de gérer l'historique. Enfin, le répertoire \verb|Test| a été ajouté lors de
-l'intégration du projet de test dans le projet commun. À noter qu'il y a un
-autre répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même
-niveau que \verb|commun|. Ce dernier contient la simulation des interfaces pour
-le stockage. Étant donné que le stockage est un élément assez général, il a été
-mis à part. Comme on peut le voir ici, tous les fichiers ayant un lien entre eux
+l'intégration du projet de test dans le projet commun, ce dernier contient les
+fichiers généraux spécifiques aux test. À noter qu'il y a un autre répertoire
+\verb|CFake| qui lui se trouve à la racine du projet, au même niveau que
+\verb|commun|. Ce dernier contient la simulation des interfaces pour le
+stockage. Étant donné que le stockage est un élément assez général, il a été mis
+à part. Comme on peut le voir ici, tous les fichiers ayant un lien entre eux
 sont stockés ensemble et il en est de même pour les tests. C'est une structure
 assez atypique pour du C puisque les tests sont habituellement mis à part,
 généralement dans un répertoire \verb|test| à côté du projet. Ici, les tests
@@ -804,32 +805,61 @@ choix assez intéressant puisque cela permet d'avoir accès aux tests très
 rapidement et de bien voir à quels éléments du code les tests sont liés.
 
 Maintenant que nous avons définie une carte générale du projet, détaillons les
-parties les plus imporantes
-
-TODO: tree\\
-TODO: reprendre la doc
-
-\subsection{Faux projet et gcc}
-\label{fakeprojgcc}
-
-TODO: détail de \verb|FakeProject| et \verb|gcc|.
-TODO: détail du fichier picvariable
-
-\subsection{Les versions test}
-
-TODO: détail de \verb|TestLibraries|.\\
-TODO: détail de la création d'une version test (reprendre la doc d'IOS)
-
-\subsection{L'émulation}
-
-TODO: détail de \verb|Emulation|.
+parties les plus importantes.
 
 \subsection{Le répertoire Test principal}
 
-\subsubsection{Configuration de Criterion}
+Comme expliqué précédemment, ce répertoire contient des fichiers globaux
+qui permettent de pouvoir compiler et exécuter les tests. Les différentes
+parties sont décrites dans les sections suivantes.
+
+\subsubsection*{Faux projet}
+\label{fakeproj}
+
+Ce fichier contient des versions modifiées des fichiers du projet local (ceux
+dont le nom est préfixé d'un \verb|l|). Il contient aussi les fichiers de
+configuration. Pendant la création de l'outil, il s'est avéré qu'il y avait des
+dépendances entre les fichiers des communs et le projet local. Cela pose
+problème car depuis la pipeline, on a pas accès aux fichiers locaux puisqu'ils
+sont spécifiques aux différents projets. Une solution envisageable est le
+clonage d'un projet depuis la pipeline, cependant cette méthode possède deux
+gros défaut. Le premier réside dans le fait de devoir cloner un projet entier
+juste pour exécuter une pipeline, cela prend du temps et des ressources. Le
+deuxième défaut vient du fait que la configuration des tests n'est pas la même
+que celle du projet local. En effet, dans les tests, on ne peut pas compiler
+tous les fichier (car tout n'a pas été simulé et tout ne doit pas être testé) et
+on utilise une configuration qui permet de pouvoir tester plusieurs
+fonctionnements différents. De ce fait, il est impossible de compiler les tests
+en utilisant les fichiers originaux. C'est pour ces raisons qu'il a été décidé
+de récupérer seulement les fichiers nécessaire à la compilation des tests et de
+les modifier si besoin.
+
+\subsubsection*{Gcc}
+\label{gcc}
+
+Ce répertoire contient des versions modifié des fichiers du compilateur
+\verb|c32| (normalement stockés dans le répertoire \verb|C32| à la racine des
+communs). Là aussi, les fichiers sont modifiés pour que le code puisse compiler
+avec \verb|gcc|. À noter que ce répertoire contient un fichier créé à partir de
+la bibliothèque \verb|plib| qui définie toutes les variables globales
+normalement utilisées par les bibliothèques carte. Tous les fichiers contenus
+dans ce répertoire permettent donc de compiler le code sans avoir accès au
+bibliothèques du \verb|PIC|.
+
+\subsubsection*{Configuration de Criterion}
 \label{configuration-de-criterion}
 
-\subsection{Les tests}
+\subsection{Les répertoires de test secondaires}
+
+\subsubsection{Les fichiers modifiés}
+
+TODO: fakeCctalkMasterSerial.c, Ios.c, ...
+
+\subsubsection{Les fichiers de la simulation}
+
+TODO: tous les fichiers utilitaires à la simulation
+
+\subsubsection{Les tests}
 
 TODO: détail de \verb|tests|.
 
@@ -1073,21 +1103,21 @@ fonctionnalités. La simulation mise en place est donc spécifique au stockage s
 les cartes Microship.
 
 Tout d'abord, commençons par nous intéresser au fonctionnement du code de
-l'entreprise. Comme dit précédemment, le répertoire \verb|dev_pic| contient les
-bibliothèques utilisées avec les différents compilateurs. Le compilateur le plus
-utilisé (et le plus récent) dans l'entreprise est le c32 et les fichiers le
-concernant sont stockés dans le répertoire \verb|C32| dans \verb|dev_pic|. Dans,
-ce répertoire se trouve le fichier permettant de gérer l'I²C. Ce fichier
-contient plusieurs fonctions permettant de démarrer et stopper la communication
-ainsi que d'envoyer des données. Ce fichier est relativement simple et reprend
-les étapes décrites par le protocole (début, fin, envoi en mode écriture,
-\dots). La communication en elle même est gérée par d'autres fichiers qui eux
-font partie du code commun. Les fonctions définies dans les fichiers ont permis
-de comprendre comment sont utilisés les périphériques de stockage. À noter
-qu'ici, la ligne permettant de transmettre des données est modélisée par une
-variable (globale). Cette variable est gérée par la bibliothèque du \gls{pic} et
-est définie dans le fichier \verb|PicVariables| mentionné dans la section
-\ref{fakeprojgcc}.
+l'entreprise. Comme dit dans la section \ref{orgaprojck}, le répertoire
+\verb|dev_pic| contient les bibliothèques utilisées avec les différents
+compilateurs. Dans la section \ref{gcc} il a été mensionné que le compilateur
+sur lequel se basent les tests et le \verb|c32| et le code de l'entreprise le
+concernant se trouve dans le dossier \verb|C32|. Dans, ce répertoire se trouve
+le fichier permettant de gérer l'I²C. Ce fichier contient plusieurs fonctions
+permettant de démarrer et stopper la communication ainsi que d'envoyer des
+données. Ce fichier est relativement simple et reprend les étapes décrites par
+le protocole (début, fin, envoi en mode écriture, \dots). La communication en
+elle même est gérée par d'autres fichiers qui eux font partie du code commun.
+Les fonctions définies dans les fichiers ont permis de comprendre comment sont
+utilisés les périphériques de stockage. À noter qu'ici, la ligne permettant de
+transmettre des données est modélisée par une variable (globale). Cette variable
+est gérée par la bibliothèque du \gls{pic} et est définie dans le fichier
+\verb|PicVariables| mentionné dans la section \ref{gcc}.
 
 Pour une écriture sur un composant, on commence par démarrer la communication
 puis on envoie l'adresse du périphérique de stockage auquel on s'adresse avec le
@@ -1244,7 +1274,7 @@ nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 
 TODO: détailler le système d'évènements
 %}}}
-\\~\\
+\\
 TODO: CONCLUSION sur le stockage
 %}}}
 \section{Protocoles monétiques}%{{{
@@ -1275,21 +1305,21 @@ possibilité de chiffrer les trames (standard \gls{des}). Ce protocole est
 destiné à être utilisé pour assurer la communication entre différents composants
 reliés à une même carte.
 
-Comme le SPI et l'I²C (et beaucoup d'autres protocoles utilisés en embarqué), le
-Cctalk fonctionne en mode maître et esclave. Ce standard utilise un système de
-d'entête pour transmettre des commandes. Par exemple, l'entête 253 permet de
-demander son adresse à un composant. Il y a en tout 256 entêtes différentes,
-numérotées de 0 à 255 ce qui permet la transmission d'une entête sur un octet.
-Les entêtes de 20 à 100 sont réservées pour les développeurs des applications
-utilisant le Cctalk, le reste est décrit dans la documentation \cite{cctalkpt2}.
-Sur la figure \ref{tramecctalk} on peut voir la composition d'une trame Cctalk
-qui comprend six éléments. Le premier est l'adresse du composant ciblé par la
-trame (l'adresse du destinataire). Cette adresse est suivit du nombre d'octets
-de données qui vont être envoyées. Ce nombre étant transmis sur un octet, on ne
-pourra jamais transmettre plus de 255 octets de données. Ensuite, on envoi
-l'adresse de la source (le composant qui a envoyé la trame) puis l'entête. Une
-fois l'entête envoyée, on transmet les données puis le checksum qui va permettre
-de vérifier l'intégrité des données à la réception.
+Comme le SPI et l'I²C , le Cctalk fonctionne en mode maître et esclave. Ce
+standard utilise un système de d'entête pour transmettre des commandes, par
+exemple, l'entête 253 permet de demander son adresse à un composant. Il y a en
+tout 256 entêtes différentes, numérotées de 0 à 255 ce qui permet la
+transmission d'une entête sur un octet. Les entêtes de 20 à 100 sont réservées
+pour les développeurs des applications utilisant le Cctalk, le reste est décrit
+dans la documentation \cite{cctalkpt2}. Sur la figure \ref{tramecctalk} on peut
+voir la composition d'une trame Cctalk qui comprend six éléments. Le premier est
+l'adresse du composant ciblé par la trame (l'adresse du destinataire). Cette
+adresse est suivit du nombre d'octets de données qui vont être envoyées. Ce
+nombre étant transmis sur un octet, on ne pourra jamais transmettre plus de 255
+octets de données. Ensuite, on envoi l'adresse de la source (le composant qui a
+envoyé la trame) puis l'entête. Une fois l'entête envoyée, on transmet les
+données puis le checksum qui va permettre de vérifier l'intégrité des données à
+la réception.
 
 % [trame cctalk] {{{
 \begin{figure}[h!]
@@ -1318,7 +1348,9 @@ société à donc utilisé une des entêtes mise à disposition des développeur
 l'entête 34. Cette entête ne sert que pour réaliser cette action, il n'y a donc
 pas de sous-entête à envoyer. La trame qui sera transmise au système vocal sera
 donc composée de l'entête 34 et des données requises à la lecture du fichier
-comme le nom du fichier à lire, le nombre de répétitions, \dots
+comme le nom du fichier à lire, le nombre de répétitions, \dots Là aussi, le
+composant doit répondre par acquittement.
+\\~\\
 
 Maintenant que nous avons expliqué le fonctionnement général du protocole, nous
 allons nous intéresser au fonctionnement du code de l'entreprise.
@@ -1328,7 +1360,7 @@ allons nous intéresser au fonctionnement du code de l'entreprise.
 Dans le code de l'entreprise, le Cctalk est utilisé avec beaucoup de composants
 comme un accepteur de billets, un lecteur de cartes, mais aussi le système vocal
 de la borne ou encore l'écran tactile. Il y a un fichier pour chacun des
-composants interfacé en Cctalk et ces derniers permettent de gérer la partie
+composants interfacé en Cctalk et ces fichiers permettent de gérer la partie
 maître. Comme pour le stockage, la simulation a au départ été pensée pour se
 situer au plus proche des fichiers du compilateur. Cela a nécessiter une
 compréhension de toute la chaine d'instruction qui permet la transmission des
@@ -1363,15 +1395,15 @@ appeler la machine à états \textit{haut niveau} qui va utiliser l'autre machin
 transmettre (simple ou étendue).
 
 L'implémentation par CKsquare du Cctalk propose beaucoup d'autres
-fonctionnalités qui n'ont pas été traité lors du stage. Par exemple, pour
+fonctionnalités qui n'ont pas été traitées lors du stage. Par exemple, pour
 limiter le polling sur certains composants comme l'écran tactile, les
 développeurs ont mis en place un système permettant à la carte de passer en mode
-esclave. L'interface du Cctalk est aussi utilisé avec le TCPIP. En effet, le
+esclave. L'interface du Cctalk est aussi utilisée avec le TCPIP. En effet, le
 Cctalk est fait pour assurer la communication entre les composants reliés à une
 même carte. Il peut arriver que l'on ai besoin de lier des composants qui ne
-sont pas directement connecté et pour ce faire on utilise le protocole TCPIP qui
-est le plus adapté. Le code de la société propose une abstraction qui permet de
-gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
+sont pas directement connectés et pour ce faire on utilise le protocole TCPIP
+qui est le plus adapté. Le code de la société propose une abstraction qui permet
+de gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
 rendre cela possible, le code utilise des drivers qui fonctionnent à l'aide de
 pointeurs de fonctions.
 
@@ -1409,14 +1441,14 @@ d'intégration qui valident toute la chaine d'instruction, cette solution était
 relativement complexe et poussait les tests à dépendre de l'entièreté du code.
 Cela n'est pas souhaitable dans le cas où l'on veut faire des tests unitaires
 sur un fichier sans se préoccuper du reste de l'implémentation. Cela est
-intéressant car il permet de mieux repérer l'origine des problème car le code
-testé est isolé, ce qui fait que les échecs des tests sont dus uniquement aux
+intéressant car il permet de mieux repérer l'origine des problèmes car le code
+testé est isolé, de ce fait, les échecs des tests sont dus uniquement aux
 erreurs dans le fichier testé et non aux erreurs dans le reste du code. C'est
 pour cette raison qu'une deuxième solution à été mise en place, permettant ainsi
-de faire à la fois des tests unitaires et des tests d'intégration. Pour mettre
+de faire à la fois des tests unitaires et des tests d'intégrations. Pour mettre
 en place cette solution, une version modifiée du fichier
-\verb|CctalkMasterSerial.c| a été crée. Dans cette version, les machines à états
-sont supprimées et sauvegarde de la trame reçue ainsi que l'envoi de la réponse
+\verb|CctalkMasterSerial.c| a été crée, dans cette version, les machines à états
+sont supprimées. La sauvegarde de la trame reçue ainsi que l'envoi de la réponse
 du composant est géré directement depuis la fonction qui permet d'envoyer les
 commandes. De ce fait, quand un élément du code testé envoie une commande
 Cctalk, cette dernière est enregistrée et la réponse est directement envoyée. On
@@ -1433,27 +1465,45 @@ standard} pour la simulation a été crée. Chaque fichier se compose des trois
 fonctions suivantes:
 \begin{itemize}
   \item[$\bullet$] \verb|Control|: Cette fonctions est utilisée avec la
-    simulation bas niveau qui est la première solution crée. Cette fonction est
-    une machine qui se compose de trois états. Dans le premier état, la machine
-    fait la vérification de l'adresse sur la commande envoyée sur le bus par le
-    code testé. Si cette adresse ne correspond pas à l'adresse du composant
-    simulé, la machine s'arrête. Dans le cas contraire, la machine commence par
+    simulation bas niveau qui est la première solution crée. C'est une machine
+    qui se compose de trois états. Dans le premier état, la machine fait la
+    vérification de l'adresse sur la commande envoyée sur le bus par le code
+    testé. Si cette adresse ne correspond pas à l'adresse du composant simulé,
+    la machine s'arrête. Dans le cas contraire, la machine commence par
     récupérer la trame sur le bus pour que cette dernière soit accessible depuis
     les tests. Ensuite, elle envoi un écho qui permet de spécifier au maître que
     la trame a bien été reçu. Enfin, la machine à état envoi la réponse au
-    maître en fonctions des données qu'il a reçu, en utilisant les fonction du
+    maître en fonctions des données reçues, en utilisant les fonction du
     compilateur. % TODO: code en annexe
-  \item[$\bullet$] \verb|Run|:
-  \item[$\bullet$] \verb|HandleResponse|:
+  \item[$\bullet$] \verb|Run|: Cette fonction permet de gérer la fonction
+    décrite dans le point précédent. Elle fait une suite d'appels à la machine à
+    états haut niveau de \verb|CctalkMasterSerial.c| pour déclencher l'envoi
+    d'une commande avec les fonctions des bibliothèques du compilateur. Ensuite,
+    elle fait appel à la fonction \verb|Control| qui récupère la commande du
+    maître et envoie l'écho et la réponse. Enfin, elle fait une autre suite
+    d'appels à la machine haut niveau pour enclencher la récupération de la
+    réponse. La fonction \verb|Run| est à utiliser dans les tests à chaque fois
+    qu'une commande doit être envoyée, elle permet gérer la simulation d'une
+    communication entre la carte et un composant. À noter que cette fonction
+    n'est utile qu'avec la version bas niveau (version où l'on test tout le
+    code), cependant, il existe une version vide de cette fonction qui permet de
+    ne pas avoir à modifier les tests quand on passe de la version bas niveau à
+    la version haut niveau.
+  \item[$\bullet$] \verb|HandleResponse|: Cette dernière fonction est utilisée
+    avec la version haut niveau. Comme expliqué précédemment, dans cette
+    version, tout est géré depuis la fonction \verb|CmdSnd| de la version
+    modifiée pour les tests du fichier \verb|CctalkMasterSerial.c|. Ici, il n'y
+    a qu'un seul fichier pour tout les composants ce qui pose problème pour les
+    réponses prés définies. Pour pouvoir paramétrer des réponses pour plusieurs
+    composants, on passe par un pointeur de fonction qui pointe sur la fonction
+    \verb|HandleResponse| du composant testé. Cette fonction se compose juste
+    d'un \verb|switch| qui va envoyer une réponse en fonction des données
+    reçues. À l'initialisation de chaque test, il faut affecter l'adresse d'une
+    fonction \verb|HandleResponse| à la variable globale \verb|HANDLE_RESPONSE|.
 \end{itemize}
 
-TODO: 1 fichier par composant, trois fonctions (Control, Run et HandleResponse),
-2 utilisations possibles, ...\\
-TODO: parler de comment cette solution final à été trouvée et des premières
-version créées (cf: notes week 9)\\
+TODO: conclusion sur le cctalk
 
-TODO: l'interface cctalk a été réécrite pour envoyer directement les réponse aux
-commande dans une seconde version de la fonction CmdSnd ... (TestLibraries++)
 %}}}
 \subsection{L'interface MDB}%{{{
 
