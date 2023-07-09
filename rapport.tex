@@ -849,19 +849,52 @@ bibliothèques du \verb|PIC|.
 \subsubsection*{Configuration de Criterion}
 \label{configuration-de-criterion}
 
+Pour que les tests incluant l'émulation de composants fonctionnent, il faut
+pouvoir lancer et initialiser la simulation. Pour ce faire, on utilise un
+fichier qui fourni des fonctions d'initialisation et de terminaison globales qui
+peuvent être utilisées dans les test. La fonction d'initialisation permet de
+créer les threads utilisé pour les horloges comme nous le verrons dans la
+section \ref{simuhorologes} ainsi que d'initialiser toutes les variables
+nécssaire au bon fonctionnement de la simulation. Dans la fonction de
+terminaison, on termine simplement les threads des horloges. Dans ce fichier, on
+peut aussi ajouer d'autre fonctions spécifiques au framework.
+
 \subsection{Les répertoires de test secondaires}
+
+Comme dit précédemment, les développeurs de l'entreprise souhaitaient stocker
+les tests à proximité des fichiers testés. C'est pour cela que l'on a des
+répertoires de test secondaires dans chaques répertoire du projet. Dans les
+section suivant, nous allons décrire le contenu de ces dossiers.
 
 \subsubsection{Les fichiers modifiés}
 
-TODO: fakeCctalkMasterSerial.c, Ios.c, ...
+Certains tests nécessitent la création de versions modifies de certains des
+fichiers de l'entreprise pour permettre d'isoler des fonctionnalités du
+programme et faciliter les tests. Par exemple, les entrées et sorties sont
+gérées pas un fichier nommé \verb|Ios.c|. Il est très compliqué de savoir si les
+fonctions de ce fichier sont appelées depuis les tests or parfois, on a besoin
+de tester si une action d'entré ou de sortie a été réalisée. Une version modifiée
+de ce fichier a donc été créée pour les tests. Les fonctions de la version test
+du fichier mettent à jour des variables globales accessibles depuis les tests
+permettant ainsi de savoir si des actions d'entrée ou de sortie ont été
+réalisées. Les versions test des fichiers sont compilés à la place des fichiers
+originaux pour les tests. Cette solution est similaire au \textit{mocking} (au
+niveau des fichier) qui est très utilisé avec les langages objets
+\ref{spadini2017mock}.
 
 \subsubsection{Les fichiers de la simulation}
 
-TODO: tous les fichiers utilitaires à la simulation
+Les sous-répertoires de test permettent aussi de stocker les fichiers qui
+contiennent les éléments nécessaire à la simulation des composants. Par exemple,
+les fichiers qui permettent de simuler les composants interfacés avec le
+protocole Cctalk sont stocker dans le répertoire \verb|commun/Cctalk/Test|. Nous
+traiterons ce protocole dans la section \ref{interfacecctalk}.
 
 \subsubsection{Les tests}
 
-TODO: détail de \verb|tests|.
+Pour les tests, on ajoute encore un nouveau sous-répertoires à l'arborescence.
+Chaque répertoire \verb|Test| contient un sous-dossier \verb|Tests| qui permet le
+stockage des fichiers de test.
 
 \subsection{Cmake}
 
@@ -926,6 +959,7 @@ La configuration comporte les six sections suivantes:
 
 %}}}
 \section{Simulation des horloges}%{{{
+\label{simuhorologes}
 
 Le premier élément qui a été simulé était l'horloge principale du programme. Par
 la suite, c'est l'horloge Rtc qui a été simulée en suivant le même principe que
@@ -1289,6 +1323,7 @@ de la monétique, le Cctalk et le MDB. Dans cette section, nous allons présente
 ces deux protocoles ainsi la solution proposée pour l'outil de test.
 
 \subsection{L'interface Cctalk}%{{{
+\label{interfacecctalk}
 
 Une partie des composants utilisés sur la carte ont été interfacés avec le
 protocole Cctalk. Dans cette section, nous commencerons par détailler les grands
@@ -1554,6 +1589,28 @@ TODO: pour conclure cette partie dire que c'est un problème avec les historique
 qui a donnée l'idée du stage à l'entreprise.
 %}}}
 \section{Mise en place de la pipeline}
+
+\section{Les tests sur la branche de l'événementiel}
+
+\section{Le projet de test sur la partie Qt}
+
+\subsection{Nouveau framework}
+
+- Premier framework compatible cpp pour rien
+- collaboration avec samuel qui trouvé un framework plus adapté à Qt
+
+\subsection{Les problèmes du code Qt}
+
+- fonctions control privées et actionnées avec des évènements timer
+- solution avec des wait pas idéale
+- mocking pas toujours possible ou trop complexe
+- pas de solution pour controler les timers
+- solution du define pas utilisée mais envisagée
+- fonctionnement du Méta Object Compiler pas évident au départ
+
+\subsection{Les avantages du C++ pour la simulation}
+
+- code objet plus simple.
 
 \section{Déroulement du projet}
 
