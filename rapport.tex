@@ -205,6 +205,9 @@ Keywords : \textbf{C/C++}, \textbf{continuous integration}, \textbf{testing},
 
 Introduction
 
+TODO: la partie sur la branche C principale très détailler puis on parlera de ce
+qui a été fait coté évent et Qt (qui suit globalement le même principe).
+
 plan !
 
 \clearpage{}
@@ -1545,18 +1548,74 @@ TODO: conclusion sur le cctalk
 Dans la partie précédente nous avons traité le fonctionnement du protocole
 Cctalk et nous avons aussi vu comment les composants Cctalk ont été simuler pour
 faire fonctionner les tests. Dans cette partie, nous allons traiter un autre
-protocole utilisé avec d'autre composants, le protocole MDB. Cette partie va
-suivre un plan similaire à la précédente.
+protocole utilisé avec d'autre composants, le protocole MDB. À noter que le
+fonctionnement du MDB dans le code de CKsquare ainsi que celui des composants
+simulés est très similaire au Cctalk, il y aura donc beaucoup de parallèles fait
+avec la partie précédente.
 
 \subsubsection{Le protocole}
 
-TODO: \cite{mdbdoc}
+Le protocole MDB a été créé dans les années 1980 par la société CoinCo et a au
+départ été très utilisé dans les distributeurs automatique de Coca-Cola
+\cite{enwiki:1094073752}. Le protocole est devenu \textit{open-source} en 1992
+et la National Automatic Merchandising Association (NAMA) a réalisé la première
+version du standard en 1995.
+
+Comme le Cctalk, le protocole MDB fonctionne en mode maître et esclave où la
+carte électronique est le maître qui contrôle les périphériques qui eux sont les
+esclaves. Pour que le maître puisse transmettre des ordres aux esclaves, le MDB
+utilise un système de commandes et de sous-commandes.
+
+La transmission des informations MDB ne se fait pas sur un octet mais sur neuf
+bits. Parmi ces neuf bits, il y a huit bits qui permettent de transmettre des
+données et le dernier bit et un bit de mode. Lorsque le bit de mode est à 0, les
+huit premiers bits contiennent des données. S'il est à 1, alors les huit
+premiers bits peuvent contenir l'adresse d'un composant cible (l'adresse du
+composant auquel s'adresse le maître), une commande spéciale ou un checksum. Les
+commandes spéciales sont ACK (acquittement), NAK (non acquittement) et RET
+(demande de répétition). Un octet d'adresse contient généralement aussi une
+commande: un \textbf{ou} logique est fait entre l'adresse du composant et la
+commande à envoyer. À noter que le standard spécifie des adresses spécifiques
+pour chaque type de périphérique. Par exemple, un accepteur de billet doit avoir
+pour adresse \verb|0x30|. Les commandes envoyées avec l'adresse permettent de
+donner des ordres aux périphériques et chaque type de périphérique possède son
+propre jeux de commandes. Les commandes correspondes à des catégories assez
+génériques, par exemple pour l'accepteur de billet, \verb|0x03| permet de faire
+un poll. Ensuite, pour spécifier une action plus spécifique à réaliser on envoi
+à nouveau neuf bits avec le bit de mode à 0 et une sous-commande dans les
+données.
+
+Un exemple de communication.
+
+TODO: \cite{mdbdoc} et \cite{enwiki:1094073752}
 
 \subsubsection{Le code de l'entreprise}
 
 \subsubsection{Émulation des composants}
 
 \subsubsection{Système de scénarios}
+
+Comme dit précédemment, les réponses aux commandes étant trop complexes, la
+simulation des composants MDB ne propose pas de moyen d'avoir des réponses prés
+définies comme avec le Cctalk. Par contre, ici, la documentation fournit des
+scénarios qui décrivent des échanges de trames entre le maître et les
+composants. Pour pouvoir vérifier si ces échanges de trames sont possibles avec
+le code de l'entreprise, un système de scénarios a été mis en place. Ce système
+permet de définir une suite d'envoi de commande par le maître et de réponse par
+l'esclave. À chaque fois que le composant simulé reçoit une trame, il vérifie
+que cette dernière correspond à celle prévue par le scénarios avant de
+transmettre la réponse. Si la trame reçue par l'esclave ne correspond pas à ce
+qui été prévue par le scénario, on fait échouer le test avec un \verb|exit(1)|.
+À noter que seul le test sur le scénario joué échoue et les tests suivants sont
+exécutés correctement car avec notre framework, chaque test s'exécute dans son
+propre thread. Cela simplifie grandement l'écriture des tests puisqu'il n'y a
+pas besoin de paramétrer les réponses du composant ni même de faire des
+assertions puisque si le test passe c'est que le scénarios a été joué
+correctement, sinon, c'est qu'il a planté. Ce système de scénario est donc un
+moyen très simple de valider le code CKsquare pour un type de périphérique.
+
+L'implémentation de ce système est très simple, les scénarios sont composés
+d'étapes et chaque étape contient TODO: REVOIR LA STRUCT DU SCÉNARIO
 %}}}
 %}}}
 \section{Les historiques}%{{{
