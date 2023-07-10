@@ -1,0 +1,25 @@
+@startuml
+[*] --> Simulation_I2C
+Simulation_I2C --> [*]
+state Simulation_I2C {
+  [*] --> OFF
+  OFF --> OFF : [ pas de communication ]
+  OFF --> START : [ start || restart ]
+  START : récupération du mode (r/w)
+  START --> OFF : [ ! Addr ]
+  START --> READ : [ read ]
+  START --> WRITE_ADDR1 : [ write && device == EEPROM ]
+  START --> WRITE_ADDR2 : [ write && device == REGISTER ]
+  WRITE_ADDR1 --> WRITE_ADDR2
+  WRITE_ADDR1 : Head = (I2C2TRN << 8)
+  WRITE_ADDR2 : Head |= I2C2TRN
+  WRITE_ADDR2 --> WRITE
+  READ : I2C2RCV = Data[Head]
+  READ : Head++
+  READ --> READ : [ donnée à lire ]
+  READ --> OFF : [ arret || restart ]
+  WRITE --> WRITE : [ donnée à écire ]
+  WRITE --> OFF : [ arret || restart ]
+  WRITE : Data[Head] = I2C2TRN
+}
+@enduml
