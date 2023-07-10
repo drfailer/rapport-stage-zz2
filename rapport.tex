@@ -727,8 +727,8 @@ fonctionnalité. Par exemple, pour un accepteur de billet, la fonction
 \verb|Control| aura des états qui seront utilisés au début et qui vont permettre
 de faire de l'initialisation. Ces états peuvent faire des requêtes au composant
 pour récupérer sa configuration. La machine à états aura aussi un état servant à
-faire du \textit{polling} pour interroger le composant durant sont exécution,
-pour par exemple savoir si il y a un billet à traiter.
+interroger le composant durant sont exécution, pour par exemple savoir si il y a
+un billet à traiter.
 
 Les fonctions \verb|Control| sont appelées par un gestionnaire
 (\verb|ControlManager|). À l'initialisation du programme, toutes les fonctions
@@ -1434,16 +1434,16 @@ transmettre (simple ou étendue).
 
 L'implémentation par CKsquare du Cctalk propose beaucoup d'autres
 fonctionnalités qui n'ont pas été traitées lors du stage. Par exemple, pour
-limiter le polling sur certains composants comme l'écran tactile, les
-développeurs ont mis en place un système permettant à la carte de passer en mode
-esclave. L'interface du Cctalk est aussi utilisée avec le TCPIP. En effet, le
-Cctalk est fait pour assurer la communication entre les composants reliés à une
-même carte. Il peut arriver que l'on ai besoin de lier des composants qui ne
-sont pas directement connectés et pour ce faire on utilise le protocole TCPIP
-qui est le plus adapté. Le code de la société propose une abstraction qui permet
-de gérer tous les composants en utilisant seulement l'interface du Cctalk. Pour
-rendre cela possible, le code utilise des drivers qui fonctionnent à l'aide de
-pointeurs de fonctions.
+limiter le \textit{polling} (interrogation d'un composant) sur certains
+composants comme l'écran tactile, les développeurs ont mis en place un système
+permettant à la carte de passer en mode esclave. L'interface du Cctalk est aussi
+utilisée avec le TCPIP. En effet, le Cctalk est fait pour assurer la
+communication entre les composants reliés à une même carte. Il peut arriver que
+l'on ai besoin de lier des composants qui ne sont pas directement connectés et
+pour ce faire on utilise le protocole TCPIP qui est le plus adapté. Le code de
+la société propose une abstraction qui permet de gérer tous les composants en
+utilisant seulement l'interface du Cctalk. Pour rendre cela possible, le code
+utilise des drivers qui fonctionnent à l'aide de pointeurs de fonctions.
 
 \subsubsection{Émulation des composants}
 
@@ -1555,43 +1555,67 @@ avec la partie précédente.
 
 \subsubsection{Le protocole}
 
-Le protocole MDB a été créé dans les années 1980 par la société CoinCo et a au
-départ été très utilisé dans les distributeurs automatique de Coca-Cola
-\cite{enwiki:1094073752}. Le protocole est devenu \textit{open-source} en 1992
-et la National Automatic Merchandising Association (NAMA) a réalisé la première
-version du standard en 1995.
+Le protocole MDB a été créé dans les années 1980 par la société \textit{CoinCo}
+et a au départ été très utilisé dans les distributeurs automatiques de
+\textit{Coca-Cola} \cite{enwiki:1094073752}. Le protocole est devenu
+\textit{open-source} en 1992 et la \textit{National Automatic Merchandising
+Association} (NAMA) a réalisé la première version du standard en 1995.
 
 Comme le Cctalk, le protocole MDB fonctionne en mode maître et esclave où la
 carte électronique est le maître qui contrôle les périphériques qui eux sont les
 esclaves. Pour que le maître puisse transmettre des ordres aux esclaves, le MDB
 utilise un système de commandes et de sous-commandes.
 
-La transmission des informations MDB ne se fait pas sur un octet mais sur neuf
-bits. Parmi ces neuf bits, il y a huit bits qui permettent de transmettre des
-données et le dernier bit et un bit de mode. Lorsque le bit de mode est à 0, les
-huit premiers bits contiennent des données. S'il est à 1, alors les huit
-premiers bits peuvent contenir l'adresse d'un composant cible (l'adresse du
-composant auquel s'adresse le maître), une commande spéciale ou un checksum. Les
-commandes spéciales sont ACK (acquittement), NAK (non acquittement) et RET
-(demande de répétition). Un octet d'adresse contient généralement aussi une
-commande: un \textbf{ou} logique est fait entre l'adresse du composant et la
-commande à envoyer. À noter que le standard spécifie des adresses spécifiques
-pour chaque type de périphérique. Par exemple, un accepteur de billet doit avoir
-pour adresse \verb|0x30|. Les commandes envoyées avec l'adresse permettent de
-donner des ordres aux périphériques et chaque type de périphérique possède son
-propre jeux de commandes. Les commandes correspondes à des catégories assez
-génériques, par exemple pour l'accepteur de billet, \verb|0x03| permet de faire
-un poll. Ensuite, pour spécifier une action plus spécifique à réaliser on envoi
-à nouveau neuf bits avec le bit de mode à 0 et une sous-commande dans les
-données.
+Comme le précise la documentation du protocole \cite{mdbdoc}, la transmission
+des informations avec le MDB se fait sur neuf bits. Parmi ces neuf bits, il y a
+huit bits qui permettent de transmettre des données et le dernier bit et un bit
+de mode. Lorsque le bit de mode est à 0, les huit premiers bits contiennent des
+données. S'il est à 1, alors les huit premiers bits peuvent contenir l'adresse
+d'un composant cible (l'adresse du composant auquel s'adresse le maître), une
+commande spéciale ou un checksum. Les commandes spéciales sont ACK
+(acquittement), NAK (non acquittement) et RET (demande de répétition). Un octet
+d'adresse contient généralement aussi une commande: un \textbf{ou} logique est
+fait entre l'adresse du composant et la commande à envoyer. À noter que le
+standard impose des adresses spécifiques pour chaque type de périphérique. Par
+exemple, un accepteur de billet doit avoir pour adresse \verb|0x30|. Les
+commandes envoyées avec l'adresse permettent de donner des ordres aux
+périphériques et chaque type de périphérique possède son propre jeux de
+commandes. Les commandes correspondes à des catégories assez génériques, par
+exemple pour l'accepteur de billet, \verb|0x03| permet d'interroger le composant
+(pour savoir s'il y a un billet a été accepté par exemple). Ensuite, pour
+spécifier une action plus spécifique à réaliser on envoi à nouveau neuf bits
+avec le bit de mode à 0 et une sous-commande dans les données.
 
-Un exemple de communication.
-
-TODO: \cite{mdbdoc} et \cite{enwiki:1094073752}
+Traitons l'exemple du début de la validation d'une vente simple avec un
+périphérique de paiement sans contactes. Ce scénario est décrit dans la
+documentation \cite[p.~169]{mdbdoc}. Ici, la carte va commencer par interroger
+le composant en utilisant la commande \textit{poll} (commande \verb|0x02|). Les
+systèmes de paiement sans contactes ont pour adresse \verb|0x10| ou \verb|0x60|,
+ici, la première trame sera donc composée de neuf bits. Le bit de mode sera à 1
+car on souhaite interroger un composant, et pour ce faire il faut envoyer son
+adresse sur le bus. La valeur des huit bits suivant est le résultat d'un ou
+logique entre la commande \verb|0x02| et l'adresse du composant donc \verb|0x12|
+ou \verb|0x62|. Ensuite, le composant va renvoyer neuf bits où le bit de mode
+est à 0 et la huit bits suivant contient la commande \verb|0x03|, ce qui permet
+de démarrer une session (échange de trames). Une fois la session démarrée, la
+carte va demander s'il y a une ventre à traiter, pour ce faire, on utilise la
+commande \textit{Vend} (\verb|0x03|) et cette dernière s'accompagne d'une
+sous-commande \textit{Vend Request} (\verb|0x00|). On peut noter ici que pour un
+même code, la commande correspondante sera différente en fonction de l'émetteur
+de la trame (maître ou esclave). La nouvelle trame sera donc composée de 18
+bits: \verb|0x113| (bit de mode à 1, adresse du composant \verb|0x10| et
+commande \verb|0x03|) \verb|0x000| (bit de mode à 0 et sous-commande
+\verb|0x00|). Ensuite le périphérique doit répondre par la commande ACK, donc
+ici, le bit de mode est à 1 et les huit bits suivants sont nuls. Comme mentionné
+plus haut, le reste du scénario est décrit dans la documentation du MDB.
 
 \subsubsection{Le code de l'entreprise}
 
 \subsubsection{Émulation des composants}
+
+La simulation des composants interfacés en MDB est dans la continuité de ce qui
+a été fait pour le Cctalk. Là aussi, on a un fichier par composant, et les
+fichiers ont une forme similaire.
 
 \subsubsection{Système de scénarios}
 
@@ -1615,7 +1639,15 @@ correctement, sinon, c'est qu'il a planté. Ce système de scénario est donc un
 moyen très simple de valider le code CKsquare pour un type de périphérique.
 
 L'implémentation de ce système est très simple, les scénarios sont composés
-d'étapes et chaque étape contient TODO: REVOIR LA STRUCT DU SCÉNARIO
+d'étapes et chaque étape est modélisée par une structure. Les étapes sont
+stockées dans un tableau global. Lorsque l'on souhaite jouer un scénario, on
+appel la fonction \textit{play} correspondante au début du test. Cette dernière
+fait un enregistrement d'étapes dans le tableau global. Ensuite, l'envoi
+réponses et la vérification des commande envoyées par la carte est automatique,
+il suffit juste d'appeler les fonctions du code pour passer par toutes les
+étapes du scénario. À noter que la plupart du temps, il faut initialiser les
+machines à états au préalable car les étapes de démarrage ne sont pas prises en
+comptes dans les scénarios.
 %}}}
 %}}}
 \section{Les historiques}%{{{
