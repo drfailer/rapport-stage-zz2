@@ -900,6 +900,7 @@ Chaque répertoire \verb|Test| contient un sous-dossier \verb|Tests| qui permet 
 stockage des fichiers de test.
 
 \subsection{Cmake}
+\label{cmake}
 
 Dans cette partie nous allons voir comment est compilé le projet de test. Nous
 justifierons tout d'abord le choix de l'utilisation de CMake. Ensuite, nous
@@ -1580,44 +1581,94 @@ standard impose des adresses spécifiques pour chaque type de périphérique. Pa
 exemple, un accepteur de billet doit avoir pour adresse \verb|0x30|. Les
 commandes envoyées avec l'adresse permettent de donner des ordres aux
 périphériques et chaque type de périphérique possède son propre jeux de
-commandes. Les commandes correspondes à des catégories assez génériques, par
+commandes. Les commandes correspondent à des catégories assez génériques, par
 exemple pour l'accepteur de billet, \verb|0x03| permet d'interroger le composant
 (pour savoir s'il y a un billet a été accepté par exemple). Ensuite, pour
-spécifier une action plus spécifique à réaliser on envoi à nouveau neuf bits
-avec le bit de mode à 0 et une sous-commande dans les données.
+spécifier une action à réaliser on envoi à nouveau neuf bits avec le bit de mode
+à 0 et une sous-commande dans les données. On peut envoyer plus de données si
+besoin mais les sous-commandes doivent toujours apparaitre au début.
 
 Traitons l'exemple du début de la validation d'une vente simple avec un
 périphérique de paiement sans contactes. Ce scénario est décrit dans la
 documentation \cite[p.~169]{mdbdoc}. Ici, la carte va commencer par interroger
-le composant en utilisant la commande \textit{poll} (commande \verb|0x02|). Les
+le composant en utilisant la commande \textit{poll} (code \verb|0x02|). Les
 systèmes de paiement sans contactes ont pour adresse \verb|0x10| ou \verb|0x60|,
 ici, la première trame sera donc composée de neuf bits. Le bit de mode sera à 1
 car on souhaite interroger un composant, et pour ce faire il faut envoyer son
 adresse sur le bus. La valeur des huit bits suivant est le résultat d'un ou
 logique entre la commande \verb|0x02| et l'adresse du composant donc \verb|0x12|
 ou \verb|0x62|. Ensuite, le composant va renvoyer neuf bits où le bit de mode
-est à 0 et la huit bits suivant contient la commande \verb|0x03|, ce qui permet
-de démarrer une session (échange de trames). Une fois la session démarrée, la
-carte va demander s'il y a une ventre à traiter, pour ce faire, on utilise la
-commande \textit{Vend} (\verb|0x03|) et cette dernière s'accompagne d'une
-sous-commande \textit{Vend Request} (\verb|0x00|). On peut noter ici que pour un
-même code, la commande correspondante sera différente en fonction de l'émetteur
-de la trame (maître ou esclave). La nouvelle trame sera donc composée de 18
-bits: \verb|0x113| (bit de mode à 1, adresse du composant \verb|0x10| et
+sera à 0 et la huit bits suivant contiendront la commande \verb|0x03|, ce qui
+permet de démarrer une session (échange de trames). Une fois la session
+démarrée, la carte va demander s'il y a une ventre à traiter, pour ce faire, on
+utilise la commande \textit{Vend} (\verb|0x03|) et cette dernière s'accompagne
+d'une sous-commande \textit{Vend Request} (\verb|0x00|). On peut noter ici que
+pour un même code, la commande correspondante sera différente en fonction de
+l'émetteur de la trame (maître ou esclave). La nouvelle trame sera donc composée
+de 18 bits: \verb|0x113| (bit de mode à 1, adresse du composant \verb|0x10| et
 commande \verb|0x03|) \verb|0x000| (bit de mode à 0 et sous-commande
-\verb|0x00|). Ensuite le périphérique doit répondre par la commande ACK, donc
-ici, le bit de mode est à 1 et les huit bits suivants sont nuls. Comme mentionné
-plus haut, le reste du scénario est décrit dans la documentation du MDB.
+\verb|0x00|). Ensuite le périphérique doit répondre par la commande
+\textit{ACK}, donc ici, le bit de mode est à 1 et les huit bits suivants sont
+nuls. Comme mentionné plus haut, le reste du scénario est décrit dans la
+documentation du MDB.
+
+Maintenant que nous avons décrit les bases du protocole, intéressons nous au
+code de l'entreprise. On pourra ensuite étudier le fonctionnement de la
+simulation des composants.
 
 \subsubsection{Le code de l'entreprise}
 
+L'implémentation du MDB suis le même principe que celle du Cctalk sauf qu'ici,
+il n'y a pas plusieurs types de trames à gérer, le code est donc plus simple. Le
+protocole est géré par le fichier \verb|MDBApi.c| qui contient la fonction
+\verb|CmdSnd| qui permet d'enregistrer les commandes à envoyer. Ce fichier
+contient aussi une fonction \verb|Control| qui correspond à la machine à état
+principale. Comme pour le Cctalk, la fonction \verb|Control| interagir avec les
+fonctions du fichier \verb|serial.c| qui fait partie des bibliothèques du
+compilateur. La fonction commence dans un premier temps par envoyer les
+différentes parties de la trame (adresse, données puis checksum), puis attend
+que la réponse soit disponible.
+
+Lorsque l'on souhaite envoyer une trame, on utilise la fonction \verb|CmdSnd|,
+qui va marquer la commande qu'elle reçoit en paramètre comme étant prête à être
+envoyée. Il n'y a pas de liste chaînées ici, toutes les commandes sont stockées
+dans un tableau et elles sont affectée aux différents composants lorsqu'ils sont
+enregistré (a l'initialisation du programme). Toutes les commandes sont
+accessibles depuis le fichier \verb|MDBApi.c| et elles sont simplement marquées
+pour être envoyées. Lorsque le \verb|ControManager| appelle la fonction
+\verb|Control| du fichier, cette dernière transmet toutes les commandes marquées
+et récupère toutes les commandes.
+
 \subsubsection{Émulation des composants}
 
-La simulation des composants interfacés en MDB est dans la continuité de ce qui
-a été fait pour le Cctalk. Là aussi, on a un fichier par composant, et les
-fichiers ont une forme similaire.
+La simulation des composants interfacés en MDB a été réalisée dans la continuité
+de ce qui a été fait pour le Cctalk. Là aussi, on a un fichier par composant, et
+les fichiers ont une forme similaire.
+
+Comme le Cctalk, la simulation MDB est disponible en deux versions, une
+\textit{haut niveau} qui utilise une version modifiée du fichier \verb|MDBApi.c|
+et une version \textit{bas niveau} qui passe par toute la chaine d'instructions
+jusqu'aux bibliothèques du compilateur. La grosse différence avec le Cctalk en
+terme d'utilisation est que la simulation ne propose pas de réponses
+prés-définies aux commandes envoyées par la carte. En effet, comme il peut y
+avoir beaucoup de réponses différentes pour une même commande, il a été décidé
+que les réponses des composants devaient être configurées à chaque fois. Cela
+signifie que dans les tests, il faut configurer une réponse avant l'envoi d'une
+commande. On a donc une grande maitrise depuis les tests du fait qu'il est très
+simple de tester toutes les possibilités dans plusieurs tests. La forme des
+fichiers des composants simulés est aussi similaire à celle des fichiers du
+Cctalk. Il y a une fonction \verb|Control| qui est utilisée avec la version
+\textit{bas niveau} et qui a la même utilité que la fonction du Cctalk. Là
+aussi, il y a une fonction \verb|Run| qui comme pour le Cctalk permet de lancer
+la simulation du composant depuis les tests lorsque la version \textit{bas
+niveau} est utilisée. Comme il n'y a pas de réponse prés-définies, il n'y a pas
+de fonction \verb|HandleResponse|. L'obligation de configurer toutes les
+réponses aux commandes rend certains tests complexe à écrire, c'est pour cela
+qu'un système de scénarios a été ajouté au MDB, ce système est décrit dans la
+section \ref{sysscenar}.
 
 \subsubsection{Système de scénarios}
+\label{sysscenar}
 
 Comme dit précédemment, les réponses aux commandes étant trop complexes, la
 simulation des composants MDB ne propose pas de moyen d'avoir des réponses prés
@@ -1669,12 +1720,53 @@ base. Un point important concernant cette structure est que les CDB sont stocké
 en mémoire (généralement sur des eeproms). Les tests qui vont être réalisés sur
 cette structure vont permettre de valider le fonctionnement de l'émulation du
 stockage. De plus, ils vont constituer un exemple intéressant qui pourra être
-décrit dans la documentation.
+décrit dans la documentation.\\
+
+Comme mensionné dans le paragraphe précédent, un CDB est une une base de donnée
+circulaire. Un CDB est une structure qui se compose d'un tableau, d'un compteur
+d'éléments, d'une tête et d'une queue. La tête correspond à la première donnée
+insérée et la queue à la dernière. Les CDB sont sauvegardé en mémoire sur des
+eeproms ou des flashs en fonction de la configurions. Il y a une seule interface
+(fichier d'entête) pour deux implémentation différentes utilisant les deux types
+de périphérique de stockage et on peut passer d'une implémentation à une autre
+avec la configuration. Il est important de pouvoir tester les deux
+implémentation, par contre, étant données que les fonctions ont le même nom, on
+ne peut pas compiler tous les fichier (une interface et deux implémentations).
+C'est pour cette raison que l'on génère deux exécutables différent, où chaque
+exécutables est compilé avec une configuration différente. Comme expliqué dans
+la section \ref{cmake}, pour passer d'une configuration à une autre, on utilise
+des constantes préprocesseur définie à la compilation.
 
 TODO: fonctionnement des CDB.\\
-TODO: réutilisation du stockage.
+TODO: réutilisation du stockage.\\
+TODO: exemple de test
 
-\subsection{Tests des historiques}
+\subsection{Sauvegarde des historiques}
+
+Maintenant que nous avons traité l'utilité et le fonctionnement des CDB,
+étudions le problème de l'envoi des historiques. À noter que c'est un problème
+concernant l'envoi des historiques de paiement sur le \textit{CKWash} (serveur
+de CKsquare) qui a donné aux développeurs l'idée de ce stage.\\
+
+Pour envoyer les historiques sur le serveur, le \verb|ControlManager| va
+régulièrement faire appel à une fonction \verb|Control| qui va envoyer tous les
+nouveau historiques sur le \textit{CKWash} et les supprimer des CDB. Pour
+transmettre les historiques, on utilise une protocole créé par la société qui
+est le protocole \textbf{CKspro}. Ici, seul une version haut niveau de la
+simulation à été mise en place car le code permettant de gérer la transmission
+des données utilisait directement des éléments bas niveau comme le TCPIP. C'est
+éléments étant relativement complexes et assez peu, ils n'ont pas été traités
+durant le stage car cela aurait prise trop de temps.
+
+Pour pouvoir tester l'envoi des commandes, une version modifié du fichier chargé
+de la gestion du protocole CKspro a été créée. Comme pour le Cctalk et le Mdb,
+la fonction \verb|Control| du fichier n'est pas utilisée et les la fonction
+\verb|CmdSnd| a été modifiée. Cette dernière récupère les commandes envoyées et
+les sauvegarde dans une variable globale accessible depuis les tests. Pour
+tester si les commandes sont bien envoyées, on remplit un CDB et on appelle la
+fonction \verb|Control| du fichier \verb|CksproHisSend.c| qui va envoyer tous
+les éléments enregistrés dans le CDB. On peut ensuite tester si les commandes
+envoyées correspondes aux données qui avaient été enregistrées.
 
 TODO: pour conclure cette partie dire que c'est un problème avec les historiques
 qui a donnée l'idée du stage à l'entreprise.
