@@ -1541,6 +1541,10 @@ fonctions suivantes:
     fonction \verb|HandleResponse| à la variable globale \verb|HANDLE_RESPONSE|.
 \end{itemize}
 
+TODO: code en annexe
+
+\subsubsection{Exemple de test}
+
 TODO: conclusion sur le cctalk
 
 %}}}
@@ -1667,6 +1671,8 @@ réponses aux commandes rend certains tests complexe à écrire, c'est pour cela
 qu'un système de scénarios a été ajouté au MDB, ce système est décrit dans la
 section \ref{sysscenar}.
 
+TODO: code en annexe
+
 \subsubsection{Système de scénarios}
 \label{sysscenar}
 
@@ -1699,6 +1705,11 @@ il suffit juste d'appeler les fonctions du code pour passer par toutes les
 étapes du scénario. À noter que la plupart du temps, il faut initialiser les
 machines à états au préalable car les étapes de démarrage ne sont pas prises en
 comptes dans les scénarios.
+
+TODO: exemple de scénario et de test\\
+TODO: code en annexe
+
+\subsubsection{Exemple de test}
 %}}}
 %}}}
 \section{Les historiques}%{{{
@@ -1722,7 +1733,7 @@ cette structure vont permettre de valider le fonctionnement de l'émulation du
 stockage. De plus, ils vont constituer un exemple intéressant qui pourra être
 décrit dans la documentation.\\
 
-Comme mensionné dans le paragraphe précédent, un CDB est une une base de donnée
+Comme mentionné dans le paragraphe précédent, un CDB est une une base de donnée
 circulaire. Un CDB est une structure qui se compose d'un tableau, d'un compteur
 d'éléments, d'une tête et d'une queue. La tête correspond à la première donnée
 insérée et la queue à la dernière. Les CDB sont sauvegardé en mémoire sur des
@@ -1750,28 +1761,81 @@ de CKsquare) qui a donné aux développeurs l'idée de ce stage.\\
 
 Pour envoyer les historiques sur le serveur, le \verb|ControlManager| va
 régulièrement faire appel à une fonction \verb|Control| qui va envoyer tous les
-nouveau historiques sur le \textit{CKWash} et les supprimer des CDB. Pour
-transmettre les historiques, on utilise une protocole créé par la société qui
-est le protocole \textbf{CKspro}. Ici, seul une version haut niveau de la
-simulation à été mise en place car le code permettant de gérer la transmission
-des données utilisait directement des éléments bas niveau comme le TCPIP. C'est
-éléments étant relativement complexes et assez peu, ils n'ont pas été traités
-durant le stage car cela aurait prise trop de temps.
+nouveau historiques sur le \textit{CKWash} et les supprimer des CDB. Cette
+fonction se trouve dans le fichier \verb|CksproHisSend.c| Pour transmettre les
+historiques, on utilise une protocole créé par la société qui est le protocole
+\textbf{CKspro}. Ici, seule une version haut niveau de la simulation à été mise
+en place car le code qui permet de gérer la transmission des données utilise
+directement des éléments bas niveau comme le TCPIP. Ces éléments étant
+relativement complexes et assez peu utilisés dans le code, ils n'ont pas été
+traités durant le stage car cela aurait prise trop de temps.
 
-Pour pouvoir tester l'envoi des commandes, une version modifié du fichier chargé
-de la gestion du protocole CKspro a été créée. Comme pour le Cctalk et le Mdb,
-la fonction \verb|Control| du fichier n'est pas utilisée et les la fonction
+Pour pouvoir tester l'envoi des commandes, une version modifiée du fichier
+chargé de la gestion du protocole CKspro a été créée. Comme pour le Cctalk et le
+Mdb, la fonction \verb|Control| du fichier n'est pas utilisée et les la fonction
 \verb|CmdSnd| a été modifiée. Cette dernière récupère les commandes envoyées et
 les sauvegarde dans une variable globale accessible depuis les tests. Pour
-tester si les commandes sont bien envoyées, on remplit un CDB et on appelle la
-fonction \verb|Control| du fichier \verb|CksproHisSend.c| qui va envoyer tous
-les éléments enregistrés dans le CDB. On peut ensuite tester si les commandes
-envoyées correspondes aux données qui avaient été enregistrées.
+tester si les commandes sont bien envoyées, on place des éléments dans un CDB et
+on appelle la fonction \verb|Control| du fichier \verb|CksproHisSend.c| qui va
+envoyer tous les éléments enregistrés dans le CDB. On peut ensuite tester si les
+commandes envoyées correspondes aux données qui avaient été enregistrées en
+vérifiant que les identifiants stockés dans les trames sont les mêmes que ceux
+des éléments du CDB. À noter qu'ici, un test assez réaliste a été écrit pour
+vérifier que l'outil permet bien de faire un test capable de détecter le
+problème qui a pousser la société à créer ce sujet de stage. Le problème été
+survenu plusieurs fois à cause de mauvaises manipulation de git. Il venait d'une
+erreur de configuration qui faisait que dans la fonction \verb|Control| de l'envoi
+des historiques, une fonction était appelée à la place d'une autre. Ce problème
+était assez difficile à détecter avec de simple puisqu'il apparaissait
+uniquement lorsque le CDB était remplit plusieurs fois (problème d'index dans le
+CDB). Le test qui a été écrit remplit le CDB, envoi tous les historiques et
+refait la même opération en vérifiant à chaque fois que tous les éléments sont
+envoyés et cela permet bien de détecter le problème.
 
-TODO: pour conclure cette partie dire que c'est un problème avec les historiques
-qui a donnée l'idée du stage à l'entreprise.
+Les tests sur l'envoi des historiques sont relativement complexes dans le sens
+où ils doivent utiliser plusieurs des éléments mis en place par l'outil de test.
+En effet, ici, le test doit utiliser la version modifiée du fichier
+\verb|CKspro.c| et les modifications apportées à ce fichier suivent les mêmes
+principes que pour le Cctalk et le MDB. En plus de la modification de fichier
+pour isoler les éléments du code testé, les tests sur l'envoi d'historiques
+utilisent les CDB et donc la simulation du stockage. Le fait d'avoir un résultat
+positif sur un test qui utilise une grande partie du code et autant des éléments
+mis en place par l'outil est très positif. Cela permet donc de valider en grande
+partie les techniques et méthodes employées durant le stage. Enfin, un autre
+point intéressant concerne la difficulté d'écriture des tests. En effet, les
+tests ne sont pas triviaux à écrire, cependant, leur complexité vient plus de
+celle du code testé que de l'outil.
+
+TODO: exemple de test
 %}}}
 \section{Mise en place de la pipeline}
+
+Dans cette section nous allons voir la solution comment a été mise en place la
+pipeline Gitlab.
+
+La configuration de la pipeline contient deux \textit{jobs}, un \textit{job} de
+compilation et un \textit{job} de test. Il y a une contrainte de précédente
+entre la compilation et les tests.
+
+Pour la compilation, on commence par installer le nécessaire pour compiler avec
+le gestionnaire de paquets de la pipeline (\textit{Aptitude}). Cela comprend les
+outils comme \verb|gcc| et \verb|cmake| mais aussi le framework de test. Ici, on
+utilise l'image docker par défaut de Gitlab (\verb|ruby:3.1|) car il n'y a pas
+beaucoup de paquets à installer. Le projet \verb|dev_pic| est dépendant du
+projet \verb|commun_global| qui comme expliqué en début de rapport correspond au
+code partagé entre tous les projets, il faut donc un moyen d'accéder à ce
+projet. Là, il y a deux solution, la première consiste à utiliser un
+\gls{smodg}. Le défaut de cette méthode est qu'elle nécessite la gestion d'un
+sous-module dans les communs. De plus, cette solution n'est pas très logique et
+complexifierait énormément la gestion des sous modules car le projet
+\verb|dev_pic| est déjà un sous-module des projet de l'entreprise. La seconde
+méthode est beaucoup plus simple puisqu'elle consiste juste en le clonage du
+projet \verb|commun_global| dans la pipeline. Pour pouvoir cloner un projet
+privé, on utilise un \textit{job token} accessible depuis la configuration à
+l'aide d'une variable.
+
+TODO: reste des explications\\
+TODO: mettre la config\\
 
 \section{Les tests sur la branche de l'événementiel}
 
@@ -1791,7 +1855,7 @@ qui a donnée l'idée du stage à l'entreprise.
 - solution du define pas utilisée mais envisagée
 - fonctionnement du Méta Object Compiler pas évident au départ
 
-\subsection{Les avantages du C++ pour la simulation}
+\subsection{La simulation}
 
 - code objet plus simple.
 
