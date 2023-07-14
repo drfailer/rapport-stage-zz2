@@ -1714,83 +1714,153 @@ TODO: code en annexe
 %}}}
 \section{Les historiques}%{{{
 
-Dans cette section, nous allons nous intéresser aux historiques. Les historiques
-(de paiement, d'évènements) sont stockés dans une base de donnée circulaire.
-C'est un élément important car la sauvegarde des historiques est juridiquement
-obligatoire quand ils concernent la monétique. Dans cette partie, nous
-commencerons, dans un premier temps, par détailler le fonction de la structure
-de donnée et des tests qui ont été fait dessus. Dans un second temps, nous
-traiterons le fonctionnement des historiques.
+Dans cette section, nous allons nous intéresser à la gestion des historiques
+(historique de paiement, \dots). Ils sont stokés en mémoire sur la carte dans
+une base de données circulaire et ils sont régulièrement sauvegardé sur un
+serveur. C'est un élément important car la sauvegarde des historiques est
+juridiquement obligatoire quand ils concernent la monétique (loi finance de
+2016). Dans cette partie, nous commencerons, dans un premier temps, par
+détailler le fonctionnement de la structure de données et des tests qui ont
+été fait dessus. Dans un second temps, nous traiterons l'envoi des
+historiques sur le serveur de CKsquare.
 
 \subsection{Les CDBs}
 
 Tous les historiques sont stockés dans un base de donnée circulaire (CDB
 signifie \textit{Circular Data Base}). La première partie des tests concernant
-les historiques va porté sur la validation du bon fonctionnement de cette
-base. Un point important concernant cette structure est que les CDB sont stockées
-en mémoire (généralement sur des eeproms). Les tests qui vont être réalisés sur
-cette structure vont permettre de valider le fonctionnement de l'émulation du
-stockage. De plus, ils vont constituer un exemple intéressant qui pourra être
-décrit dans la documentation.\\
+les historiques va porter sur la validation du bon fonctionnement de cette base.
+Un point important concernant cette structure est que les CDB sont stockées en
+mémoire (généralement sur des eeproms). Les tests qui vont être réalisés sur
+cette structure vont permettre de pleinement utiliser l'émulation du stockage.
+Ils vont donc constituer un exemple intéressant qui pourra être décrit dans la
+documentation.\\
 
 Comme mentionné dans le paragraphe précédent, un CDB est une une base de donnée
 circulaire. Un CDB est une structure qui se compose d'un tableau, d'un compteur
 d'éléments, d'une tête et d'une queue. La tête correspond à la première donnée
-insérée et la queue à la dernière. Les CDB sont sauvegardé en mémoire sur des
-eeproms ou des flashs en fonction de la configurions. Il y a une seule interface
-(fichier d'entête) pour deux implémentation différentes utilisant les deux types
-de périphérique de stockage et on peut passer d'une implémentation à une autre
-avec la configuration. Il est important de pouvoir tester les deux
-implémentation, par contre, étant données que les fonctions ont le même nom, on
-ne peut pas compiler tous les fichier (une interface et deux implémentations).
-C'est pour cette raison que l'on génère deux exécutables différent, où chaque
-exécutables est compilé avec une configuration différente. Comme expliqué dans
-la section \ref{cmake}, pour passer d'une configuration à une autre, on utilise
-des constantes préprocesseur définie à la compilation.
+insérée et la queue à la dernière. Les CDB sont sauvegardés en mémoire sur des
+eeproms ou des flashs en fonction de la configuration. Il y a une seule
+interface (fichier d'entête) pour deux implémentation différentes utilisant les
+deux types de périphériques de stockage et on peut passer d'une implémentation à
+une autre avec la configuration. Il est important de pouvoir tester les deux
+implémentations, par contre, étant donné que les fonctions ont le même nom, on
+ne peut pas compiler tous les fichiers en même temps (une interface et deux
+implémentations). C'est pour cette raison que l'on génère deux exécutables
+différents, où chaque exécutable est compilé avec une configuration différente.
+Comme expliqué dans la section \ref{cmake}, pour passer d'une configuration à
+une autre, on utilise des constantes préprocesseurs définies à la compilation.
+Il y aura donc aussi deux tests différents, un pour les flash et un pour les
+eeproms.
 
-TODO: fonctionnement des CDB.\\
-TODO: réutilisation du stockage.\\
-TODO: exemple de test
+Traitons à présent un exemple de test sur un CDB dont le code est visible sur le
+listing \ref{extestinsertcdb}. Ici, on test l'insertion d'éléments dans une
+flash. Pour réaliser ce test, on utilise plusieurs fonctions annexes. La
+fonction \verb|TESTCDB_IndexToAddrRelative| prend en paramètre un CDB, un indice
+et une référence sur une adresse. Elle permet de récupérer l'adresse de
+l'élément du CDB à l'indice donnée dans la flash. Pour ce test, on utilise des
+historiques de paiement et on utilise la fonction
+\verb|TESTCDB_RandomBufferGenerate| pour générer un élément aléatoire à insérer
+dans le CDB. Dans un premier temps, on insère un élément dans la base et on
+regarde si les données ont bien été écrites dans la flash. Ensuite, on vérifie
+que les données du CDB sont aussi écrites au début de la mémoire. En effet,
+lorsque l'on redémarre la carte, on a besoin de récupérer l'état de la base de
+données (le nombre d'élément stockés, \dots). Pour pouvoir faire cela, la
+structure qui permet de gérer le CDB est écrite en début de mémoire
+(\verb|CDB->Control|). Une fois que l'on vérifié qu'une insertion dans le CDB
+fonctionnait, on teste s'il est possible de remplir la base en ajoutant le
+maximum d'éléments à l'aide d'une boucle. À noter qu'à chaque fois, on vérifie
+que l'élément (toujours généré aléatoirement) est bien écrit dans la mémoire. À
+la fin, on test que le CDB est bien plein.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+Test(CDB_Test, TESTCDB_Add, .init = TESTCDB_Setup, .fini = TESTCDB_Teardown)
+{
+    uchar Buff[sizeof(TITEM_PAYMENT)];
+    ulong BeginingAddr = ((TCDBONFLASH_CONTROL * )CDB->StorageData)->NextAddr + 1;
+    TFLASH_ADDR Addr;
+    int Cpts;
+
+    TESTCDB_IndexToAddrRelative(CDB,0,&Addr);
+    TESTCDB_RandomBufferGenerate(Buff,sizeof(TITEM_PAYMENT));
+    cr_assert(true == CDB_Add(CDB ,Buff));
+    // le cdb a bien été écrit dans la flash
+    cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_FLASHM[0] + Addr,Buff));
+    // on vérifie que le control est bien écrit au début
+    CDB->Control.CounterChange--;
+    cr_assert(eq(u8[sizeof(CDB->Control)],
+                 TESTMEM_FLASHM[0] + BeginingAddr,
+                 (uchar*) &CDB->Control));
+    CDB->Control.CounterChange++;
+
+    /* remplissage de la base */
+    for (Cpts = 1; Cpts < CDB->RecordMax; ++Cpts) {
+        TESTCDB_RandomBufferGenerate(Buff,sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(CDB ,Buff));
+        TESTCDB_IndexToAddrRelative(CDB,Cpts,&Addr);
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_FLASHM[0] + Addr,Buff));
+    }
+    cr_assert(true == CDB_IsFull(CDB));
+}
+\end{minted}
+\caption{Test d'insertion dans un CDB}
+\label{extestinsertcdb}
+\end{listing}
+
+Ce test permet de valider l'insertion d'éléments dans un CDB et il y a d'autres
+tests qui permettent de valider d'autres fonctionnalités ces bases de données
+comme la suppression par exemple. Ici, on peut voir que la simulation des
+périphériques de stockage fonctionne bien et que cette dernière est assez simple
+à utiliser dans les tests. On voit bien que l'on peut aisément vérifier si la
+mémoire a été modifiée en utilisant les outils du framework. Ce sont des
+résultats positifs qui montrent la viabilité de l'outil de test.\\
+
+Maintenant que nous avons abordé le fonctionnement des CDBs ainsi que les tests
+qui sont associés à cette structure de données, nous allons nous intéresser au
+test de la sauvegarde des historiques sur le serveur.
 
 \subsection{Sauvegarde des historiques}
 
-Maintenant que nous avons traité l'utilité et le fonctionnement des CDB,
-étudions le problème de l'envoi des historiques. À noter que c'est un problème
-concernant l'envoi des historiques de paiement sur le \textit{CKWash} (serveur
-de CKsquare) qui a donné aux développeurs l'idée de ce stage.\\
+Dans la section précédente, nous avons traité l'utilité et le fonctionnement des
+CDB, étudions le problème de l'envoi des historiques sur le serveur. À noter que
+c'est un problème  concernant l'envoi des historiques de paiement sur le
+\textit{CKWash} (serveur de CKsquare) qui a donné aux développeurs l'idée de ce
+stage.\\
 
 Pour envoyer les historiques sur le serveur, le \verb|ControlManager| va
 régulièrement faire appel à une fonction \verb|Control| qui va envoyer tous les
 nouveau historiques sur le \textit{CKWash} et les supprimer des CDB. Cette
 fonction se trouve dans le fichier \verb|CksproHisSend.c| Pour transmettre les
-historiques, on utilise une protocole créé par la société qui est le protocole
+historiques, on utilise un protocole créé par la société qui est le protocole
 \textbf{CKspro}. Ici, seule une version haut niveau de la simulation à été mise
 en place car le code qui permet de gérer la transmission des données utilise
 directement des éléments bas niveau comme le TCPIP. Ces éléments étant
 relativement complexes et assez peu utilisés dans le code, ils n'ont pas été
-traités durant le stage car cela aurait prise trop de temps.
+traités durant le stage car cela aurait pris trop de temps.
 
 Pour pouvoir tester l'envoi des commandes, une version modifiée du fichier
 chargé de la gestion du protocole CKspro a été créée. Comme pour le Cctalk et le
-Mdb, la fonction \verb|Control| du fichier n'est pas utilisée et les la fonction
+Mdb, la fonction \verb|Control| du fichier n'est pas utilisée et la fonction
 \verb|CmdSnd| a été modifiée. Cette dernière récupère les commandes envoyées et
 les sauvegarde dans une variable globale accessible depuis les tests. Pour
 tester si les commandes sont bien envoyées, on place des éléments dans un CDB et
 on appelle la fonction \verb|Control| du fichier \verb|CksproHisSend.c| qui va
-envoyer tous les éléments enregistrés dans le CDB. On peut ensuite tester si les
-commandes envoyées correspondes aux données qui avaient été enregistrées en
+envoyer tous les éléments enregistrés dans la base. On peut ensuite tester si
+les commandes envoyées correspondent aux données qui avaient été enregistrées en
 vérifiant que les identifiants stockés dans les trames sont les mêmes que ceux
-des éléments du CDB. À noter qu'ici, un test assez réaliste a été écrit pour
-vérifier que l'outil permet bien de faire un test capable de détecter le
+des éléments dans CDB. À noter qu'ici, un test assez réaliste a été écrit pour
+vérifier que l'outil permet bien de créer un test capable de détecter le
 problème qui a pousser la société à créer ce sujet de stage. Le problème été
-survenu plusieurs fois à cause de mauvaises manipulation de git. Il venait d'une
-erreur de configuration qui faisait que dans la fonction \verb|Control| de l'envoi
-des historiques, une fonction était appelée à la place d'une autre. Ce problème
-était assez difficile à détecter avec de simple puisqu'il apparaissait
+survenu plusieurs fois à cause de mauvaises manipulations de git, ce qui aurait
+pu être détecté facilement avec une pipeline. Il venait d'une erreur de
+configuration qui faisait que dans la fonction \verb|Control| de l'envoi des
+historiques, une fonction était appelée à la place d'une autre. Ce problème
+était assez difficile à détecter avec de simples tests puisqu'il apparaissait
 uniquement lorsque le CDB était remplit plusieurs fois (problème d'index dans le
-CDB). Le test qui a été écrit remplit le CDB, envoi tous les historiques et
-refait la même opération en vérifiant à chaque fois que tous les éléments sont
-envoyés et cela permet bien de détecter le problème.
+CDB). Pour détecter ce problème, on remplit le CDB, on envoie tous les
+historiques et on refait ces opérations en vérifiant à chaque fois que tous les
+éléments sont envoyés. Le test fonctionne bien et sont code est disponible à
+l'annexe \ref{}.
 
 Les tests sur l'envoi des historiques sont relativement complexes dans le sens
 où ils doivent utiliser plusieurs des éléments mis en place par l'outil de test.
@@ -1805,8 +1875,6 @@ partie les techniques et méthodes employées durant le stage. Enfin, un autre
 point intéressant concerne la difficulté d'écriture des tests. En effet, les
 tests ne sont pas triviaux à écrire, cependant, leur complexité vient plus de
 celle du code testé que de l'outil.
-
-TODO: exemple de test
 %}}}
 \section{Mise en place de la pipeline}
 
@@ -2313,5 +2381,79 @@ TAU_MAIN() // sets up Tau (+ main function)
 \end{listing}
 
 %---------------------------------------------------------------------------}}}
+% Test d'envoi historiques sur CKWash ---------------------------------------{{{
+\clearpage{}
+\section{Test sur l'envoi des historiques sur le serveur}\label{appendix:frameworks-code}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setup, .fini = TESTCKSPROHISSND_Teardown)
+{
+    TEEPROM_ADDR Addr;
+    uchar HisElts[20][sizeof(TITEM_PAYMENT)] = {0};
+    int HisEltsCount = 0;
+    int Cpts;
+
+    // 1. remplire le cdb
+    for (Cpts = 0; Cpts < History->RecordMax - 1; ++Cpts) {
+        CDB_IndexToAddr(History,History->Control.Count,&Addr);
+        TESTCKSPROHISSND_RandomItemGenerate();
+        // sauvegarde des éléments enregistrés
+        memcpy(HisElts[HisEltsCount++],&TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(History,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_EEPROMM[0] + Addr,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        // vérification du début de l'eeprom
+        cr_assert(eq(u8[sizeof(History->Control)],TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,(uchar*) &History->Control));
+    }
+
+    // init CKSPROHISSND_Control
+    CKSPROHISSND_Control();
+    TESTTIMER_Wait(2001);
+    CKSPROHISSND_Control();
+    CKSPROHISSND_Control(); // on arrive dans l'état 2
+
+
+    // 2. traiter l'historique
+    HisEltsCount = 0;
+    for (Cpts = 0; Cpts < History->RecordMax - 1; ++Cpts) {
+        CKSPROHISSND_Control();
+        cr_assert(true == TESTCKSPRO_CmdSent);
+        TESTCKSPRO_CmdSent = false;
+        // on récupère l'élément que l'on est sensé envoyer et on vérifie l'envoi
+        memcpy(&TESTCKSPROHISSND_ItemHisPayment, HisElts[HisEltsCount++], sizeof(TITEM_PAYMENT));
+        cr_assert(true == TESTCKSPROHISSND_CmdCheck());
+        CKSPROHISSND_Control();
+    }
+
+    // 3. re-remplir le cdb
+    HisEltsCount = 0;
+    for (Cpts = 0; Cpts < History->RecordMax - 1; ++Cpts) {
+        CDB_IndexToAddr(History, History->Control.Count, &Addr);
+        TESTCKSPROHISSND_RandomItemGenerate();
+        // sauvegarde des éléments enregistrés
+        memcpy(HisElts[HisEltsCount++],&TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(History ,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_EEPROMM[0] + Addr,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        // vérification du début de l'eeprom
+        cr_assert(eq(u8[sizeof(History->Control)],TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,(uchar*) &History->Control));
+    }
+
+    // 4. traiter à nouveau l'historique
+    HisEltsCount = 0;
+    for (Cpts = 0; Cpts < History->RecordMax - 1; ++Cpts) {
+        CKSPROHISSND_Control();
+        cr_assert(true == TESTCKSPRO_CmdSent);
+        TESTCKSPRO_CmdSent = false;
+        // on récupère l'élément que l'on est sensé envoyer et on vérifie l'envoi
+        memcpy(&TESTCKSPROHISSND_ItemHisPayment,HisElts[HisEltsCount++],sizeof(TITEM_PAYMENT));
+        cr_assert(true == TESTCKSPROHISSND_CmdCheck());
+        CKSPROHISSND_Control();
+    }
+}
+\end{minted}
+\caption{Test sur l'envoi des historiques sur le serveur}
+\label{testsaveckwash}
+\end{listing}
+%}}}
 
 \end{document}
