@@ -300,39 +300,31 @@ paiement.
 %}}}
 \section{Travail demandé}%{{{
 
-% TODO: faire un condencé de tout ça
+L'objectif du stage est de réaliser un outil servant à faire de l'intégration
+continue pour valider les fichiers de la partie commune du code utilisé sur les
+bornes. L'outil doit permettre l'écriture de tests pour valider le code et doit
+pouvoir être automatisé dans une pipeline Gitlab. L'intérêt pour l'entreprise
+est de pouvoir détecter un maximum de problèmes le plus tôt possible et de
+manière automatique pour ne pas envoyer du code non fonctionnel en production.
 
-% note: pas clair ici permettent d'interagir avec. Il faudra aussi des qui
-
-L'objectif est de réaliser un outil servant à faire de l'intégration continue
-pour valider les fichiers de la partie commune du code utilisé sur les bornes.
-L'outil doit permettre l'écriture de tests pour valider le code et doit pouvoir
-être automatisé dans une pipeline Gitlab. De plus, l'outil sera utilisé pour
-tester du code exécuté sur du matériel embarqué, il faudra donc un moyen de
-tester des fonctions qui interagissent avec le matériel électronique. Pour ce
-faire, il faudra émuler les interactions avec le matériel en créant des
-fonctions et des structures de données qui réagiront comme les composants
-électroniques. Par exemple, si une fonction doit modifier un registre sur une
-carte, il faut pouvoir émuler le registre pour vérifier que les bonnes
-modifications ont été apportées dessus. Il faudra aussi des fonctionnalités
-permettant de simuler l'interaction d'un utilisateur avec un composant pendant
-les tests. Par exemple, on doit pouvoir faire en sorte de tester le comportement
-du système lorsqu'un utilisateur appuie sur une séquence de touches. Il sera
-donc nécessaire d'émuler la mémoire des composants électroniques, les fonctions
-permettant de simuler les actions d'un utilisateur et les interfaces des
-composants en utilisant divers protocoles de communication comme l'I²C et le SPI
-mais aussi le Cctalk et le MDB.
+L'outil sera utilisé pour tester du code normalement exécuté sur du matériel
+embarqué, il faudra donc un moyen de tester des fonctions qui interagissent avec
+le matériel électronique. Pour ce faire, il faudra simuler les interactions avec
+le matériel en créant des fonctions et des structures de données qui réagiront
+comme les composants électroniques. Par exemple, si une fonction doit modifier
+un registre sur une carte, il faut pouvoir émuler le registre pour vérifier que
+les bonnes modifications ont été apportées dessus. De plus, les composants
+électroniques sont interfacés avec différents protocoles. Il faudra donc
+comprendre le fonctionnent de ces protocoles ainsi que leur implémentation par
+l'entreprise pour pouvoir simuler une communication réaliste entre la carte et
+les composants.
 
 Étant donné que les tests seront exécutés dans une pipeline (donc dans un
-docker), il faudra s'assurer que le code puisse compiler sous Linux. De plus,
-pour que le code fonctionne dans la pipeline, il faudra compiler avec gcc ce qui
-nécessitera de remplacer une partie des bibliothèques de la carte, faites pour
-être compilées avec le compilateur fourni avec MPLAB.
-
-La première tâche sera de trouver le framework de test adapté pour la conception
-de l'outil. Le code à tester est écrit en C, cependant, la société souhaiterait
-aussi pouvoir tester les bibliothèques écrites par l'équipe Qt. Il serait donc
-intéressant que l'outil soit aussi adapté au C++.
+docker), il faudra s'assurer que le code puisse compiler sous Linux. Ici, on ne
+pourra pas utiliser MPLAB et les compilateurs utilisés par l'entreprise à cause
+de la simulation. Le compilateur utilisé sera gcc et une partie des
+bibliothèques de Microship seront modifiées pour arriver à générer un
+exécutable.
 
 % validé
 Le résultat final doit être un outil qui doit pouvoir être facilement
@@ -753,6 +745,20 @@ l'état dans lequel se rendre. L'utilisation d'un débogueur a grandement facili
 la mise en place des tests réalisés sur ces fonctions.
 
 \subsubsection{Branche événementiel}
+\label{brancheevent}
+
+Cette branche a été créée pour simplifier le code, elle utilise un système mis
+en place sur la partie Qt (code C++) qui intègre un système permettant de
+déclencher des appels de fonctions en émettant des évènements. Le deuxième
+objectif de ce système est de limiter les appels de fonctions dans la boucle
+principale. En effet, sur l'autre branche, les fonctions \verb|Control| des
+composants sont continuellement appelées par le \verb|Contro Manager|, ce qui
+peut poser des problèmes de performance. Ici, les fonctions qui gèrent les
+composants ne sont appelées que lorsqu'un évènement est émit. Par exemple,
+lorsqu'une trame est envoyée, un évènement est émit pour signifier la fin de la
+communication. Cela aura pour effet de déclencher l'appel de la fonction de
+gestion du composants qui a envoyé la trame. Cette fonction est une machine à
+états qui passera dans un état d'attente de réponse.
 
 TODO: event\\
 TODO: inspiré de qt\\
@@ -1878,32 +1884,45 @@ celle du code testé que de l'outil.
 %}}}
 \section{Mise en place de la pipeline}
 
-Dans cette section nous allons voir la solution comment a été mise en place la
-pipeline Gitlab.
+Dans cette section nous allons voir comment a été mise en place la pipeline
+Gitlab.
 
 La configuration de la pipeline contient deux \textit{jobs}, un \textit{job} de
-compilation et un \textit{job} de test. Il y a une contrainte de précédente
+compilation et un \textit{job} de test. Il y a une contrainte de précédence
 entre la compilation et les tests.
 
 Pour la compilation, on commence par installer le nécessaire pour compiler avec
 le gestionnaire de paquets de la pipeline (\textit{Aptitude}). Cela comprend les
 outils comme \verb|gcc| et \verb|cmake| mais aussi le framework de test. Ici, on
 utilise l'image docker par défaut de Gitlab (\verb|ruby:3.1|) car il n'y a pas
-beaucoup de paquets à installer. Le projet \verb|dev_pic| est dépendant du
+beaucoup de paquets à installer mais il serait possible d'utiliser une image
+plus complète ou d'en créer une. Le projet \verb|dev_pic| est dépendant du
 projet \verb|commun_global| qui comme expliqué en début de rapport correspond au
-code partagé entre tous les projets, il faut donc un moyen d'accéder à ce
-projet. Là, il y a deux solution, la première consiste à utiliser un
-\gls{smodg}. Le défaut de cette méthode est qu'elle nécessite la gestion d'un
-sous-module dans les communs. De plus, cette solution n'est pas très logique et
-complexifierait énormément la gestion des sous modules car le projet
-\verb|dev_pic| est déjà un sous-module des projet de l'entreprise. La seconde
-méthode est beaucoup plus simple puisqu'elle consiste juste en le clonage du
-projet \verb|commun_global| dans la pipeline. Pour pouvoir cloner un projet
-privé, on utilise un \textit{job token} accessible depuis la configuration à
-l'aide d'une variable.
+code partagé entre tous les projets. Pour accéder à ce projet depuis la
+pipeline, il y a deux solution, la première consiste à utiliser un \gls{smodg}.
+Le défaut de cette méthode est qu'elle nécessite la gestion d'un sous module
+dans les communs. De plus, cette solution n'est pas très logique et
+complexifierait énormément la gestion du projet car \verb|dev_pic| est déjà un
+sous module des projet de l'entreprise. La seconde méthode est beaucoup plus
+simple puisqu'elle consiste juste en le clonage du projet \verb|commun_global|
+dans la pipeline. Pour pouvoir cloner un projet privé, on utilise un \textit{job
+token} accessible depuis la configuration à l'aide d'une variable. Une fois que
+l'on a téléchargé toutes les dépendances du projet, on met en place CMake et on
+compile les tests.
 
 TODO: reste des explications\\
 TODO: mettre la config\\
+
+Dans le second \textit{job}, on va lancer les tests. On commence par réinstaller
+toutes les dépendances.
+
+La création de cette pipeline a clos la première partie du stage qui concernait
+la création d'un outil de test sur la branche principale du code C. Le travail
+suivant a consisté en l'adaptation de l'outil sur la branche évènementiel qui
+est l'autre branche du projet \verb|dev_pic| que nous avons détaillé dans la
+section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
+aux modifications apportées à l'outil pour que ce dernier fonctionne sur la
+seconde branche.
 
 \section{Les tests sur la branche de l'événementiel}
 
@@ -1973,11 +1992,6 @@ si une solution est réalisable.
 développement du projet de tests. C'est l'interface en ligne de commande de Git
 qui a été privilégiée ainsi que l'utilisation du plugin \textbf{fugitive} sur
 neovim.
-
-\subsubsection{Doxygen}
-
-TODO: Génération automatique de la documentation à partir des commentaires
-laissés dans le code. Présentation rapide de doxygen
 
 \subsubsection{GDB}
 
