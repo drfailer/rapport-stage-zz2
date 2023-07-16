@@ -326,7 +326,6 @@ de la simulation. Le compilateur utilisé sera gcc et une partie des
 bibliothèques de Microship seront modifiées pour arriver à générer un
 exécutable.
 
-% validé
 Le résultat final doit être un outil qui doit pouvoir être facilement
 réutilisable et adaptable. La documentation et la structure du code doit pouvoir
 permettre d'aisément modifier ou copier les différents éléments. Par exemple, il
@@ -334,7 +333,6 @@ faudra que tous les composants simulés aient la même structure et que cette
 structure soit suffisamment simple et générique pour pouvoir être copiée pour la
 création d'un nouveau composant.
 
-% validé
 À noter que l'objectif du projet n'est pas d'écrire des tests.  Des tests ont
 été écrits durant le projet mais ces derniers ont pour objectif de valider le
 bon fonctionnement des composants simulés et non celui du code de la société.
@@ -1731,6 +1729,7 @@ détailler le fonctionnement de la structure de données et des tests qui ont
 historiques sur le serveur de CKsquare.
 
 \subsection{Les CDBs}
+\label{cdbs}
 
 Tous les historiques sont stockés dans un base de donnée circulaire (CDB
 signifie \textit{Circular Data Base}). La première partie des tests concernant
@@ -1826,6 +1825,7 @@ qui sont associés à cette structure de données, nous allons nous intéresser 
 test de la sauvegarde des historiques sur le serveur.
 
 \subsection{Sauvegarde des historiques}
+\label{savehist}
 
 Dans la section précédente, nous avons traité l'utilité et le fonctionnement des
 CDB, étudions le problème de l'envoi des historiques sur le serveur. À noter que
@@ -1881,8 +1881,13 @@ partie les techniques et méthodes employées durant le stage. Enfin, un autre
 point intéressant concerne la difficulté d'écriture des tests. En effet, les
 tests ne sont pas triviaux à écrire, cependant, leur complexité vient plus de
 celle du code testé que de l'outil.
+
+L'envoi des historiques était un élément important à tester et c'est le dernier
+élément qui a été traité avant de mettre en place la pipeline. Dans la section
+suivante, nous traiterons la configuration de la pipeline pour que les tests
+soient exécutés de façon automatique à chaque nouvel envoi de code sur Gitlab.
 %}}}
-\section{Mise en place de la pipeline}
+\section{Mise en place de la pipeline}%{{{
 
 Dans cette section nous allons voir comment a été mise en place la pipeline
 Gitlab.
@@ -1908,13 +1913,65 @@ simple puisqu'elle consiste juste en le clonage du projet \verb|commun_global|
 dans la pipeline. Pour pouvoir cloner un projet privé, on utilise un \textit{job
 token} accessible depuis la configuration à l'aide d'une variable. Une fois que
 l'on a téléchargé toutes les dépendances du projet, on met en place CMake et on
-compile les tests.
+compile les tests. Après la compilation, les exécutables se trouvent dans le
+répertoire \verb|buil/bin|, pour pouvoir y accéder depuis l'autre \textit{job},
+on déclare le répertoire \verb|build| comme artefact ce qui permettra de le
+réutiliser. On peut voir la configuration sur le listing \ref{buildjob}.
 
-TODO: reste des explications\\
-TODO: mettre la config\\
+\begin{listing}[ht!]
+\begin{minted}{yml}
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - apt-get update
+    - apt install -y libcriterion-dev cmake gcc
+    - cd commun/Test/
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.cksquare.fr/cklibs/commun_global.git
+    - mkdir build
+    - cmake -S . -B build
+    - cd build
+    - make
+  artifacts:
+    paths:
+      - commun/Test/build
+\end{minted}
+\caption{.gitlab-ci.yml: build job}
+\label{buildjob}
+\end{listing}
 
 Dans le second \textit{job}, on va lancer les tests. On commence par réinstaller
-toutes les dépendances.
+toutes les dépendances. Ensuite, on se rend dans le répertoire de build (qui
+était sauvegardé dans un artefact) et on exécute les les tests en utilisant la
+commande \verb|ctest|. \verb|CTest| est un exécutable installé avec CMake, il
+permet de gérer les tests de façon automatique. On peut voir sur le listing
+\ref{testjob} que CTest est utilisé avec plusieurs paramètres. Le premier permet
+de faire afficher les erreurs générées par le framework de test car avec
+l'affichage par défaut, on ne peut pas savoir quel test a échoué et pourquoi.
+Ensuite, on utilise l'option \verb|-T| pour spécifier deux actions à réaliser.
+Tout d'abord on souhaite que CTest exécute les tests puis ensuite on lui demande
+de calculer le pourcentage de couverture des tests. Ceci se fait à l'aide d'un
+outil installer par défaut avec gcc: \verb|gcov|. Cet outil permet de savoir le
+pourcentage de lignes de codes compilées qui sont exécutées par les tests. Cela
+permet d'avoir une idée de la qualité des tests car il est intéressant de
+maximiser la couverture des tests pour être sûr que tout le code est testé.
+
+\begin{listing}[ht!]
+\begin{minted}{yml}
+launch-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - apt-get update
+    - apt install -y libcriterion-dev cmake
+    - cd commun/Test/build
+    - ctest --output-on-failure -T Test -T Coverage
+  needs:
+    - job: build-job
+      artifacts: true
+  coverage: '/Percentage Coverage: \d+\.\d+/'
+\end{minted}
+\caption{.gitlab-ci.yml: test job}
+\label{testjob}
+\end{listing}
 
 La création de cette pipeline a clos la première partie du stage qui concernait
 la création d'un outil de test sur la branche principale du code C. Le travail
@@ -1923,10 +1980,72 @@ est l'autre branche du projet \verb|dev_pic| que nous avons détaillé dans la
 section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
 aux modifications apportées à l'outil pour que ce dernier fonctionne sur la
 seconde branche.
-
+%}}}
 \section{Les tests sur la branche de l'événementiel}
 
+Dans cette section, nous allons traiter l'intégration de l'outil de test dans la
+seconde branche. À noter que cette section sera courte étant donné le fait qu'il
+n'y a pas eu de nouvel élément créé pour l'événementiel et qu'il n'y a eu que
+très peu de modifications apportées au code de l'outil.
+
+\subsubsection*{Compilation}
+
+Avant de commencer à intégrer l'outil de test, il a fallut mettre en place une
+première configuration de CMake capable de compiler une partie du code.
+L'objectif était de comprendre le fonctionnement du code et de compiler un
+maximum de fichier pour intégrer l'outil plus facilement. Cette tâche a pris
+beaucoup de temps car tous les fichiers présents ne pouvaient pas être compiler,
+or cela n'était mentionné nul part. Cependant, le fait de faire cela en amont a
+grandement facilité le reste du travail.
+
+\subsubsection*{Le stockage}
+
+Le premier élément qui a été ajouté sur la nouvelle branche est le stockage.
+Étant donné que ce dernier est placé très bas niveau dans le code, il n'y a pas
+eu de modifications dessus. En effet, la partie évènementiel change le
+fonctionnement du code haut niveau mais les fichiers du compilateur eu ne sont
+pas modifiés. Le stockage étant une partie assez importante de l'outil de test,
+le fait que tout fonctionne sans modifications a permis de gagner beaucoup de
+temps.
+
+\subsubsection*{Cctalk et MDB}
+
+La partie qui a pris le plus de temps à adapté a été celle sur les protocoles
+monétiques. Cette partie a été complexe a adapté car le code a beaucoup changé
+entre les branches que ça soit pour les versions haut et bas niveau. Ici, les
+fonction \verb|Run| et \verb|Control| ont été adaptées pour pouvoir fonctionner
+avec le \verb|Sate Manager|.
+
+TODO: détailler les modif avec exemple de code
+
+À noter qu'ici, il y a eu beaucoup moins d'éléments simulés que sur la branche
+principale. En effet, cette branche est secondaire et elle n'est pas
+nécessairement à jour car tous les composants ne sont pas utilisés. De ce fait,
+la plupart des composants Cctalk et MDB qui étaient présents sur l'autre branche
+ne l'étaient pas ici.
+
+\subsubsection*{Les historiques}
+
+Comme dit dans la section \ref{cdbs}, les historiques sont stockés dans la
+mémoire de la carte. Étant donné que le stockage n'a pas nécessité de
+modifications sur ce branche, toute la partie concernant les CDBs était presque
+fonctionnelle. Ici, des modifications ont été apportées au niveau du code de
+l'entreprise ainsi qu'au niveau des tests. En effet, la branche n'étant pas à
+jours, des éléments qui étaient utilisés sur la branche principale n'existaient
+pas, ils ont donc étaient supprimé. Dans le code de l'entreprise, il manquait
+aussi des conditions préprocesseurs qui étaient utilisaient sur l'autre branche
+pour compiler, ces dernières ont donc été rajoutées.
+\\~\\
+
+L'intégration de l'outil de test sur la branche événementiel a marqué la fin de
+la partie C du stage. Le travail a avancé plus vite que prévu et cela a permis
+d'aborder la partie C++. Dans la partie suivante, nous allons voir
+l'implémentation de l'outil de test en C++ ainsi que la mise en place de la
+pipeline sur le code commun Qt.
+
 \section{Le projet de test sur la partie Qt}
+
+\subsection{Le stockage}
 
 \subsection{Nouveau framework}
 
@@ -1998,6 +2117,14 @@ neovim.
 TODO: Un des objectifs de ce stage été de progresser sur l'outil GDB.\\
 TODO: utilisation avancée de gdb\\
 TODO: configuration de gdb
+
+La taille et la complexité du code a nécessité l'utilisation d'un débogueur. Les
+débogueurs sont des outils très utiles pour comprendre comment un code
+s'exécute. Le débogueur qui a été utilisé est GDB (GNU Debugger).
+
+GDB est un outil très puissant, il permet de suivre l'exécution du code,
+d'évaluer des expressions et même d'interagir avec le code en modifiant les
+valeurs des variables de façon interactive pendant une session.
 
 \subsubsection{IDE}
 
