@@ -1981,7 +1981,7 @@ section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
 aux modifications apportées à l'outil pour que ce dernier fonctionne sur la
 seconde branche.
 %}}}
-\section{Les tests sur la branche de l'événementiel}
+\section{Les tests sur la branche de l'événementiel}%{{{
 
 Dans cette section, nous allons traiter l'intégration de l'outil de test dans la
 seconde branche. À noter que cette section sera courte étant donné le fait qu'il
@@ -1997,6 +1997,14 @@ maximum de fichier pour intégrer l'outil plus facilement. Cette tâche a pris
 beaucoup de temps car tous les fichiers présents ne pouvaient pas être compiler,
 or cela n'était mentionné nul part. Cependant, le fait de faire cela en amont a
 grandement facilité le reste du travail.
+
+Lorsque les premiers fichiers de tests ont étaient ajoutés, un problème très
+intéressant a été rencontré. Comme expliqué dans la section \ref{brancheevent},
+on utilise une fonction \verb|Connect| pour connecter un évènement à une
+fonction \verb|SwitchControl|.
+
+TODO: détailler les paramètres de la fonction et expliquer le problème de
+l'évalutation des arguments avec gcc.
 
 \subsubsection*{Le stockage}
 
@@ -2042,8 +2050,8 @@ la partie C du stage. Le travail a avancé plus vite que prévu et cela a permis
 d'aborder la partie C++. Dans la partie suivante, nous allons voir
 l'implémentation de l'outil de test en C++ ainsi que la mise en place de la
 pipeline sur le code commun Qt.
-
-\section{Le projet de test sur la partie Qt}
+%}}}
+\section{Le projet de test sur la partie Qt}%{{{
 
 \subsection{Le stockage}
 
@@ -2064,8 +2072,8 @@ pipeline sur le code commun Qt.
 \subsection{La simulation}
 
 - code objet plus simple.
-
-\section{Déroulement du projet}
+%}}}
+\section{Déroulement du projet}%{{{
 
 Dans cette dernière section, nous allons nous intéresser aux méthodes de
 trivial et aux outils utilisés durant ce stage. Nous ferrons ensuite la
@@ -2078,7 +2086,7 @@ stage. Les outils les plus utilisés ne seront pas détaillé, par contre, cette
 partie a pour but de mettre en lumière les avantages qu'il y a à connaitre et
 configurer ses outils de travail.
 
-\subsubsection{Gestion de version}
+\subsubsection{Gestion de version}%{{{
 
 Pour la réalisation du projet, le gestionnaire de version utilisé été Git. À
 noter que la société n'utilise Git que depuis un ans, le gestionnaire de version
@@ -2108,28 +2116,52 @@ si une solution est réalisable.
 
 À noter que l'équipe de développement de CKsquare utilise l'application
 \textbf{gitahead}. Cette application n'a pas été utilisée pendant le
-développement du projet de tests. C'est l'interface en ligne de commande de Git
+développement du projet de tests. Ici, c'est l'interface en ligne de commande de Git
 qui a été privilégiée ainsi que l'utilisation du plugin \textbf{fugitive} sur
 neovim.
-
-\subsubsection{GDB}
-
-TODO: Un des objectifs de ce stage été de progresser sur l'outil GDB.\\
-TODO: utilisation avancée de gdb\\
-TODO: configuration de gdb
+%}}}
+\subsubsection{GDB}%{{{
 
 La taille et la complexité du code a nécessité l'utilisation d'un débogueur. Les
 débogueurs sont des outils très utiles pour comprendre comment un code
-s'exécute. Le débogueur qui a été utilisé est GDB (GNU Debugger).
+s'exécute. L'outil qui a été utilisé est GDB (GNU Debugger) qui est compatibles
+avec beaucoup de langages dont le C et C++.
 
-GDB est un outil très puissant, il permet de suivre l'exécution du code,
-d'évaluer des expressions et même d'interagir avec le code en modifiant les
-valeurs des variables de façon interactive pendant une session.
+GDB est un outil très puissant, comme la plupart des débogueurs, il permet de
+suivre l'exécution du code, d'évaluer des expressions, d'interagir avec le code
+en modifiant les valeurs des variables de façon interactive pendant une session
+ou encore d'inspecter le contenu des registres (utilisés dans le code assembleur
+généré par le compilateur). Cet outil propose aussi des fonctionnalités très
+avancées qui n'ont pas été utilisées durant le stage mais qui sont tout de même
+intéressantes à noter. GDB permet la création de checkpoints (commande
+\verb|checkpoint|) qui permettent la sauvegarde de l'état du code pendant
+l'exécution et de pouvoir recharger cet état sans relancer tout le programme. Il
+permet aussi d'enregistrer une suite d'instructions pour pouvoir faire de
+l'exécution inversé et revenir en arrière dans l'exécution du code (commandes
+\verb|record| et \verb|reverse-step|). Il propose aussi un interpréteur et un
+module python intégré et il est possible d'utiliser python pour réécrire des
+commandes. Par exemple, on peut réécrire la fonction d'affichage lorsque l'on
+souhaite afficher des structures de données complexes.
 
-\subsubsection{IDE}
+GDB est aussi un outil configurable et sa configuration intègre un langage de
+script qui permet de créer des commandes personnalisées. Comme on peut le voir
+sur cet article \cite{gdbinit}, il est possible de faire des choses assez
+complexes avec la configuration de GDB comme créer une commande pour afficher un
+arbre binaire.
+
+Bien que GDB soit à l'origine fait pour être utilisé dans le terminal, il existe
+beaucoup d'interface compatibles. Tout d'abord il existe des interfaces
+graphiques comme ddd, créé pour permettre l'affichage des structures des données
+en mémoire. GDB est aussi intégré dans des éditeurs de textes, par exemple,
+\textit{vim} et \textit{emacs} possèdes des intégrations de GDB permettant de
+déboguer directement depuis l'éditeur. Enfin, la plupart des serveur DAP
+comme , utilisent aussi gdb.
+%}}}
+\subsubsection{IDE}%{{{
 
 TODO: nvim -> vim-fugitive, clangd, l'intégration de gdb ... Présentation rapide
 de ma configuration.
+%}}}
 %}}}
 \subsection{Rédaction de la documentation}%{{{
 \clearpage
@@ -2179,6 +2211,7 @@ NOTE: diagramme actuel
 %}}}
 %}}}
 \clearpage
+%}}}
 %***************************************************************************}}}
 % Résultats et discussions *************************************************{{{
 \part{Résultats et discussions}
@@ -2204,6 +2237,9 @@ améliorer.
 NOTE: Je ne sais pas comment nommer cette partie, elle doit correspondre à la
 réflexion sur les enjeux actuels liés à la responsabilité sociétale et
 environnementale demandée par la CTI.
+
+- automatisation des tests == moins de pb = économie de bande passante car moins
+  de mise à jours hotfix et moins de déplacement de techniciens
 
 \clearpage
 
