@@ -306,63 +306,78 @@ bornes. L'outil doit permettre l'écriture de tests pour valider le code et doit
 pouvoir être automatisé dans une pipeline Gitlab. L'intérêt pour l'entreprise
 est de pouvoir détecter un maximum de problèmes le plus tôt possible et de
 manière automatique pour ne pas envoyer du code non fonctionnel en production.
-
-L'outil sera utilisé pour tester du code normalement exécuté sur du matériel
-embarqué, il faudra donc un moyen de tester des fonctions qui interagissent avec
-le matériel électronique. Pour ce faire, il faudra simuler les interactions avec
-le matériel en créant des fonctions et des structures de données qui réagiront
-comme les composants électroniques. Par exemple, si une fonction doit modifier
-un registre sur une carte, il faut pouvoir émuler le registre pour vérifier que
-les bonnes modifications ont été apportées dessus. De plus, les composants
-électroniques sont interfacés avec différents protocoles. Il faudra donc
-comprendre le fonctionnent de ces protocoles ainsi que leur implémentation par
-l'entreprise pour pouvoir simuler une communication réaliste entre la carte et
-les composants.
-
-Étant donné que les tests seront exécutés dans une pipeline (donc dans un
-docker), il faudra s'assurer que le code puisse compiler sous Linux. Ici, on ne
-pourra pas utiliser MPLAB et les compilateurs utilisés par l'entreprise à cause
-de la simulation. Le compilateur utilisé sera gcc et une partie des
-bibliothèques de Microship seront modifiées pour arriver à générer un
-exécutable.
+Le code doit normalement s'exécuter sur une carte électronique qui gère
+différents composants. La carte et les composants électroniques ne seront pas
+accessibles dans la pipeline, il faudra donc simuler les composants pour pouvoir
+tester le code.
 
 Le résultat final doit être un outil qui doit pouvoir être facilement
 réutilisable et adaptable. La documentation et la structure du code doit pouvoir
 permettre d'aisément modifier ou copier les différents éléments. Par exemple, il
 faudra que tous les composants simulés aient la même structure et que cette
 structure soit suffisamment simple et générique pour pouvoir être copiée pour la
-création d'un nouveau composant.
+création d'un nouveau composant. Ici, le produit final n'est pas tellement le
+code en lui même mais plus la méthode employée pour mettre en place les tests.
 
-À noter que l'objectif du projet n'est pas d'écrire des tests.  Des tests ont
-été écrits durant le projet mais ces derniers ont pour objectif de valider le
-bon fonctionnement des composants simulés et non celui du code de la société.
+À noter que l'objectif du projet n'est pas d'écrire des tests, la philosophie de
+l'entreprise est que ce sont les développeurs qui tests leurs code. Des tests
+ont été écrits durant le stage mais ces derniers ont pour objectif de valider
+le bon fonctionnement des composants simulés et non celui du code de la société.
 Par contre, il faudra fournir une documentation complète décrivant comment
 tester les programmes. Cette documentation devra présenter le framework de test
 et décrire le fonctionnement des composants simulés ainsi que leur utilisation.
+
+Enfin, concernant les limites du projet, l'objectif est de pouvoir tester les
+bibliothèques communes aux différents projets. Cela comprend le code commun de
+la partie C ainsi que le code commun de la partie Qt (C++). À noter qu'au niveau
+de la partie, il y aura deux branches à traiter, et ces dernière on un
+fonctionnement différent, il faudra donc adapter l'outil de tests pour les deux
+branches.
+
+Maintenant que nous avons décrit les bases du projet, intéressons nous un peut
+plus en détail au problème posé.
 %}}}
-\section{Environnement et outils à disposition}%{{{
+\section{Analyse du problème}%{{{
 
-Concernant les conditions de travail durant le stage il faut noter que ce projet
-se réalisait seul. Cependant, les développeurs de CKsquare étaient présents pour
-répondre aux différentes questions, guider le projet ou pour faire les choix
-importants.
+Le but du stage est de créer un outil permettant de faire de l'intégration
+continue. De ce fait, cela va nécessiter de trouver un framework de test complet
+mais aussi suffisamment simple d'utilisation. En effet, les développeurs de
+l'entreprise ne sont pas nécessairement formé à l'utilisation de ce types
+d'outils. Concernant le framework, il faudra aussi que ce dernier soit simple à
+mettre en place dans une pipeline. Cela signifie que les frameworks disponibles
+dans les bases des gestionnaires de paquets seront privilégié.
 
-Le projet a été démaré de zéro, aucun projet de test similaire n'avait été
-amorcé auparavant. Le travail a été réalisé entièrement en présentiel. De plus,
-les stagiaires étaient tous conviés aux réunions qui permettent de faire le
-point au niveau des équipes de développement. Dans ces réunion chaque
-développeur parle pendant deux minutes du travail qu'il a réalisé et de ce qu'il
-compte faire ensuite.
+Comme mentionné dans la partie précédente, l'outil sera utilisé pour tester du
+code normalement exécuté sur du matériel embarqué, il faudra donc un moyen de
+tester des fonctions qui interagissent avec le matériel électronique. Pour ce
+faire, il faudra simuler les interactions avec le matériel en créant des
+fonctions et des structures de données qui réagiront comme les composants
+électroniques. Par exemple, si une fonction doit modifier un registre sur une
+carte, il faut pouvoir émuler le registre pour vérifier que les bonnes
+modifications ont été apportées dessus. De plus, les composants électroniques
+sont interfacés avec différents protocoles. Il faudra donc comprendre le
+fonctionnent de ces protocoles ainsi que leur implémentation par l'entreprise
+pour pouvoir simuler une communication réaliste entre la carte et les
+composants. Le fait de devoir faire de la simulation pour les tests peut
+complexe si le framework choisi n'est pas adapté. Il faudra que le framework de
+test ne soit suffisamment flexible et offre un maximum d'outil pour tester les
+structures de données qui vont être utilisées dans la simulation.
 
-Quant au matériel, un bureau avec un PC sous Ubuntu a été mis à disposition. La
-session sur le PC possédait les privilèges administrateur pour faciliter
-l'installation des différents logiciels utilisés pour le développement
-(compilateur, éditeur de texte, doxygen, ...). De plus, il a été fourni une
-boite mail ainsi qu'un compte Gitlab. Un projet Gitlab a aussi été créé pour
-permettre de tester les frameworks de test. Il a aussi servit à stocker les
-notes prise sur le projet ainsi que la documentation. Enfin, la documentation
-des différents éléments comme les protocoles (Cctalk, Mdb) était disponible à la
-demande.
+Étant donné que les tests seront exécutés dans une pipeline (donc dans un
+docker), il faudra s'assurer que le code puisse compiler sous Linux. Ici, on ne
+pourra pas utiliser MPLAB (IDE fourni par Microship) et les compilateurs
+utilisés par l'entreprise à cause de la simulation. Le compilateur utilisé sera
+gcc et une partie des bibliothèques de Microship seront modifiées pour arriver à
+générer un exécutable.
+
+Enfin, le plus gros défi de ce stage va être le fait de comprendre et d'utiliser
+le code de l'entreprise. En effet, la taille du code est assez conséquente et
+beaucoup de choses ont été réécrites par l'entreprise, notamment des
+bibliothèques du compilateur. Il faudra soigneusement choisir ce qui va être
+simulé et où va se placer la simulation car tout le code ne pourra pas
+certainement pas être testé. Par exemple, la partie concernant le protocole
+TCPIP est assez ancienne et suffisamment complexe pour que les développeurs de
+l'entreprise ne souhaitent pas la modifier ou la tester.
 %}}}
 \clearpage
 %***************************************************************************}}}
@@ -1919,7 +1934,7 @@ on déclare le répertoire \verb|build| comme artefact ce qui permettra de le
 réutiliser. On peut voir la configuration sur le listing \ref{buildjob}.
 
 \begin{listing}[ht!]
-\begin{minted}{yml}
+\begin{minted}{yaml}
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
@@ -1956,7 +1971,7 @@ permet d'avoir une idée de la qualité des tests car il est intéressant de
 maximiser la couverture des tests pour être sûr que tout le code est testé.
 
 \begin{listing}[ht!]
-\begin{minted}{yml}
+\begin{minted}{yaml}
 launch-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
