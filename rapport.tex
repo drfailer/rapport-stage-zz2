@@ -643,9 +643,18 @@ effet, l'organisation du projet de test doit suivre les principes de CKsquare
 pour rendre l'outil facile à utiliser et à maintenir pour les développeurs de
 l'entreprise.
 
-%TODO: expliquer brièvement le projet myosis et pk il a été choisi
+% [projet ck] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.5]{./img/arborescence-proj.png}
+    \caption{Arborescence d'un projet CKsquare}
+    \label{fig:arbrprojck}
+  \end{center}
+\end{figure}
+%}}}
 
-Chaque projet comporte une partie locale dans laquelle, tous les noms de
+Comme on peut le voir sur l'arborescence de la figure \ref{fig:arbrprojck},
+chaque projet comporte une partie locale dans laquelle, tous les noms de
 fichiers commencent par un \textbf{l}. Dans cette partie, on retrouve trois
 fichiers principaux. Tout d'abord, il y a le fichier \verb|linit.c| qui permet
 d'initialiser le projet. Ensuite, il y a les fichiers \verb|lmain.c| et
@@ -669,17 +678,27 @@ se nomme \verb|commun_global| et il contient la partie du code qui est commune �
 tous les projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce
 dernier ne concerne que la partie C qui s'exécute sur un \gls{pic}.
 
+% [projet ck] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.5]{./img/arborescence-devpic.png}
+    \caption{Arborescence du répertoire dev\_pic}
+    \label{fig:repdevpic}
+  \end{center}
+\end{figure}
+%}}}
+
 La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|
-(aussi appelé codes communs). Ce répertoire contient un sous répertoire
-\verb|commun| qui contient la partie du code à tester. À la racine des communs,
-se trouvent aussi une partie des bibliothèques des différents compilateurs.
-L'entreprise CKsquare a réécrit une grande partie des bibliothèques des
-\gls{pic}s pour avoir plus de maitrise quand à la gestion des différents
-éléments. Ces bibliothèques ont été très utiles pour mettre en place une partie
-de l'émulation des composants dans le projet de test, nous traiterons cela plus
-loin dans ce rapport. Le reste des bibliothèques des microcontrôleurs a aussi
-été utilisé pour compiler avec gcc, là aussi, ce sera traiter dans les
-prochaines sections.
+(aussi appelé codes communs). Comme on peut le voir sur la figure
+\ref{fig:repdevpic}, ce répertoire contient un sous répertoire \verb|commun| qui
+contient la partie du code à tester. À la racine des communs, se trouvent aussi
+une partie des bibliothèques des différents compilateurs. L'entreprise CKsquare
+a réécrit une grande partie des bibliothèques des \gls{pic}s pour avoir plus de
+maitrise quand à la gestion des différents éléments. Ces bibliothèques ont été
+très utiles pour mettre en place une partie de l'émulation des composants dans
+le projet de test, nous traiterons cela plus loin dans ce rapport. Le reste des
+bibliothèques des microcontrôleurs a aussi été utilisé pour compiler avec gcc,
+là aussi, ce sera traiter dans les prochaines sections.
 
 Le code commun est organisé par catégories. Le répertoire \verb|commun| de
 \verb|dev_pic| contient des sous répertoires qui correspondent aux
@@ -761,24 +780,68 @@ la mise en place des tests réalisés sur ces fonctions.
 \label{brancheevent}
 
 Cette branche a été créée pour simplifier le code, elle utilise un système mis
-en place sur la partie Qt (code C++) qui intègre un système permettant de
-déclencher des appels de fonctions en émettant des évènements. Le deuxième
-objectif de ce système est de limiter les appels de fonctions dans la boucle
-principale. En effet, sur l'autre branche, les fonctions \verb|Control| des
-composants sont continuellement appelées par le \verb|Contro Manager|, ce qui
-peut poser des problèmes de performance. Ici, les fonctions qui gèrent les
-composants ne sont appelées que lorsqu'un évènement est émit. Par exemple,
-lorsqu'une trame est envoyée, un évènement est émit pour signifier la fin de la
-communication. Cela aura pour effet de déclencher l'appel de la fonction de
-gestion du composants qui a envoyé la trame. Cette fonction est une machine à
-états qui passera dans un état d'attente de réponse.
+en place sur la partie Qt (code C++) qui  permet de déclencher des appels de
+fonctions en émettant des signaux. Le deuxième objectif de ce système est de
+limiter les appels de fonctions dans la boucle principale. En effet, sur l'autre
+branche, les fonctions \verb|Control| des composants sont continuellement
+appelées par le \verb|Contro Manager|, ce qui peut poser des problèmes de
+performance. Ici, les fonctions qui gèrent les composants ne sont appelées que
+lorsqu'un évènement est émit. Par exemple, lorsqu'une trame est envoyée, un
+évènement est émit pour signifier la fin de la communication. Cela aura pour
+effet de déclencher l'appel de la fonction de gestion du composants qui a envoyé
+la trame. Cette fonction est une machine à états qui passera dans un état
+d'attente de réponse (par exemple). Le défaut de ce système est qu'il nécessite
+l'utilisation de structures de données assez lourdes en mémoire, cependant, ce
+défaut est compensé par le fait que la taille du code diminue fortement.
 
-TODO: event\\
-TODO: inspiré de qt\\
-TODO: plus lisible mais plus lourd\\
-TODO: normalement plus rapide comme il n'y a pas trop d'appels à toutes les
-fonctions
+Le fonctionnent de ce systèmes repose sur deux structures de données, les
+\verb|SMs| et les \verb|Connects|. \verb|SM| signifie \textit{State Machine},
+comme son nom l'indique, cette structure permet de gérer les machines à états.
+La seconde structure de données permet de gérer les signaux. Ici, les fonctions
+\verb|Contro| sont remplacer par des fonctions \verb|SwitchControl| qui prennent
+en paramètre un \verb|SM| qui va permettre la gestion de la machine à états dans
+la fonction. Les \verb|SM| contiennent des pointeurs vers des données utiles
+pour les machines à états, comme des arguments ou encore une horloge spécifique
+à la machine. Le fichier des \verb|SM| propose plusieurs fonctions pour naviguer
+entre les états des machines comme \verb|SM_Go| qui permet d'aller directement
+dans un nouvel état de la machine. Il y a aussi la fonction \verb|SM_Exit| qui
+fonctionne comme la fonction précédente sauf qu'ici, la machine à état s'arrête
+et attend qu'un signal soit émit pour se relancer. Le fichier propose aussi des
+fonctions permettant de gérer les horloges des machines à états, permettant par
+exemple de quitter une machine à états pendant un temps minimum donné et de
+revenir lorsque l'horloge aura émis son signal de fin. On a donc plusieurs
+façons de changer d'état dans une machine, on peut y aller directement ou
+attendre un signal comme celui émit à la fin d'un minuteur.
 
+Pour que l'appel à une fonction soit déclenché à l'émission d'un signal, il faut
+connecter la fonction au signal. Pour ce faire, on utilise la structure des
+\verb|Connects|. Un \verb|Connect| est un signal qui est connecté à une
+fonction. Lors de la connections, on spécifie les arguments à donner à la
+fonctions qui est connectée. Lorsque l'on a créé un \verb|Connect| et que ce
+dernier a été lié à une fonction, on peut utiliser une fonction \verb|Emit|, qui
+va émettre le signal. Cela aura pour effet de déclencher l'appel de toutes les
+fonctions connectées au signal (immédiatement ou non). Ce système est très
+similaire à celui utilisé sur Qt en C++. L'implémentation de ce système en C
+utilise une liste chaînée de \verb|Connects|. Lorsque l'on fait une connections,
+on créé un nouveau \verb|Connect| en spécifiant le pointeur sur la tête de la
+liste des \verb|Connects| liés à un signal. La fonction \verb|Emit| prend en
+paramètre la tête le la liste, et va ajouter toute la liste à une liste de
+\verb|Connects| à traiter (il y a deux chaînages). Ensuite, on a une fonction
+qui traite les signaux émit en appelant toutes les fonctions connectées avec les
+bon arguments.
+
+% todo: il faut un schéma
+
+À noter que les fonctions \verb|SwitchControl| prennent aussi en paramètre une
+évènement. En effet, dans certains état, on ne souhaite pas que les machines
+soient lancées par n'importe quel signaux. Pour palier à ce problème, on entre
+toujours dans une machine à état avec une évènement, et ce dernier sera vérifié
+ou non en fonction de l'état dans lequel se trouve la machine.
+
+Ce système est assez élégant et très intéressant d'un point de vue génie
+logiciel. Il permet vraiment de simplifier le code et il est souvent plus
+intuitif dans son utilisation que le système de \verb|Control Manager|. Par
+contre, ce n'est pas un système simple à mettre en place en C.
 %}}}
 \section{Organisation du projet de tests}%{{{
 
@@ -800,7 +863,7 @@ représentation de l'arborescence des fichiers dans le projet commun.
 % [Intégration des tests dans le code commun] {{{
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[scale=0.7]{./img/arborescence-commun.png}
+    \includegraphics[scale=0.4]{./img/arborescence-commun.png}
     \caption{Intégration des tests dans le code commun}
     \label{fig:integrtestcommun}
   \end{center}
@@ -2068,12 +2131,35 @@ pipeline sur le code commun Qt.
 %}}}
 \section{Le projet de test sur la partie Qt}%{{{
 
-\subsection{Le stockage}
+Dans cette section, nous allons traiter l'implication de l'outil de test en
+C++. L'objectif est de pouvoir intégrer l'outil dans le code commun Qt.
 
 \subsection{Nouveau framework}
 
 - Premier framework compatible cpp pour rien
 - collaboration avec samuel qui trouvé un framework plus adapté à Qt
+
+\subsection{Le stockage}
+
+Une partie qui avait pris beaucoup de temps côté C était le stockage. Pour
+rappel, l'implémentation du stockage avait nécessiter la simulation des
+périphériques de stockage ainsi que des deux interface utilisée pour interagir
+avec ces composant. Pour la partie C++, il n'y a pas eu besoin de simulation car
+le stockage se fait à l'aide de simples fichier. En effet, les cartes
+électroniques utilisées avec Qt sont beaucoup plus haut niveau et intègrent un
+système d'exploitation (Linux) capable de gérer un système de fichier. Ici, on
+utilise l'objet \verb|QFile| pour écrire dans des fichiers au format binaire.
+Dans les tests, il suffit simplement d'aller lire dans les fichiers pour
+vérifier si les données sont bien stockées.
+
+À noter qu'il peut être intéressant de ne pas utiliser l'objet \verb|QFile|
+dans les tests mais de plutôt opter pour les outils de la bibliothèque
+standard. Cela a pour objectif de détecter les mauvaises manipulations des
+outils de Qt. En effet, comme c'est le développeur du code qui écrit les tests,
+si ce dernier manipule mal les outils de Qt, il y a de fortes chance pour que ça
+soit aussi le cas dans les tests. Pour éviter ce problème, on ne réutilise pas
+les même outils dans le code et dans les tests. De plus, cela pourra permettre
+la détection de problème avec Qt si jamais il y en a.
 
 \subsection{Les problèmes du code Qt}
 
