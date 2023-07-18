@@ -2223,9 +2223,9 @@ neovim.
 %}}}
 \subsubsection{GDB}%{{{
 
-La taille et la complexité du code a nécessité l'utilisation d'un débogueur. Les
-débogueurs sont des outils très utiles pour comprendre comment un code
-s'exécute. L'outil qui a été utilisé est GDB (GNU Debugger) qui est compatibles
+La taille et la complexité du code a nécessité l'utilisation d'un déboguer. Les
+déboguer sont des outils très utiles pour comprendre comment un code
+s'exécute. L'outil qui a été utilisé est GDB (GNU Debugger) qui est compatible
 avec beaucoup de langages dont le C et C++.
 
 GDB est un outil très puissant, comme la plupart des débogueurs, il permet de
@@ -2236,13 +2236,16 @@ généré par le compilateur). Cet outil propose aussi des fonctionnalités trè
 avancées qui n'ont pas été utilisées durant le stage mais qui sont tout de même
 intéressantes à noter. GDB permet la création de checkpoints (commande
 \verb|checkpoint|) qui permettent la sauvegarde de l'état du code pendant
-l'exécution et de pouvoir recharger cet état sans relancer tout le programme. Il
+l'exécution pour pouvoir recharger cet état sans relancer tout le programme. Il
 permet aussi d'enregistrer une suite d'instructions pour pouvoir faire de
-l'exécution inversé et revenir en arrière dans l'exécution du code (commandes
+l'exécution inversée et revenir en arrière dans l'exécution du code (commandes
 \verb|record| et \verb|reverse-step|). Il propose aussi un interpréteur et un
 module python intégré et il est possible d'utiliser python pour réécrire des
 commandes. Par exemple, on peut réécrire la fonction d'affichage lorsque l'on
-souhaite afficher des structures de données complexes.
+souhaite afficher des structures de données complexes. À noter également que GDB
+a aussi été très utile pour faire fonctionner la solution utilisant des threads
+décrite dans la section \ref{echecthread} en aidant à suivre l'exécution du
+programme dans les différents threads.
 
 GDB est aussi un outil configurable et sa configuration intègre un langage de
 script qui permet de créer des commandes personnalisées. Comme on peut le voir
@@ -2252,11 +2255,36 @@ arbre binaire.
 
 Bien que GDB soit à l'origine fait pour être utilisé dans le terminal, il existe
 beaucoup d'interface compatibles. Tout d'abord il existe des interfaces
-graphiques comme ddd, créé pour permettre l'affichage des structures des données
-en mémoire. GDB est aussi intégré dans des éditeurs de textes, par exemple,
-\textit{vim} et \textit{emacs} possèdes des intégrations de GDB permettant de
-déboguer directement depuis l'éditeur. Enfin, la plupart des serveur DAP
-comme , utilisent aussi gdb.
+graphiques comme \verb|ddd| qui a été créé pour permettre la visualisation de
+structures des données. GDB est aussi intégré dans des éditeurs de textes, par
+exemple, \textit{vim} et \textit{emacs} possèdes des intégrations de GDB
+permettant de déboguer directement depuis l'éditeur. Enfin, certains des serveur
+DAP comme \verb|cpptools|, utilisent aussi GDB. Lors de ce stage, c'est d'abord
+l'interface TUI par défaut du programme qui a été utilisée (accompagnée de
+macros aidant à la mise en place de breakpoints). Par la suite, l'utilisation de
+\verb|Termdebug| a été privilégiée. C'est une interface proposée par l'éditeur
+\verb|(neo)vim| qui permet une utilisation très simple du débogueur une fois
+configurée. Sur la figure \ref{fig:termdebug}, on peut voir à quoi ressemble
+l'interface Termdebug. Le code exécuté se trouve à gauche et sur la droite il y
+a une fenêtre montrant les affichages dans le terminal (sortie standard) et une
+fenêtre permettant d'interagir avec GDB pour exécuter des commandes complexes.
+
+% [termdebug] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.6]{./img/termdebug.png}
+    \caption{Termdebug: GDB intégré à (neo)vim}
+  \end{center}
+  \label{fig:termdebug}
+\end{figure}
+%}}}
+
+GDB a permis de gagner énormément de temps pendant le développement de l'outil
+de test et c'est malheureusement un outil assez sous-estimé à l'école. Certains
+développeurs comme John Carmack considèrent l'utilisation d'un débogueur
+indispensable pour comprendre le fonctionnement d'un code. GDB n'est pas simple
+d'utilisation mais c'est un outil léger puissant et flexible qu'il est très
+intéressant de connaitre.
 %}}}
 \subsubsection{IDE}%{{{
 
