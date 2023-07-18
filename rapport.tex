@@ -1979,30 +1979,36 @@ le gestionnaire de paquets de la pipeline (\textit{Aptitude}). Cela comprend les
 outils comme \verb|gcc| et \verb|cmake| mais aussi le framework de test. Ici, on
 utilise l'image docker par défaut de Gitlab (\verb|ruby:3.1|) car il n'y a pas
 beaucoup de paquets à installer mais il serait possible d'utiliser une image
-plus complète ou d'en créer une. Le projet \verb|dev_pic| est dépendant du
-projet \verb|commun_global| qui comme expliqué en début de rapport correspond au
-code partagé entre tous les projets. Pour accéder à ce projet depuis la
-pipeline, il y a deux solution, la première consiste à utiliser un \gls{smodg}.
-Le défaut de cette méthode est qu'elle nécessite la gestion d'un sous module
-dans les communs. De plus, cette solution n'est pas très logique et
-complexifierait énormément la gestion du projet car \verb|dev_pic| est déjà un
-sous module des projet de l'entreprise. La seconde méthode est beaucoup plus
-simple puisqu'elle consiste juste en le clonage du projet \verb|commun_global|
-dans la pipeline. Pour pouvoir cloner un projet privé, on utilise un \textit{job
-token} accessible depuis la configuration à l'aide d'une variable. Une fois que
-l'on a téléchargé toutes les dépendances du projet, on met en place CMake et on
-compile les tests. Après la compilation, les exécutables se trouvent dans le
-répertoire \verb|buil/bin|, pour pouvoir y accéder depuis l'autre \textit{job},
-on déclare le répertoire \verb|build| comme artefact ce qui permettra de le
-réutiliser. On peut voir la configuration sur le listing \ref{buildjob}.
+plus complète ou d'en créer une. À noter que cela se fait dans une section à
+part (\verb|before_script|), ce qui permet de ne pas copier un partie de la
+configuration pour tous les \textit{jobs} et permet aussi de spécifier à Gitlab
+de garder les éléments en cache pour ne pas tout télécharger à chaque fois. Le
+projet \verb|dev_pic| est dépendant du projet \verb|commun_global| qui comme
+expliqué en début de rapport correspond au code partagé entre tous les projets.
+Pour accéder à ce projet depuis la pipeline, il y a deux solution, la première
+consiste à utiliser un \gls{smodg}. Le défaut de cette méthode est qu'elle
+nécessite la gestion d'un sous module dans les communs. De plus, cette solution
+n'est pas très logique et complexifierait énormément la gestion du projet car
+\verb|dev_pic| est déjà un sous module des projet de l'entreprise. La seconde
+méthode est beaucoup plus simple puisqu'elle consiste juste en le clonage du
+projet \verb|commun_global| dans la pipeline. Pour pouvoir cloner un projet
+privé, on utilise un \textit{job token} accessible depuis la configuration à
+l'aide d'une variable. Une fois que l'on a téléchargé toutes les dépendances du
+projet, on met en place CMake et on compile les tests. Après la compilation, les
+exécutables se trouvent dans le répertoire \verb|buil/bin|, pour pouvoir y
+accéder depuis l'autre \textit{job}, on déclare le répertoire \verb|build| comme
+artefact ce qui permettra de le réutiliser. On peut voir la configuration sur le
+listing \ref{buildjob}.
 
 \begin{listing}[ht!]
 \begin{minted}{yaml}
+before_script:
+  - apt-get update
+  - apt install -y libcriterion-dev cmake gcc
+
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
-    - apt-get update
-    - apt install -y libcriterion-dev cmake gcc
     - cd commun/Test/
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.cksquare.fr/cklibs/commun_global.git
     - mkdir build
@@ -2017,29 +2023,27 @@ build-job:       # This job runs in the build stage, which runs first.
 \label{buildjob}
 \end{listing}
 
-Dans le second \textit{job}, on va lancer les tests. On commence par réinstaller
-toutes les dépendances. Ensuite, on se rend dans le répertoire de build (qui
-était sauvegardé dans un artefact) et on exécute les les tests en utilisant la
-commande \verb|ctest|. \verb|CTest| est un exécutable installé avec CMake, il
-permet de gérer les tests de façon automatique. On peut voir sur le listing
-\ref{testjob} que CTest est utilisé avec plusieurs paramètres. Le premier permet
-de faire afficher les erreurs générées par le framework de test car avec
-l'affichage par défaut, on ne peut pas savoir quel test a échoué et pourquoi.
-Ensuite, on utilise l'option \verb|-T| pour spécifier deux actions à réaliser.
-Tout d'abord on souhaite que CTest exécute les tests puis ensuite on lui demande
-de calculer le pourcentage de couverture des tests. Ceci se fait à l'aide d'un
-outil installer par défaut avec gcc: \verb|gcov|. Cet outil permet de savoir le
-pourcentage de lignes de codes compilées qui sont exécutées par les tests. Cela
-permet d'avoir une idée de la qualité des tests car il est intéressant de
-maximiser la couverture des tests pour être sûr que tout le code est testé.
+Dans le second \textit{job}, on va lancer les tests. On se rend dans le
+répertoire de build (qui était sauvegardé dans un artefact) et on exécute les
+les tests en utilisant la commande \verb|ctest|. \verb|CTest| est un exécutable
+installé avec CMake, il permet de gérer les tests de façon automatique. On peut
+voir sur le listing \ref{testjob} que CTest est utilisé avec plusieurs
+paramètres. Le premier permet de faire afficher les erreurs générées par le
+framework de test car avec l'affichage par défaut, on ne peut pas savoir quel
+test a échoué et pourquoi. Ensuite, on utilise l'option \verb|-T| pour spécifier
+deux actions à réaliser. Tout d'abord on souhaite que CTest exécute les tests
+puis ensuite on lui demande de calculer le pourcentage de couverture des tests.
+Ceci se fait à l'aide d'un outil installer par défaut avec gcc: \verb|gcov|. Cet
+outil permet de savoir le pourcentage de lignes de codes compilées qui sont
+exécutées par les tests. Cela permet d'avoir une idée de la qualité des tests
+car il est intéressant de maximiser la couverture des tests pour être sûr que
+tout le code est testé.
 
 \begin{listing}[ht!]
 \begin{minted}{yaml}
 launch-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
-    - apt-get update
-    - apt install -y libcriterion-dev cmake
     - cd commun/Test/build
     - ctest --output-on-failure -T Test -T Coverage
   needs:
