@@ -872,7 +872,7 @@ Comme expliqué précédemment, ce répertoire contient des fichiers globaux
 qui permettent de pouvoir compiler et exécuter les tests. Les différentes
 parties sont décrites dans les sections suivantes.
 
-\subsubsection*{Faux projet}
+\subsubsection*{Faux projet} % TOTO: resume
 \label{fakeproj}
 
 Ce fichier contient des versions modifiées des fichiers du projet local (ceux
@@ -1015,7 +1015,10 @@ La configuration comporte les six sections suivantes:
     après la compilation.
 \end{itemize}
 
-%TODO: conclusion cmake
+CMake permet donc de compiler les tests avec une configuration organisée et
+lisible en plus de fournir des outils facilitant l'exécution des tests. Dans la
+section suivant, nous parlerons des premiers composants qui ont été simulés
+durant le projet, les horloges.
 
 %}}}
 \section{Simulation des horloges}%{{{
@@ -2156,6 +2159,33 @@ la détection de problème avec Qt si jamais il y en a.
 \subsection{La simulation}
 
 - code objet plus simple.
+
+\subsection{La mise en place de la pipeline}
+
+La configuration de la pipeline pour les commun Qt suis le même principe que
+celle du C. On a deux jobs, le premier permet de compiler les tests et le second
+les exécutes. Les tests sont toujours compilés avec CMake (qui utilise g++ au
+lieu de gcc) et exécutés avec CTest.
+
+Bien que les deux configuration soient similaires, il y a tout de même une
+grande différence avec le C. En effet, ici, on doit compiler du code
+fonctionnant avec la bibliothèque Qt, cela nécessite donc de l'installer. Le
+problème est que Qt est une bibliothèque assez lourde, comportant un grand
+nombre de paquets. Le fait de devoir télécharger toutes les dépendance au début
+de chaque job comme on le faisait pour le C prend beaucoup plus de temps et
+consomme aussi beaucoup plus de bande passante. Pour économiser les ressources
+il est préférable d'utiliser une image docker déjà configurée et de lancer la
+pipeline dedans. Ce type d'images existes et certaines sont disponibles sur
+docker hub mais elles ne sont généralement pas complètes ou pas à jours. La
+solution employée déjà employée sur une autre pipeline Qt était
+\verb|darkmattercoder/qt-build|. Le problème est que ce répertoire n'est plus
+maintenu et il n'était pas souhaitable d'utiliser une solution open-source plus
+mise à jour. Au final, il a été décidé de créer un nouveau projet se comportant
+d'une pipeline ayant pour rôle de compiler des images docker et de les envoyer
+sur le registre de Gitlab. Cette pipeline va créer une image docker avec une
+installation complète de Qt5 qui sera utilisée dans la pipeline du code commun
+Qt. Ce projet est très intéressant car il pourra permettre à l'entreprise de
+créer automatiquement d'autres images docker pour d'autres projets.
 %}}}
 \section{Déroulement du projet}%{{{
 
@@ -2342,27 +2372,32 @@ Concernant la partie C, l'outil final à été complètement intégré au code c
 sur les deux branches. Tout d'abord, l'outil met en place un framework de test
 complet et simple d'utilisation: \verb|Criterion|. L'utilisation framework a été
 détaillée dans la documentation rédigée durant le stage pour compléter celle du
-framework. L'outil propose aussi un système permettant de simuler les interfaces
-des composants électroniques utilisés dans les projets de l'entreprise. Cela
-comprend les périphériques de stockage (registres, eeproms et flash) utilisés en
-I²C et en SPI mais aussi d'autre périphériques interfacés en Cctalk et en MDB
-qui sont des protocoles spécialisés dans la monétique. Pour chacun des
-composants, la documentation détaille la méthode employée pour la simulation de
-sorte à ce que l'on puisse facilement simuler de nouveaux composants. La
-simulation des protocoles monétiques proposes deux niveaux de simulation pour
-les tests. Une version où des fichiers ont été modifiés pour isoler les éléments
-testés du reste du code et une autre version qui passe par toute la chaine
-d'instructions jusqu'aux fichiers du compilateur. Cela permet de faire à la fois
-des tests unitaires mais aussi des tests d'intégration où l'on test tout le
-code. La méthode consistant à créer des versions modifiées des fichiers a
-beaucoup été utilisée pour rendre les tests plus simples ou pour changer du code
-qui ne pouvait pas être compilé. Au final, il est bien possible d'écrire des
-tests où le code testé intéragie avec les composants simulés. Depuis ces test,
-on peut accéder aux données que les composants recoivent pour vérifier que cela
-correspond à ce qui était attendu. Enfin, la pipeline permettant d'automatiser
-les tests sur Gitlab a bien été mise en placeet cette dernière permet même de
-calculer le pourcentage de couverture des tests. Cela n'était pas demandé au
-départ et permet aux développeur d'avoir une idée de la qualité des tests.
+framework. Une configuration de CMake a aussi été mise en place pour simplifier
+la compilation. Cette configuration utilise CTest qui permet beaucoup
+d'opérations sur les tests comme le calcule de la couverture (lancement
+automatique de \verb|gcov|) ou encore l'analyse de fuites mémoire (lancement
+automatique de \verb|valgrind|). L'outil propose aussi un système permettant de
+simuler les interfaces des composants électroniques utilisés dans les projets de
+l'entreprise. Cela comprend les périphériques de stockage (registres, eeproms et
+flash) utilisés en I²C et en SPI mais aussi d'autre périphériques interfacés en
+Cctalk et en MDB qui sont des protocoles spécialisés dans la monétique. Pour
+chacun des composants, la documentation détaille la méthode employée pour la
+simulation de sorte à ce que l'on puisse facilement simuler de nouveaux
+composants. La simulation des protocoles monétiques proposes deux niveaux de
+simulation pour les tests. Une version où des fichiers ont été modifiés pour
+isoler les éléments testés du reste du code et une autre version qui passe par
+toute la chaine d'instructions jusqu'aux fichiers du compilateur. Cela permet de
+faire à la fois des tests unitaires mais aussi des tests d'intégration où l'on
+test tout le code. La méthode consistant à créer des versions modifiées des
+fichiers a beaucoup été utilisée pour rendre les tests plus simples ou pour
+changer du code qui ne pouvait pas être compilé. Au final, il est bien possible
+d'écrire des tests où le code testé interagir avec les composants simulés.
+Depuis ces test, on peut accéder aux données que les composants reçoivent pour
+vérifier que cela correspond à ce qui était attendu. Enfin, la pipeline
+permettant d'automatiser les tests sur Gitlab a bien été mise en place et cette
+dernière permet même de calculer le pourcentage de couverture des tests. Cela
+n'était pas demandé au départ et permet aux développeur d'avoir une idée de la
+qualité des tests.
 
 Description de l'outil final réalisé à la fin du stage.
 
@@ -2380,15 +2415,65 @@ améliorer.
 
 \section{Développement durable}
 
-NOTE: Je ne sais pas comment nommer cette partie, elle doit correspondre à la
-réflexion sur les enjeux actuels liés à la responsabilité sociétale et
-environnementale demandée par la CTI.
+Dans cette section, nous allons voir en quoi ce simple projet de test peut
+s'inscrire dans une démarche de développement durable.\\
 
-- automatisation des tests == moins de pb = économie de bande passante car moins
-  de mise à jours hotfix et moins de déplacement de techniciens
+Tout d'abord, l'objectif du stage était la mise en place d'un outil permettant
+l'automatisation de tests sur du code s'exécutant sur des cartes électroniques.
+Les cartes électroniques sont ensuite utilisées sur des bornes installées dans
+divers endroits, en France comme à l'étranger. Les problèmes sur ce genre de
+dispositifs peuvent avoir un impacte non négligeable sur l'environnement. En
+effet, lorsqu'il y a un problème au niveau du code, cela nécessite de mettre
+les cartes à jour. Dans le meilleur des cas, cela est possible en utilisant le
+système de mise à jour automatique créé par la société. Cependant, cela va
+consommer beaucoup de bande passante car il va falloir envoyer via internet un
+nouveau binaire ou une nouvelle configuration les cartes. Dans le pire des cas,
+lorsque la borne est trop vielle ou qu'elle n'est pas connectée à internet, il
+faut faire intervenir un technicien qui devra se déplacer en voiture pour mettre
+jour la borne manuellement. Le fait de détecter les problèmes au plus tôt avec
+des tests automatisés peut grandement limiter les risques de problèmes par la
+suite et donc l'obligation de mettre à jour les bornes.
+
+Ensuite, l'outil créé ne permet pas seulement de faire des tests, il permet
+aussi de faire des statistiques au niveau du code. Par exemple, l'analyse de la
+couverture des tests peut non seulement donner une idée de la qualité des tests
+mais aussi sur la qualité du code. Si on cherche à faire des tests les plus
+complets possibles mais que le pourcentage de couverture restes bas, cela peut
+être indicateur du fait qu'il y a du code inutile. Le fait d'enlever les
+éléments inutiles dans un programme permet d'un part de gagner en simplicité et
+donc de limiter les risques d'erreurs. D'autre part, cela aide à limiter la
+taille des exécutable et donc à consommer moins de mémoire. Étant donné que les
+programme sont de plus en plus consommateur de mémoire, le fait d'optimiser
+cette consommation peut permettre d'exécuter le code sur des cartes plus
+ancienne et d'économiser la mémoire sur les nouvelles cartes augmentant ainsi
+leurs durées de vie. Étant donné le fait que la fabrication de cartes
+électroniques coûte cher en métaux rares, le fait de pouvoir utiliser
+d'anciennes cartes permet d'économiser les ressources naturelles. En plus de
+cela, il reste peu d'entreprise qui utilisent encore des cartes électroniques à
+cause de la complexité du code. Maintenant ce sont les PC qui sont privilégiés
+même dans l'embarque alors que ces derniers sont moins fiables et plus
+consommateurs en énergie et en métaux rares. L'optimisation du code donc est
+cruciale pour pouvoir continuer à utiliser de simples cartes électroniques.
+
+Enfin, la mise en place de l'outil s'est aussi fait dans une démarche
+environnementale. Par exemple, lors de la mise en place de la pipeline des
+commun C++, il s'est avéré qu'il faillait télécharger et installer toutes les
+bibliothèques à chaque exécution. Cela n'était pas souhaitable étant donné la
+taille des paquets à installer, surtout lorsque l'on considère le fait que les
+pipeline peuvent être exécuté plusieurs dizaines de fois par jours. C'est pour
+cela que la création d'une image docker prés-configurée a été automatisée, de
+sorte à ce que l'on ait plus rien à télécharger au lancement de la pipeline des
+communs. Cette image est compilée bien moins souvent et permet d'économiser du
+temps et de la bande passante au lancement de la pipeline Qt. Le temps gagner
+permet aussi de libérer les ressources du serveur Gitlab plus rapidement pour
+économiser de l'énergie.\\
+
+Ce projet n'est donc à priori aucunement lié au développement durable, il permet
+cependant de manière indirecte de limiter les consommations de ressource. De
+plus, le projet à était fait de manière responsable de sorte à polluer le moins
+possible.
 
 \clearpage
-
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
