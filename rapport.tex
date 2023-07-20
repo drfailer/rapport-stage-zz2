@@ -623,12 +623,10 @@ choix qui ont été fait par la suite.
 \subsection{Organisation des fichiers}
 \label{orgaprojck}
 
-TODO: arborescence des fichier pour le projet global et pour \verb|dev_pic|
-
-Dans cette partie, nous allons détailler comment sont organisés les fichiers
-dans un projet CKsquare puis nous traiterons le fonctionnement du code dans la
-partie suivante. On rappel que ce projet d'intégration continue ne concerne que
-la partie du code qui est commune à tous les projets. Elles fait parties des
+Dans cette partie, nous allons résumer l'organisation des fichiers dans un
+projet CKsquare puis nous traiterons le fonctionnement du code dans la partie
+suivante. On rappel que ce projet d'intégration continue ne concerne que la
+partie du code qui est commune à tous les projets. Elles fait parties des
 bibliothèques ajoutés aux projets sous la forme de \gls{smodg}. \\
 
 Pour pouvoir penser le fonctionnement de l'outil de test à créer pendant ce
@@ -654,29 +652,19 @@ l'entreprise.
 %}}}
 
 Comme on peut le voir sur l'arborescence de la figure \ref{fig:arbrprojck},
-chaque projet comporte une partie locale dans laquelle, tous les noms de
-fichiers commencent par un \textbf{l}. Dans cette partie, on retrouve trois
-fichiers principaux. Tout d'abord, il y a le fichier \verb|linit.c| qui permet
-d'initialiser le projet. Ensuite, il y a les fichiers \verb|lmain.c| et
-\verb|lloop.c| qui permettent de gérer la fonction \verb|main| et la boucle
-principale du projet. Le projet local contient aussi deux fichiers très
-importants car ils permettent de configurer le projet. Ces fichiers se nomment
-\verb|config.h| et \verb|config_hw_default.h|. Ce sont des fichiers d'entête à
-l'intérieur desquels sont définis des constantes préprocesseur. Les projet
-CKsquare fonctionnent beaucoup sur le principe de la compilation conditionnelle.
-Les constantes préprocesseurs sont gérées à la compilation pour inclure ou non
-des parties du code, ce qui permet d'ajouter ou d'enlever facilement des
-fonctionnalité. Lorsqu'une fonctionnalité est enlevée, elle n'est pas compilée
-et le code correspondant n'apparait pas dans l'exécutable. De ce fait, il
-n'impacte pas sa taille, ce qui est très intéressant du fait des limitations
-quand aux capacités de stockage sur les carte. La gestion de la configuration
-s'est avérée complexe du fait du grand nombre d'options qui ne sont pas toutes
-documentées. Chaque projet contient aussi un répertoire \verb|CKLibs| dans
-lequel se trouvent des \gls{smodg}. Sur le projet d'étude qui a permis la mise
-en place du projet de test, il y avait deux sous modules. Le premier sous module
-se nomme \verb|commun_global| et il contient la partie du code qui est commune à
-tous les projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce
-dernier ne concerne que la partie C qui s'exécute sur un \gls{pic}.
+chaque projet comporte une partie locale ou les noms de fichiers commencent par
+\textbf{l}. Cette partie contient tous les fichiers qui sont spécifiques au
+projet courant (fonction d'initialisation, fonction principale, \dots). Chaque
+projet contient au moins deux fichiers de configuration qui sont des fichier
+d'entête contenant des constantes préprocesseur utilisées pour faire de la
+compilation conditionnelle. La gestion de la configuration s'est avérée complexe
+pour créer l'outil de test à cause du grand nombre d'options. Chaque projet
+contient aussi un répertoire \verb|CKLibs| dans lequel se trouvent des
+\gls{smodg}. Sur le projet d'étude qui a permis la mise en place du projet de
+test, il y avait deux sous modules. Le premier sous module se nomme
+\verb|commun_global| et il contient la partie du code qui est commune à tous les
+projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce dernier ne
+concerne que la partie C.
 
 % [projet ck] {{{
 \begin{figure}[h!]
@@ -690,39 +678,25 @@ dernier ne concerne que la partie C qui s'exécute sur un \gls{pic}.
 
 La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|
 (aussi appelé codes communs). Comme on peut le voir sur la figure
-\ref{fig:repdevpic}, ce répertoire contient un sous répertoire \verb|commun| qui
+\ref{fig:repdevpic}, ce répertoire possède un sous répertoire \verb|commun| qui
 contient la partie du code à tester. À la racine des communs, se trouvent aussi
 une partie des bibliothèques des différents compilateurs. L'entreprise CKsquare
-a réécrit une grande partie des bibliothèques des \gls{pic}s pour avoir plus de
-maitrise quand à la gestion des différents éléments. Ces bibliothèques ont été
-très utiles pour mettre en place une partie de l'émulation des composants dans
-le projet de test, nous traiterons cela plus loin dans ce rapport. Le reste des
+a réécrit une grande partie de ces bibliothèques pour avoir plus de maitrise
+quand à la gestion des différents éléments. Ces bibliothèques ont été très
+utiles pour mettre en place une partie de l'émulation des composants dans le
+projet de test, nous traiterons cela plus loin dans ce rapport. Le reste des
 bibliothèques des microcontrôleurs a aussi été utilisé pour compiler avec gcc,
-là aussi, ce sera traiter dans les prochaines sections.
+là aussi, ce sera traité dans les prochaines sections.
 
-Le code commun est organisé par catégories. Le répertoire \verb|commun| de
-\verb|dev_pic| contient des sous répertoires qui correspondent aux
-catégories. Par exemple, on retrouve le dossier \verb|StorageDriver| qui
-contient les fichiers qui gèrent le stockage ou encore le dossier
-\verb|Payment| qui contient tous ce qui concerne le paiement (types de
-paiement, accepteur de pièce, \dots). L'objectif est de pouvoir faire des
-recherche par catégories et de garder les dépendance au plus proche des
-fichiers. Par exemple, plusieurs des sous répertoires de \verb|commun|
-contiennent un dossier \verb|Web| qui regroupe les dépendances web des
-fichiers de chaque catégories. On peut ainsi retrouver facilement les dépendance
-des fichiers.
-
-Pour résumer, les projets CKsquare sont composés d'une partie locale, spécifique
-au projet. Parmi ces fichier locaux, on retrouve le fichier responsable de
-l'initialisation, le point d'entrée, la boucle principale ainsi que la
-configuration du projet. Les projets incluent des bibliothèques sous la forme de
-\gls{smodg} stockées dans le répertoire \verb|CKLibs|. Parmi ces
-bibliothèques on retrouve le projet \verb|dev_pic| qui contient le code
-commun à la partie C qui s'exécute sur les cartes électroniques de l'entreprise,
-et c'est ce code que l'outil créé durant ce stage va testé. À noter qu'ici, on
-ne s'intéresse qu'à l'essentiel pour permettre une explication rapide du
-fonctionnement général du projet dans la partie suivante. Cependant, le projet
-comporte beaucoup d'autres fichiers qui ne sont pas décrit dans ce rapport.\\
+Le répertoire \verb|commun| s'organise en catégories. Par exemple, on retrouve
+le dossier \verb|StorageDriver| qui contient les fichiers qui gèrent le stockage
+ou encore le dossier \verb|Payment| qui contient tous ce qui concerne le
+paiement (types de paiement, accepteur de pièce, \dots). L'objectif est de
+pouvoir faire des recherche par catégories et de garder les dépendance au plus
+proche des fichiers. Par exemple, plusieurs des sous répertoires de
+\verb|commun| contiennent un dossier \verb|Web| qui regroupe les dépendances web
+des fichiers de chaque catégories. On peut ainsi retrouver facilement les
+dépendance des fichiers.
 
 Maintenant que nous avons expliqué l'organisation générale du projet, nous
 allons pouvoir traiter le fonctionnement de ce dernier.
@@ -2165,7 +2139,12 @@ soit aussi le cas dans les tests. Pour éviter ce problème, on ne réutilise pa
 les même outils dans le code et dans les tests. De plus, cela pourra permettre
 la détection de problème avec Qt si jamais il y en a.
 
-\subsection{Les problèmes du code Qt}
+\subsection{Les protocoles monétiques}
+
+- une seule version
+- mocking pour tester les fichiers bas niveaux
+
+\subsection{Le problème de l'encapsulation}
 
 - fonctions control privées et actionnées avec des évènements timer
 - solution avec des wait pas idéale
@@ -2276,7 +2255,7 @@ fenêtre permettant d'interagir avec GDB pour exécuter des commandes complexes.
 % [termdebug] {{{
 \begin{figure}[h!]
   \begin{center}
-  \includegraphics[scale=0.6]{./img/termdebug.png}
+  \includegraphics[scale=0.2]{./img/termdebug.png}
     \caption{Termdebug: GDB intégré à (neo)vim}
   \end{center}
   \label{fig:termdebug}
@@ -2349,7 +2328,41 @@ NOTE: diagramme actuel
 % Résultats et discussions *************************************************{{{
 \part{Résultats et discussions}
 
+Dans cette dernière partie, nous commencerons par présenter l'outil final dans
+toutes ces version (C et C++) puis nous discuterons des perspectives du projet.
+Enfin, avant de conclure, nous parlerons brièvement de l'inclusion du projet
+dans le développement durable.
+
 \section{L'outil final}
+
+Cette section va présenter le résultat final, tout d'abord sur la partie C puis
+sur la partie Qt.\\
+
+Concernant la partie C, l'outil final à été complètement intégré au code commun
+sur les deux branches. Tout d'abord, l'outil met en place un framework de test
+complet et simple d'utilisation: \verb|Criterion|. L'utilisation framework a été
+détaillée dans la documentation rédigée durant le stage pour compléter celle du
+framework. L'outil propose aussi un système permettant de simuler les interfaces
+des composants électroniques utilisés dans les projets de l'entreprise. Cela
+comprend les périphériques de stockage (registres, eeproms et flash) utilisés en
+I²C et en SPI mais aussi d'autre périphériques interfacés en Cctalk et en MDB
+qui sont des protocoles spécialisés dans la monétique. Pour chacun des
+composants, la documentation détaille la méthode employée pour la simulation de
+sorte à ce que l'on puisse facilement simuler de nouveaux composants. La
+simulation des protocoles monétiques proposes deux niveaux de simulation pour
+les tests. Une version où des fichiers ont été modifiés pour isoler les éléments
+testés du reste du code et une autre version qui passe par toute la chaine
+d'instructions jusqu'aux fichiers du compilateur. Cela permet de faire à la fois
+des tests unitaires mais aussi des tests d'intégration où l'on test tout le
+code. La méthode consistant à créer des versions modifiées des fichiers a
+beaucoup été utilisée pour rendre les tests plus simples ou pour changer du code
+qui ne pouvait pas être compilé. Au final, il est bien possible d'écrire des
+tests où le code testé intéragie avec les composants simulés. Depuis ces test,
+on peut accéder aux données que les composants recoivent pour vérifier que cela
+correspond à ce qui était attendu. Enfin, la pipeline permettant d'automatiser
+les tests sur Gitlab a bien été mise en placeet cette dernière permet même de
+calculer le pourcentage de couverture des tests. Cela n'était pas demandé au
+départ et permet aux développeur d'avoir une idée de la qualité des tests.
 
 Description de l'outil final réalisé à la fin du stage.
 
@@ -2695,9 +2708,10 @@ TAU_MAIN() // sets up Tau (+ main function)
 \clearpage{}
 \section{Test sur l'envoi des historiques sur le serveur}\label{appendix:frameworks-code}
 
-\begin{listing}[ht!]
+% \begin{listing}[ht!]
 \begin{minted}{C}
-Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setup, .fini = TESTCKSPROHISSND_Teardown)
+Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill,
+     .init = TESTCKSPROHISSND_Setup, .fini = TESTCKSPROHISSND_Teardown)
 {
     TEEPROM_ADDR Addr;
     uchar HisElts[20][sizeof(TITEM_PAYMENT)] = {0};
@@ -2709,11 +2723,17 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setu
         CDB_IndexToAddr(History,History->Control.Count,&Addr);
         TESTCKSPROHISSND_RandomItemGenerate();
         // sauvegarde des éléments enregistrés
-        memcpy(HisElts[HisEltsCount++],&TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
-        cr_assert(true == CDB_Add(History,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
-        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_EEPROMM[0] + Addr,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        memcpy(HisElts[HisEltsCount++],
+               &TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(History,(uchar*)
+                                  &TESTCKSPROHISSND_ItemHisPayment));
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],
+                     TESTMEM_EEPROMM[0] + Addr,
+                     (uchar*) &TESTCKSPROHISSND_ItemHisPayment));
         // vérification du début de l'eeprom
-        cr_assert(eq(u8[sizeof(History->Control)],TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,(uchar*) &History->Control));
+        cr_assert(eq(u8[sizeof(History->Control)],
+                     TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,
+                     (uchar*) &History->Control));
     }
 
     // init CKSPROHISSND_Control
@@ -2730,7 +2750,8 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setu
         cr_assert(true == TESTCKSPRO_CmdSent);
         TESTCKSPRO_CmdSent = false;
         // on récupère l'élément que l'on est sensé envoyer et on vérifie l'envoi
-        memcpy(&TESTCKSPROHISSND_ItemHisPayment, HisElts[HisEltsCount++], sizeof(TITEM_PAYMENT));
+        memcpy(&TESTCKSPROHISSND_ItemHisPayment,
+               HisElts[HisEltsCount++], sizeof(TITEM_PAYMENT));
         cr_assert(true == TESTCKSPROHISSND_CmdCheck());
         CKSPROHISSND_Control();
     }
@@ -2741,11 +2762,17 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setu
         CDB_IndexToAddr(History, History->Control.Count, &Addr);
         TESTCKSPROHISSND_RandomItemGenerate();
         // sauvegarde des éléments enregistrés
-        memcpy(HisElts[HisEltsCount++],&TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
-        cr_assert(true == CDB_Add(History ,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
-        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_EEPROMM[0] + Addr,(uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        memcpy(HisElts[HisEltsCount++],
+               &TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(History,
+                                  (uchar*) &TESTCKSPROHISSND_ItemHisPayment));
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],
+                        TESTMEM_EEPROMM[0] + Addr,
+                        (uchar*) &TESTCKSPROHISSND_ItemHisPayment));
         // vérification du début de l'eeprom
-        cr_assert(eq(u8[sizeof(History->Control)],TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,(uchar*) &History->Control));
+        cr_assert(eq(u8[sizeof(History->Control)],
+                     TESTMEM_EEPROMM[0] + History->Store.DataAddr + 8 + 1,
+                     (uchar*) &History->Control));
     }
 
     // 4. traiter à nouveau l'historique
@@ -2754,16 +2781,18 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill, .init = TESTCKSPROHISSND_Setu
         CKSPROHISSND_Control();
         cr_assert(true == TESTCKSPRO_CmdSent);
         TESTCKSPRO_CmdSent = false;
-        // on récupère l'élément que l'on est sensé envoyer et on vérifie l'envoi
-        memcpy(&TESTCKSPROHISSND_ItemHisPayment,HisElts[HisEltsCount++],sizeof(TITEM_PAYMENT));
+        // on récupère l'élément que l'on est sensé envoyer et on vérifie
+        // l'envoi
+        memcpy(&TESTCKSPROHISSND_ItemHisPayment,
+               HisElts[HisEltsCount++],sizeof(TITEM_PAYMENT));
         cr_assert(true == TESTCKSPROHISSND_CmdCheck());
         CKSPROHISSND_Control();
     }
 }
 \end{minted}
-\caption{Test sur l'envoi des historiques sur le serveur}
 \label{testsaveckwash}
-\end{listing}
+% \caption{Test sur l'envoi des historiques sur le serveur}
+% \end{listing}
 %}}}
 
 \end{document}
