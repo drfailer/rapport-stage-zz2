@@ -131,6 +131,13 @@
     description={(Data Encryption Standard) algorithme de chiffrement
     symétrique.}
 }
+
+\newglossaryentry{slots}
+{
+    name=slots,
+    description={fonctions membres des classes Qt qui peuvent être appelées avec
+    l'émission signaux.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -776,16 +783,7 @@ La seconde structure de données permet de gérer les signaux. Ici, les fonction
 en paramètre un \verb|SM| qui va permettre la gestion de la machine à états dans
 la fonction. Les \verb|SM| contiennent des pointeurs vers des données utiles
 pour les machines à états, comme des arguments ou encore une horloge spécifique
-à la machine. Le fichier des \verb|SM| propose plusieurs fonctions pour naviguer
-entre les états des machines comme \verb|SM_Go| qui permet d'aller directement
-dans un nouvel état de la machine. Il y a aussi la fonction \verb|SM_Exit| qui
-fonctionne comme la fonction précédente sauf qu'ici, la machine à état s'arrête
-et attend qu'un signal soit émit pour se relancer. Le fichier propose aussi des
-fonctions permettant de gérer les horloges des machines à états, permettant par
-exemple de quitter une machine à états pendant un temps minimum donné et de
-revenir lorsque l'horloge aura émis son signal de fin. On a donc plusieurs
-façons de changer d'état dans une machine, on peut y aller directement ou
-attendre un signal comme celui émit à la fin d'un minuteur.
+à la machine.
 
 Pour que l'appel à une fonction soit déclenché à l'émission d'un signal, il faut
 connecter la fonction au signal. Pour ce faire, on utilise la structure des
@@ -795,20 +793,11 @@ fonctions qui est connectée. Lorsque l'on a créé un \verb|Connect| et que ce
 dernier a été lié à une fonction, on peut utiliser une fonction \verb|Emit|, qui
 va émettre le signal. Cela aura pour effet de déclencher l'appel de toutes les
 fonctions connectées au signal (immédiatement ou non). Ce système est très
-similaire à celui utilisé sur Qt en C++. L'implémentation de ce système en C
-utilise une liste chaînée de \verb|Connects|. Lorsque l'on fait une connections,
-on créé un nouveau \verb|Connect| en spécifiant le pointeur sur la tête de la
-liste des \verb|Connects| liés à un signal. La fonction \verb|Emit| prend en
-paramètre la tête le la liste, et va ajouter toute la liste à une liste de
-\verb|Connects| à traiter (il y a deux chaînages). Ensuite, on a une fonction
-qui traite les signaux émit en appelant toutes les fonctions connectées avec les
-bon arguments.
+similaire à celui de Qt en C++.
 
-% todo: il faut un schéma
-
-À noter que les fonctions \verb|SwitchControl| prennent aussi en paramètre une
+À noter que les fonctions \verb|SwitchControl| prennent aussi en paramètre un
 évènement. En effet, dans certains état, on ne souhaite pas que les machines
-soient lancées par n'importe quel signaux. Pour palier à ce problème, on entre
+soient lancées par n'importe quel signal. Pour palier à ce problème, on entre
 toujours dans une machine à état avec une évènement, et ce dernier sera vérifié
 ou non en fonction de l'état dans lequel se trouve la machine.
 
@@ -846,22 +835,14 @@ représentation de l'arborescence des fichiers dans le projet commun.
 
 Cette arborescence montre une partie du contenu du répertoire
 \verb|dev_pic/commun|. Ici, on peut voir trois des catégories qui ont été
-mentionnées dans la section \ref{orgaprojck}. Il y a le dossier \verb|Cctalk|
-qui contient le code qui permet de gérer le protocole Cctalk que nous aborderons
-dans une prochaine partie. Le dossier \verb|His| lui contient le code qui permet
-de gérer l'historique. Enfin, le répertoire \verb|Test| a été ajouté lors de
-l'intégration du projet de test dans le projet commun, ce dernier contient les
-fichiers généraux spécifiques aux test. À noter qu'il y a un autre répertoire
-\verb|CFake| qui lui se trouve à la racine du projet, au même niveau que
-\verb|commun|. Ce dernier contient la simulation des interfaces pour le
+mentionnées dans la section \ref{orgaprojck}. Le répertoire \verb|Test| a été
+ajouté lors de l'intégration du projet de test dans le projet commun, ce dernier
+contient les fichiers généraux spécifiques aux test. À noter qu'il y a un autre
+répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même niveau
+que \verb|commun|. Ce dernier contient la simulation des interfaces pour le
 stockage. Étant donné que le stockage est un élément assez général, il a été mis
 à part. Comme on peut le voir ici, tous les fichiers ayant un lien entre eux
-sont stockés ensemble et il en est de même pour les tests. C'est une structure
-assez atypique pour du C puisque les tests sont habituellement mis à part,
-généralement dans un répertoire \verb|test| à côté du projet. Ici, les tests
-sont intégrés dans code à la demande des développeurs de la société. C'est un
-choix assez intéressant puisque cela permet d'avoir accès aux tests très
-rapidement et de bien voir à quels éléments du code les tests sont liés.
+sont stockés ensemble et il en est de même pour les tests.
 
 Maintenant que nous avons définie une carte générale du projet, détaillons les
 parties les plus importantes.
@@ -1188,47 +1169,43 @@ l'implémentation du protocole par l'entreprise ainsi que son utilisation a ét�
 nécessaire. Pour ce faire, il a fallut s'intéresser à l'organisation des
 fichiers et aux fonctions qu'ils contiennent. À la demande des développeurs de
 l'entreprise, la simulation devait permettre de tester tout le code. C'est pour
-cette raison que la simulation a été placée au plus proche des bibliothèques de
-Microship (fournisseurs des cartes) au lieu de simplement remplacer des
-fichiers. Il était obligatoire de comprendre comment l'entreprise utilise l'I²C
-car le protocole en lui même ne décrit que la façon dont les composants
-communiquent en non les données qu'ils envoient. Par exemple, ce protocole peut
-être utilisé avec plusieurs types de composants, pas seulement du stockage. Pour
-deux types de composants différents, la communication suivant le même protocole
-n'aura pas la même forme car ces derniers ne proposent pas les même
-fonctionnalités. La simulation mise en place est donc spécifique au stockage sur
-les cartes Microship.
+cette raison qu'elle a été placée au plus proche des bibliothèques de Microship
+(fournisseurs des cartes) au lieu de simplement remplacer des fichiers. Il était
+obligatoire de comprendre comment l'entreprise utilise l'I²C car le protocole en
+lui même ne décrit que la façon dont les composants communiquent en non les
+données qu'ils envoient. Par exemple, ce protocole peut être utilisé avec
+plusieurs types de composants, pas seulement du stockage. Pour deux types de
+composants différents, la communication suivant le même protocole n'aura pas la
+même forme car ces derniers ne proposent pas les même fonctionnalités. La
+simulation mise en place est donc spécifique au stockage sur les cartes
+Microship.
 
 Tout d'abord, commençons par nous intéresser au fonctionnement du code de
-l'entreprise. Comme dit dans la section \ref{orgaprojck}, le répertoire
-\verb|dev_pic| contient les bibliothèques utilisées avec les différents
-compilateurs. Dans la section \ref{gcc} il a été mensionné que le compilateur
-sur lequel se basent les tests et le \verb|c32| et le code de l'entreprise le
-concernant se trouve dans le dossier \verb|C32|. Dans, ce répertoire se trouve
-le fichier permettant de gérer l'I²C. Ce fichier contient plusieurs fonctions
+l'entreprise. Le compilateur sur lequel se base les tests est le \verb|c32|, ce
+sont donc les bibliothèques de ce compilateur qui seront utilisées pour mettre
+en place la simulation. Ces fichiers mettent à disposition plusieurs fonctions
 permettant de démarrer et stopper la communication ainsi que d'envoyer des
-données. Ce fichier est relativement simple et reprend les étapes décrites par
-le protocole (début, fin, envoi en mode écriture, \dots). La communication en
-elle même est gérée par d'autres fichiers qui eux font partie du code commun.
-Les fonctions définies dans les fichiers ont permis de comprendre comment sont
-utilisés les périphériques de stockage. À noter qu'ici, la ligne permettant de
-transmettre des données est modélisée par une variable (globale). Cette variable
-est gérée par la bibliothèque du \gls{pic} et est définie dans le fichier
-\verb|PicVariables| mentionné dans la section \ref{gcc}.
+données (les fonctions correspondent à toutes le fonctionnalités décrites par le
+protocole). La communication en elle même est gérée par d'autres fichiers qui
+eux font partie du code commun. Les fonctions définies dans les fichiers ont
+permis de comprendre comment sont utilisés les périphériques de stockage. À
+noter qu'ici, la ligne permettant de transmettre des données est modélisée par
+une variable (globale). Cette variable est gérée par la bibliothèque du
+\gls{pic} et est définie dans le fichier \verb|PicVariables| mentionné dans la
+section \ref{gcc}.
 
-Pour une écriture sur un composant, on commence par démarrer la communication
-puis on envoie l'adresse du périphérique de stockage auquel on s'adresse avec le
-bit de mode à 0 (comme le demande le protocole). Ensuite, on envoie une adresse
-qui va permettre de placer le curseur du composant. Cela va permettre de
-spécifier au composant à quelle adresse on souhaite écrire. Le nombre d'octets à
-envoyer pour le déplacement du curseur dépend du composant ciblé. Dans le cas
-d'un registre, on envoie un octet, dans le cas d'une eeprom 2 (les flash ne sont
-pas utilisées avec l'I²C). Enfin, on envoie les données à écrire sur le
-composant avant de terminer la communication. Toutes ces étapes sont gérées par
-des fonctions dans le fichier de \verb|C32|. La lecture suis le même principe
-sauf qu'ici, on ne spécifie pas la position du curseur. La subtilité est que si
-on souhaite lire à une certaine adresse, il faut commencer par écrire, déplacer
-le curseur du composant puis redémarre la communication en mode lecture.
+Pour écrire sur un composant, la carte démarre la communication puis envoie
+l'adresse du périphérique de stockage auquel ele s'adresse avec le bit de mode à
+0 (comme le demande le protocole). Ensuite, elle envoie une adresse qui va
+permettre de placer le curseur du composant. Cela va permettre de spécifier au
+composant à quelle adresse on souhaite écrire. Le nombre d'octets à envoyer pour
+le déplacement du curseur dépend du composant ciblé. Dans le cas d'un registre,
+on envoie un octet, dans le cas d'une eeprom 2 (les flash ne sont pas utilisées
+avec l'I²C). Enfin, la carte envoie les données à écrire sur le composant avant
+de terminer la communication. La lecture suis le même principe sauf qu'ici, on
+ne spécifie pas la position du curseur. La subtilité est que si on souhaite lire
+à une certaine adresse, il faut commencer par écrire, déplacer le curseur du
+composant puis redémarrer la communication en mode lecture.
 
 Maintenant que nous savons comment utiliser le protocole, intéressons nous à la
 simulation. Comme dit précédemment, la simulation doit se positionnée au niveau
@@ -1238,7 +1215,7 @@ fichiers de cette bibliothèque. Comme nous l'avons vu dans la section
 s'exécutait dans un thread. Pour réaliser la nouvelle solution, il a été décidé
 de reprendre le code de la machine à état et d'en faire une fonction
 \verb|Control| similaire à ce que l'on peut trouver dans le code de
-CKsquare. Cette décision apportait deux avantages, le premier étant que le
+CKsquare. Cette décision apporte deux avantages, le premier étant que le
 fonctionnement est très similaire à celui du code de l'entreprise, ce qui est
 intéressant étant donné le fait que l'outil est destiné à être utilisé par les
 développeurs de la société. Le deuxième avantage est le gain de temps du à la
@@ -1246,8 +1223,19 @@ réutilisation du code de la solution précédente. Les appels à cette fonction
 \verb|Control| ont étaient fait dans une version modifiée pour les tests du
 fichier de \verb|C32| compilé à la place de l'original. Cela permet aux
 développeur des tests de ne pas avoir à se préoccuper de la simulation, de son
-point de vue, tout fonctionne comme sur la carte. Les états de la machine
-suivent les étapes du protocole.
+point de vue, tout fonctionne comme sur la carte. On peut voir sur la figure
+\ref{fig:machineetatsi2c} le diagramme représentant le fonctionnement de la
+machine à états de la simulation.
+
+% [diagramme d'états i2c] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.5]{./graphs/sm-i2c.png}
+    \caption{Diagramme d'états de l'émulation de l'interface I²C du stockage}
+    \label{fig:machineetatsi2c}
+  \end{center}
+\end{figure}
+%}}}
 
 Pour utiliser cette simulation, il faut commencer par configurer les composants
 en modifiant la fonction d'initialisation. Dans cette fonction, on ajoute les
@@ -1264,10 +1252,6 @@ testé va interagir avec la machine à états de la simulation qui va utiliser l
 mémoire simulée. Pour vérifier le contenu de la mémoire après une opération, on
 peut utiliser les tableaux de la simulation auxquels on a accès depuis les
 tests.
-
-TODO: faire un schéma\\
-TODO: parler des graphs dans la doc
-
 %}}}
 \subsection{Interface SPI}%{{{
 
@@ -1354,10 +1338,10 @@ pour la simulation des interfaces de ces deux protocoles. Si les étapes ne sont
 pas respectées à la lettre et que les bonnes fonctions ne sont pas appelées
 dans le bon ordre le résultat est indéterminé. C'est un énorme problème étant
 donnée le fait que l'on ne sait plus d'où viennent les erreurs, du code ou de la
-simulation? C'est une question qu'il est légitime de se poser étant donné la
+simulation ? C'est une question qu'il est légitime de se poser étant donné la
 complexité de la simulation des interfaces du stockage.
 
-Pour tenter de résoudre ce problème, un système d'évènement a été pensé. Ce
+Pour tenter de résoudre ce problème, un système d'évènements a été pensé. Ce
 système est loin d'être parfait mais il peut éviter une partie des erreurs. Le
 principe est que les machines à états de l'I²C et du SPI enregistrent des
 évènements au fur et à mesure de l'exécution. Une fois que l'on a terminer une
@@ -1368,8 +1352,6 @@ pour $n$ lectures. Il suffit donc de comparer la suite d'évènements attendus �
 celle des évènements enregistrés pour savoir s'il y a un problème. Cela
 nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 évènements pour chacune des actions possibles.
-
-TODO: détailler le système d'évènements
 %}}}
 \\
 TODO: CONCLUSION sur le stockage
@@ -2075,13 +2057,19 @@ pas modifiés. Le stockage étant une partie assez importante de l'outil de test
 le fait que tout fonctionne sans modifications a permis de gagner beaucoup de
 temps.
 
+À noter que le fait que l'implémentation de l'I²C et du SPI ne soinent pas en
+événementiel peut changer. En effet, d'autre bibliothèques bas niveaux ont
+été adaptées avec le nouveau système. Si cela doit être le cas pour le stockage,
+il faudra aussi modifier la simulation
+
 \subsubsection*{Cctalk et MDB}
 
-La partie qui a pris le plus de temps à adapté a été celle sur les protocoles
-monétiques. Cette partie a été complexe a adapté car le code a beaucoup changé
+La partie qui a pris le plus de temps à adapter a été celle sur les protocoles
+monétiques. Cette partie a été complexe intégrer car le code a beaucoup changé
 entre les branches que ça soit pour les versions haut et bas niveau. Ici, les
-fonction \verb|Run| et \verb|Control| ont été adaptées pour pouvoir fonctionner
-avec le \verb|Sate Manager|.
+fonction \verb|Run| et \verb|Control| ont été changées pour pouvoir fonctionner
+avec le \verb|Sate Manager|. Les tests qui avaient été écrits ont aussi du être
+changés car certaines fonctionnalités ne fonctionnaient plus de la même façon.
 
 TODO: détailler les modif avec exemple de code
 
@@ -2117,8 +2105,38 @@ C++. L'objectif est de pouvoir intégrer l'outil dans le code commun Qt.
 
 \subsection{Nouveau framework}
 
-- Premier framework compatible cpp pour rien
-- collaboration avec samuel qui trouvé un framework plus adapté à Qt
+Au début du projet, le même framework devait être utilisé pour la partie C et la
+partie C++, cependant, des tests avec au autre framework avaient déjà été mis en
+place sur un projet par un autre stagiaire. Le nouveau framework est Qt Test
+(bibliothèque \verb|QTest|) et ce dernier à été pensé spécialement pour Qt.
+
+Qt Test est un framework très intéressant lorsque l'on travail avec Qt car il
+est compatible avec toute les fonctionnalités de la bibliothèque. Par exemple,
+comme nous l'avons déjà mentionné, Qt fonctionne avec un système de signaux,
+qui, à leur émission permettent de déclencher des appels de fonctions. Le
+nouveau framework propose une classe permettant de détecter les signaux émit, ce
+qui permet de tester les signaux. En plus de cela, le framework est aussi pensé
+pour fonctionner avec du C++, par exemple, les tests sont écrit avec des
+classes. Cela va permettre d'avoir du code plus homogène dans la partie Qt car
+le code utilise beaucoup les classes C++.
+
+Par contre, Qt Test possède tout de même des défauts. Le premier est spécifique
+à Qt et il vient du fait que les classes de tests sont des \verb|QObject|, qui
+utilise des fonctionnalités tels que les signaux et les \gls{slots}. Pour
+pouvoir mettre en place ces fonctionnalités, Qt utilise le MOC (Meta Object
+Compiler) qui génère du code. Les fichiers générés automatiquement pour les
+tests ne sont pas gérés par CMake, il faut donc inclure les fichier \verb|moc|
+dans tous les fichiers de tests. De plus, le framework Qt Test reste
+relativement simple et il ne propose pas beaucoup de fonctionnalités pour
+organiser les tests. Par exemple, le framework propose une macro qui permet la
+génération automatique d'une fonction \verb|main|. Le problème est que comme il
+n'y a pas de système de suites de tests, on ne peut pas utiliser cette macro car
+elle oblige la compilation d'un exécutable par test ce qui peut être pénible à
+gérer étant donner que le projet commun est très gros est qu'il y a beaucoup de
+fichiers à tester. Pour palier à ce problème, un système de suite de test à du
+être créé.
+
+\subsubsection*{Système de suites de tests}
 
 \subsection{Le stockage}
 
@@ -2156,16 +2174,14 @@ la détection de problème avec Qt si jamais il y en a.
 - solution du define pas utilisée mais envisagée
 - fonctionnement du Méta Object Compiler pas évident au départ
 
-\subsection{La simulation}
-
-- code objet plus simple.
-
 \subsection{La mise en place de la pipeline}
 
 La configuration de la pipeline pour les commun Qt suis le même principe que
 celle du C. On a deux jobs, le premier permet de compiler les tests et le second
 les exécutes. Les tests sont toujours compilés avec CMake (qui utilise g++ au
 lieu de gcc) et exécutés avec CTest.
+
+TODO: probème de place
 
 Bien que les deux configuration soient similaires, il y a tout de même une
 grande différence avec le C. En effet, ici, on doit compiler du code
