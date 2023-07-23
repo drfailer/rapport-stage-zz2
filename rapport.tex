@@ -799,12 +799,13 @@ similaire à celui de Qt en C++.
 évènement. En effet, dans certains état, on ne souhaite pas que les machines
 soient lancées par n'importe quel signal. Pour palier à ce problème, on entre
 toujours dans une machine à état avec une évènement, et ce dernier sera vérifié
-ou non en fonction de l'état dans lequel se trouve la machine.
+ou non en fonction de l'état dans lequel se trouve la machine.\\
 
 Ce système est assez élégant et très intéressant d'un point de vue génie
 logiciel. Il permet vraiment de simplifier le code et il est souvent plus
 intuitif dans son utilisation que le système de \verb|Control Manager|. Par
-contre, ce n'est pas un système simple à mettre en place en C.
+contre, ce n'est pas un système simple à mettre en place en C. Dans la section
+suivante, nous traiterons l'organisation du projet de test.
 %}}}
 \section{Organisation du projet de tests}%{{{
 
@@ -1324,7 +1325,23 @@ qui reprend les étapes décrites dans le paragraphe précédent. Là aussi, pou
 utiliser la simulation, il faut modifier la fonction d'initialisation en
 ajoutant les composant de façon similaire à l'I²C. À noter que la simulation de
 la mémoire ne change pas et que l'on peut très bien configurer le même composant
-à la fois sur lI²C et le SPI.
+à la fois sur lI²C et le SPI. On peut voir sur la figure \ref{fig:smspi} le
+diagramme de la machine à états du SPI.
+
+% [schéma sm spi] {{{
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[scale=0.4]{./graphs/sm-spi.png}
+    \caption{Machine à états de la simulation du stockage en SPI}
+    \label{fig:smspi}
+  \end{center}
+\end{figure}
+%}}}
+
+Le principe de la simulation du stockage en SPI est donc similaire à celui de
+l'I²C. De plus, il n'y a pas de différence au niveau de l'utilisation des
+composants simulés dans les tests. Dans la section suivant, nous allons discuter
+d'un problème posé par cette simulation et de la solution qui a été utilisée.
 %}}}
 \subsection{Système d'évènements}%{{{
 
@@ -1354,7 +1371,13 @@ nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 évènements pour chacune des actions possibles.
 %}}}
 \\
-TODO: CONCLUSION sur le stockage
+Le stockage a représenter le premier défi en terme de simulation durant la
+réalisation de l'outil. Cela a nécessité l'apprentissage de deux protocoles
+ainsi que la compréhension d'une grande partie du code. Les fichier du
+compilateur ont aussi du être modifiés pour rendre la simulation possible. Au
+final, le système fonctionne bien et est assez simple à utiliser dans les tests.
+Dans la section suivante, nous allons traiter la simulation de composant
+interfacé avec deux nouveaux protocoles, le Cctalk et le MDB.
 %}}}
 \section{Protocoles monétiques}%{{{
 
@@ -2041,11 +2064,89 @@ grandement facilité le reste du travail.
 
 Lorsque les premiers fichiers de tests ont étaient ajoutés, un problème très
 intéressant a été rencontré. Comme expliqué dans la section \ref{brancheevent},
-on utilise une fonction \verb|Connect| pour connecter un évènement à une
-fonction \verb|SwitchControl|.
+pour pouvoir déclencher un appel de fonction à l'émission d'un signal, il faut
+utiliser un \verb|Connect| et le lier à la fonction. Pour ce faire, on utilise
+la fonction \verb|CONNECT_Define| qui prend en paramètre, un \verb|Connect|
+(sigal), un pointeur vers la fonction ciblée ainsi que d'autre informations. La
+signature de la fonction est visible sur le listing \ref{sigconnectdefine}.
 
-TODO: détailler les paramètres de la fonction et expliquer le problème de
-l'évalutation des arguments avec gcc.
+\begin{listing}[ht!]
+\begin{minted}{C}
+void CONNECT_Define(TCONNECT * Connect,
+                    uchar * Sender,
+                    uchar * SenderData,
+                    void (*ReceiverControl)(uchar * Sender,
+                                            uchar *  SenderData,
+                                            uchar * ReceiverData,
+                                            uchar * ReceiverDataItem),
+                    uchar * ReceiverData,
+                    uchar * ReceiverDataItem,uchar Type);
+\end{minted}
+\caption{Signature de la fonction CONNECT\_Define}
+\label{sigconnectdefine}
+\end{listing}
+
+Pour récupérer certains des arguments de cette fonction, cela nécessite des
+l'utilisations d'autres fonctions secondaires. Le listing
+\ref{firstconnectdefine} comment était utilisée cette fonction au départ. On
+peut voir ici qu'il y a deux appels de fonctions dans les arguments, un appel à
+\verb|CONNECT_Create| et un appel à \verb|CONNECT_Event|. Maintenant, il faut
+noter que la fonction \verb|CONNECT_Event| prend en paramètre \verb|Signal|.
+Étant donné que \verb|Signal| est créé avec la fonction \verb|CONNECT_Create|,
+il faut que cette dernière soit appelée avant \verb|CONNECT_Event|, or, pour
+des raisons d'optimisation, le standard C ne spécifie pas dans quel ordre
+doivent être évaluées les arguments des fonctions. Le compilateur utilisé par la
+société évalue les arguments dans l'ordre et tout se passe bien. Par contre, ce
+n'est pas le cas de gcc, c'est pour cela que cette ligne engendrait une erreur
+de segmentation à l'exécution, car \verb|Signal| était utilisé avant d'être
+crée.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+CONNECT_Define(CONNECT_Create(&Signal),
+               nullptr,
+               CONNECT_Event(Signal,DISPLAYSCCTALK_EV_RCV_INIT),
+               SM_Control,
+               (uchar*)&Sm,
+               (uchar*)&This,
+               CONNECT_QUEUE);
+\end{minted}
+\caption{Première utilisation de la fonction CONNECT\_Define}
+\label{firstconnectdefine}
+\end{listing}
+
+Pour résoudre le problème, il a fallut faire intervenir une variable temporaire
+pour créer le signal avant de le connecter à une fonction. L'erreur a été très
+difficile à trouver, même avec un débogueur. Cela montre bien qu'il est très
+important de connaitre un minimum le standard des langages que l'on utilise. Une
+autre erreur similaire est survenu lors de la création des tests sur les
+historiques de paiement. Ici, c'était un \verb|assert| qui stoppait le
+programme. La condition testait la taille d'une structure de données avec un
+\verb|sizeof|, le problème était que cette structure données utilisait des
+\verb|long|. Là aussi une meilleur connaissance du standard aurait permis de
+savoir que la taille des \verb|long| est variable entre les machines. Comme on
+peut le voir sur \cite{ISO:C99} et \cite{typescppref}, le standard spécifie les
+règles suivantes sur la taille des entiers:
+
+\begin{itemize}
+  \item[$\bullet$] \verb|sizeof(char)| $\leq$ \verb|sizeof(short)| $\leq$ \verb|sizeof(int)| $\leq$ \verb|sizeof(long)| $\leq$ \verb|sizeof(long long)|
+  \item[$\bullet$] \verb|sizeof(char)| $\geq 8$
+  \item[$\bullet$] \verb|sizeof(short)| $\geq 16$
+  \item[$\bullet$] \verb|sizeof(int)| $\geq 16$
+  \item[$\bullet$] \verb|sizeof(long)| $\geq 32$
+  \item[$\bullet$] \verb|sizeof(long long)| $\geq 64$
+\end{itemize}
+
+Pour résoudre ce second problème, la structure a été modifiée pour utiliser des
+des entier à taille fixe comme \verb|int32_t|. C'est problèmes sont très
+intéressant et montrent bien que pour écrire du code robuste il n'est pas
+suffisant de simplement connaitre la syntaxe du langage. Des connaissance sur
+les standards et le fonctionnement des compilateurs sont aussi très
+importantes.\\
+
+Au final, le code a été modifié et la compilation d'une grande partie des
+fichiers a été possible. Dans section suivante nous traiterons le stockage sur
+la seconde branche.
 
 \subsubsection*{Le stockage}
 
@@ -2057,7 +2158,7 @@ pas modifiés. Le stockage étant une partie assez importante de l'outil de test
 le fait que tout fonctionne sans modifications a permis de gagner beaucoup de
 temps.
 
-À noter que le fait que l'implémentation de l'I²C et du SPI ne soinent pas en
+À noter que le fait que l'implémentation de l'I²C et du SPI ne soient pas en
 événementiel peut changer. En effet, d'autre bibliothèques bas niveaux ont
 été adaptées avec le nouveau système. Si cela doit être le cas pour le stockage,
 il faudra aussi modifier la simulation
@@ -2104,6 +2205,7 @@ Dans cette section, nous allons traiter l'implication de l'outil de test en
 C++. L'objectif est de pouvoir intégrer l'outil dans le code commun Qt.
 
 \subsection{Nouveau framework}
+\label{nouvframe}
 
 Au début du projet, le même framework devait être utilisé pour la partie C et la
 partie C++, cependant, des tests avec au autre framework avaient déjà été mis en
@@ -2137,6 +2239,9 @@ fichiers à tester. Pour palier à ce problème, un système de suite de test à
 être créé.
 
 \subsubsection*{Système de suites de tests}
+
+Comme nous l'avons vu dans la section \ref{nouvframe}, étant donné la simplicité
+du framework Qt Test, un système de suite de test a du être implémenté.
 
 \subsection{Le stockage}
 

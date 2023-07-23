@@ -1,0 +1,41 @@
+@startuml
+[*] --> Simulation_SPI
+Simulation_SPI --> [*]
+state Simulation_SPI {
+  state addr_read <<join>>
+  state final <<join>>
+  state addr_gotten <<fork>>
+  [*] --> OFF
+  OFF --> OFF : [ pas de communication ]
+  OFF -down-> START : [ CS == 0 ]
+  START : récupération du code
+  START -down-> STATUS_WRITE1 : [ code == SPIM_WRSR ]
+  START -down-> addr_read : [ code == SPIM_PP ]
+  START -down-> addr_read : [ code == SPIM_READ ]
+  START -down-> addr_read : [ code == SPIM_ERASE_NK ]
+  START -down-> READ_JEDEC_MAN : [ code == SPIM_JEDEC_ID ]
+  START -down-> BUSY : [ code == SPIM_RDSR1 ]
+  addr_read -down-> ADDR_READ1 : [ flash || addr extended ]
+  addr_read -down-> ADDR_READ2 : [ eeprom && ! addr extended ]
+  ADDR_READ1 : Head = SPI_SBUF << 16
+  ADDR_READ2 : Head |= SPI_SBUF << 8
+  ADDR_READ3 : Head |= SPI_SBUF
+  ADDR_READ1 -down-> ADDR_READ2
+  ADDR_READ2 -down-> ADDR_READ3
+  ADDR_READ3 -down-> addr_gotten
+  addr_gotten -down-> ERASE : [ code == SPIM_ERASE_NK ]
+  addr_gotten -down-> READ : [ code == SPIM_READ ]
+  addr_gotten -down-> WRITE : [ code == SPIM_PP ]
+  READ : SPI_SBUF = Data[Head]
+  WRITE : Data[Head] = SPI_SBUF
+  READ_JEDEC_MAN --> READ_JEDEC_TYPE
+  READ_JEDEC_TYPE --> READ_JEDEC_CAPA
+  STATUS_WRITE1 --> STATUS_WRITE2
+  READ_JEDEC_CAPA -down-> final
+  STATUS_WRITE2 -down-> final
+  WRITE -down-> final
+  READ -down-> final
+  ERASE -down-> final
+  final -up-> OFF
+}
+@enduml
