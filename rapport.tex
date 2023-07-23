@@ -2241,7 +2241,23 @@ fichiers à tester. Pour palier à ce problème, un système de suite de test à
 \subsubsection*{Système de suites de tests}
 
 Comme nous l'avons vu dans la section \ref{nouvframe}, étant donné la simplicité
-du framework Qt Test, un système de suite de test a du être implémenté.
+du framework Qt Test, un système de suite de test a du être implémenté. Ce
+système permet d'enregistrer et de lancer plusieurs classes de test. Il vient
+avec une macro qui permet de générer la fonction \verb|main| pour la suite.
+Cette macro devait s'utiliser comme celle fournie par le framework, sauf que
+cette dernière devait accepter plusieurs classe au lieu d'une. Pour ce faire, on
+utilise une macro variadique qui accepte une infinité d'arguments. Dans la
+macro, on peut utiliser \verb|VA_ARGS| pour accéder aux arguments.
+
+Le premier défi était que s'il on souhaitait utiliser cette macro comme celle du
+framework, cette dernière ne devait prendre en arguments que les noms des
+classes et non des instances de ces classes. Il fallait donc un moyen
+d'instancier les classes dans la macro. Le second défi était le fait qu'il n'y a
+aucun moyen simple de séparer les arguments dans \verb|VA_ARGS|. Pour réussir à
+créer cette macro, il a fallut utiliser un \textit{template variadique}.
+
+TODO: code
+TODO: reste des explication
 
 \subsection{Le stockage}
 
