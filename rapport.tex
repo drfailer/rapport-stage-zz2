@@ -2300,29 +2300,62 @@ la détection de problème avec Qt si jamais il y en a.
 La configuration de la pipeline pour les commun Qt suis le même principe que
 celle du C. On a deux jobs, le premier permet de compiler les tests et le second
 les exécutes. Les tests sont toujours compilés avec CMake (qui utilise g++ au
-lieu de gcc) et exécutés avec CTest.
+lieu de gcc) et exécutés avec CTest.\\
 
-TODO: probème de place
+Bien que les deux configuration soient similaires, il y a tout de même des
+différences. Tout d'abord, ici, on doit compiler du code fonctionnant avec la
+bibliothèque Qt, cela nécessite donc de l'installer. Le problème est que Qt est
+une bibliothèque assez lourde, comportant un grand nombre de paquets. Le fait de
+devoir télécharger toutes les dépendance au début de chaque job comme on le
+faisait pour le C prend beaucoup plus de temps et consomme aussi beaucoup plus
+de bande passante. Pour économiser les ressources il est préférable d'utiliser
+une image docker déjà configurée et de lancer la pipeline dedans. Ce type
+d'images existes et certaines sont disponibles sur docker hub mais elles ne sont
+généralement pas complètes ou pas à jours. La solution déjà employée sur une
+autre pipeline Qt était un projet Github \verb|darkmattercoder/qt-build|. Le
+problème est que ce dépôt n'est plus maintenu et il n'est pas souhaitable
+d'utiliser une solution open-source qui n'est plus mise à jour. Au final, il a
+été décidé de créer un nouveau projet se comportant d'une pipeline ayant pour
+rôle de compiler des images docker et de les envoyer sur le registre de Gitlab.
+Cette pipeline va créer une image docker avec une installation complète de Qt5
+qui sera utilisée dans la pipeline du code commun Qt. Ce projet est très
+intéressant car il pourra permettre à l'entreprise de créer automatiquement
+d'autres images docker pour d'autres projets.
 
-Bien que les deux configuration soient similaires, il y a tout de même une
-grande différence avec le C. En effet, ici, on doit compiler du code
-fonctionnant avec la bibliothèque Qt, cela nécessite donc de l'installer. Le
-problème est que Qt est une bibliothèque assez lourde, comportant un grand
-nombre de paquets. Le fait de devoir télécharger toutes les dépendance au début
-de chaque job comme on le faisait pour le C prend beaucoup plus de temps et
-consomme aussi beaucoup plus de bande passante. Pour économiser les ressources
-il est préférable d'utiliser une image docker déjà configurée et de lancer la
-pipeline dedans. Ce type d'images existes et certaines sont disponibles sur
-docker hub mais elles ne sont généralement pas complètes ou pas à jours. La
-solution employée déjà employée sur une autre pipeline Qt était
-\verb|darkmattercoder/qt-build|. Le problème est que ce répertoire n'est plus
-maintenu et il n'était pas souhaitable d'utiliser une solution open-source plus
-mise à jour. Au final, il a été décidé de créer un nouveau projet se comportant
-d'une pipeline ayant pour rôle de compiler des images docker et de les envoyer
-sur le registre de Gitlab. Cette pipeline va créer une image docker avec une
-installation complète de Qt5 qui sera utilisée dans la pipeline du code commun
-Qt. Ce projet est très intéressant car il pourra permettre à l'entreprise de
-créer automatiquement d'autres images docker pour d'autres projets.
+Une autre différence est qu'ici, il n'y a plus le calcule de la couverture des
+tests. La raison à cela est le découpage des étapes dans la pipeline. En effet,
+la pipeline commence par compiler le projet puis elle sauvegarde les fichiers
+nécessaires aux tests dans un artefact qui est réutilisé dans les étapes
+suivantes. Le problème vient du fait que pour calculer la couverture des tests,
+il faut sauvegarder tout le code généré par gcc à la compilation. Pour pouvoir
+stocker toutes ces données, il aurait fallut augmenter la taille des artefacts,
+cependant cela rend leur gestion plus complexe. En effet, il faut veiller à ne
+pas accumuler trop d'artefacts pour ne pas surcharger le stockage du serveur
+mais il faut les conserver suffisamment longtemps pour que la pipeline
+s'exécute. Sachant que la société commence à avoir des problèmes de place au
+niveau du stockage serveur et que les informations de couverture des tests ne
+serons certainement pas utilisées, cette fonctionnalité a été enlevée. Il faut
+rappeler que ce n'était pas un élément demandé dans les spécification de l'outil
+à la base et que cette fonctionnalité avait été ajouté côté C car le projet
+avançait vite.
+
+Enfin, un nouvel élément de test a été ajouté à la pipeline. En effet,
+contrairement à ce qui est fait en C, le code Qt utilise énormément l'allocation
+dynamique. Lors de la mise en place de l'outil de test, de nombreuse erreurs
+valgrind ont était trouvées, il a donc était jugé intéressant d'utiliser
+l'option \textbf{memcheck} que CTest dans la pipeline. Cette dernière possède
+donc maintenant trois étapes, un étape de compilation, une étape d'exécution des
+tests et enfin un étape de validation valgrind. Cette dernière étape ne vérifie
+pas uniquement les fuites mémoires car valgrind permet aussi de détecter les
+usages de variables non initialisées. Cela est très pratique en C++ étant donné
+la complexité de l'initialisation des classe, surtout lorsqu'il y a beaucoup de
+variables membres qui sont souvent oubliées dans les listes d'initialisation (et
+qui sont donc initialisée par défaut et non à zéro). Par contre, le fait
+d'utiliser Qt a nécessité la mise en place de fichier de suppression pour
+supprimer certaines erreur. En effet, valgrind détecte des fuites de mémoires
+dans la bibliothèque. C'est dernière sont obligatoire car elle sont dues au fait
+que le système d'exploitation ne laisse pas les bibliothèques graphiques libérer
+certaines ressources elles mêmes.
 %}}}
 \section{Déroulement du projet}%{{{
 
