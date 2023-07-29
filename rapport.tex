@@ -13,9 +13,9 @@
 \usepackage{textcomp}
 \usepackage{url}
 \usepackage{hyperref}
-\usepackage[top=2.5cm,bottom=2.5cm,right=2cm,left=3cm]{geometry}
+\usepackage[top=2.5cm, bottom=2.5cm, right=2cm, left=3cm]{geometry}
 \usepackage[french]{babel}
-\usepackage[backend=biber,style=ieee]{biblatex}
+\usepackage[backend=biber, style=ieee]{biblatex}
 \usepackage{glossaries}
 %\usepackage{titletoc}% http://ctan.org/pkg/titletoc
 \usepackage{qtree}
@@ -94,7 +94,7 @@
 \newglossaryentry{smodg}
 {
     name=sous module git,
-    description={biblithèques qui on leur propre répertoire distant, elles sont
+    description={bibliothèques qui ont leur propre répertoire distant, elles sont
     stockées dans un projet à part sur Gitlab.}
 }
 
@@ -115,7 +115,7 @@
 \newglossaryentry{halfduplex}
 {
     name=halfduplex,
-    description={deux éméteurs ne transmettent jamais des données en même
+    description={deux émetteurs ne transmettent jamais des données en même
     temps.}
 }
 
@@ -187,7 +187,7 @@ Le super résumer !
 \\~\\
 
 \noindent
-Mots-clés : \textbf{C/C++}, \textbf{intégration continue}, \textbf{tests},
+Mots-clés: \textbf{C/C++}, \textbf{intégration continue}, \textbf{tests},
 \textbf{systèmes embarqués}, \textbf{émulation}
 
 \section*{Abstract}
@@ -197,7 +197,7 @@ the amazing abstract
 \\~\\
 
 \noindent
-Keywords : \textbf{C/C++}, \textbf{continuous integration}, \textbf{testing},
+Keywords: \textbf{C/C++}, \textbf{continuous integration}, \textbf{testing},
 \textbf{embeded system}, \textbf{emulation}
 
 \clearpage{}
@@ -247,14 +247,14 @@ voiture pour se rendre dans les grandes surfaces. Ce projet permettra à
 l'entreprise de faire face au déclin des stations de lavage auto auxquelles on
 impose des restrictions à cause des sécheresses de plus en plus fréquentes.
 Aujourd'hui, plus de 40000 stations de lavage auto sont équipées de bornes
-CKsquare. On peut voir sur la figure \ref{bornes-intro} un exemple de produits
+CKsquare. On peut voir sur la Figure \ref{bornes-intro} un exemple de produits
 conçues par l'entreprise.
 
 % [bornes] {{{
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.2]{./img/bornes.png}
-  \caption{Produits CKsquare}
+  \caption{Produits CKsquare.}
     \label{bornes-intro}
   \end{center}
 \end{figure}
@@ -272,7 +272,7 @@ est une entreprise de développement informatique. La société Logawin est
 composée de deux pôles, Logawin France basé à Clermont-Ferrand et Logawin
 Tunisie basé à Tunis. Ces cinq sociétés travaillent en coopération ce qui permet
 au groupe CKsquare d'avoir la maitrise de la conception et de la fabrication de
-tous les composants des produits. On peut voir sur la figure \ref{lpp-logos} les
+tous les composants des produits. On peut voir sur la Figure \ref{lpp-logos} les
 logos des sociétés citées précédemment.
 
 \clearpage
@@ -281,7 +281,7 @@ logos des sociétés citées précédemment.
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.4]{./img/lpp-logos.png}
-  \caption{Logos des membres du groupe LPP}
+  \caption{Logos des membres du groupe LPP.}
     \label{lpp-logos}
   \end{center}
 \end{figure}
@@ -454,7 +454,7 @@ D'autres critères ont permis de démarquer les frameworks comme par exemple le
 fait que les frameworks fournissent des fonctionnalités supplémentaires comme
 l'export des résultats des tests dans différents format comme TAP ou XML (utile
 pour faire des rapports) ou encore des générateur de nombres pseudo aléatoires
-pour faire des tests avec des entrée aléatoires, \dots Une autre fonctionnalité
+pour faire des tests avec des entrée aléatoires,\dots Une autre fonctionnalité
 intéressante est que les frameworks exécutent les tests dans des threads séparer
 ce qui permet de tester des signaux ou encore de ne pas stopper tous les tests à
 cause d'une sortie erreur. Le fait que les frameworks utilisent beaucoup de
@@ -652,16 +652,16 @@ l'entreprise.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.5]{./img/arborescence-proj.png}
-    \caption{Arborescence d'un projet CKsquare}
+    \caption{Arborescence d'un projet CKsquare.}
     \label{fig:arbrprojck}
   \end{center}
 \end{figure}
 %}}}
 
-Comme on peut le voir sur l'arborescence de la figure \ref{fig:arbrprojck},
+Comme on peut le voir sur l'arborescence de la Figure \ref{fig:arbrprojck},
 chaque projet comporte une partie locale ou les noms de fichiers commencent par
 \textbf{l}. Cette partie contient tous les fichiers qui sont spécifiques au
-projet courant (fonction d'initialisation, fonction principale, \dots). Chaque
+projet courant (fonction d'initialisation, fonction principale,\dots). Chaque
 projet contient au moins deux fichiers de configuration qui sont des fichier
 d'entête contenant des constantes préprocesseur utilisées pour faire de la
 compilation conditionnelle. La gestion de la configuration s'est avérée complexe
@@ -677,7 +677,7 @@ concerne que la partie C.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.5]{./img/arborescence-devpic.png}
-    \caption{Arborescence du répertoire dev\_pic}
+    \caption{Arborescence du répertoire dev\_pic.}
     \label{fig:repdevpic}
   \end{center}
 \end{figure}
@@ -698,7 +698,7 @@ là aussi, ce sera traité dans les prochaines sections.
 Le répertoire \verb|commun| s'organise en catégories. Par exemple, on retrouve
 le dossier \verb|StorageDriver| qui contient les fichiers qui gèrent le stockage
 ou encore le dossier \verb|Payment| qui contient tous ce qui concerne le
-paiement (types de paiement, accepteur de pièce, \dots). L'objectif est de
+paiement (types de paiement, accepteur de pièce,\dots). L'objectif est de
 pouvoir faire des recherche par catégories et de garder les dépendance au plus
 proche des fichiers. Par exemple, plusieurs des sous répertoires de
 \verb|commun| contiennent un dossier \verb|Web| qui regroupe les dépendances web
@@ -708,7 +708,7 @@ dépendance des fichiers.
 Maintenant que nous avons expliqué l'organisation générale du projet, nous
 allons pouvoir traiter le fonctionnement de ce dernier.
 
-\subsection*{Fonctionnement du projet}
+\subsection{Fonctionnement du projet}
 
 Le code commun comporte deux branches, une branche principale et une branche
 plus récente sur laquelle le code fonctionne avec un système d'évènement. La
@@ -722,7 +722,7 @@ plus, elles peuvent permettre de rendre le code plus clair en particulier quand
 il y a beaucoup de cas à traiter. Enfin, elles permettent de gérer les erreurs
 simplement en évitant la duplication de code.
 
-\subsubsection*{Branche principale}
+\subsubsection{Branche principale}
 
 Cette branche a été la première créée par les développeurs de la société, elle
 est utilisée sur la plupart des bornes. Le principe est que chaque fichier
@@ -817,8 +817,8 @@ départ, le projet de test devait être un géré à part. Ce dernier devait êt
 cloné dans la pipeline du code commun pour pouvoir tester les fichiers. Au
 final, il a été décidé d'intégrer complètement l'outil de test dans
 \verb|dev_pic|. L'organisation des tests suis les principes expliqués dans la
-section \ref{orgaprojck}. De ce fait, les tests sont stocké à proximité des
-fichiers testés. Sur la figure \ref{fig:integrtestcommun}, on peut voir une
+Section \ref{orgaprojck}. De ce fait, les tests sont stocké à proximité des
+fichiers testés. Sur la Figure \ref{fig:integrtestcommun}, on peut voir une
 représentation de l'arborescence des fichiers dans le projet commun.
 
 % TODO: une partie de l'arborescence est normalement présenté dans la partie
@@ -828,7 +828,7 @@ représentation de l'arborescence des fichiers dans le projet commun.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.4]{./img/arborescence-commun.png}
-    \caption{Intégration des tests dans le code commun}
+    \caption{Intégration des tests dans le code commun.}
     \label{fig:integrtestcommun}
   \end{center}
 \end{figure}
@@ -836,7 +836,7 @@ représentation de l'arborescence des fichiers dans le projet commun.
 
 Cette arborescence montre une partie du contenu du répertoire
 \verb|dev_pic/commun|. Ici, on peut voir trois des catégories qui ont été
-mentionnées dans la section \ref{orgaprojck}. Le répertoire \verb|Test| a été
+mentionnées dans la Section \ref{orgaprojck}. Le répertoire \verb|Test| a été
 ajouté lors de l'intégration du projet de test dans le projet commun, ce dernier
 contient les fichiers généraux spécifiques aux test. À noter qu'il y a un autre
 répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même niveau
@@ -895,7 +895,7 @@ pouvoir lancer et initialiser la simulation. Pour ce faire, on utilise un
 fichier qui fourni des fonctions d'initialisation et de terminaison globales qui
 peuvent être utilisées dans les test. La fonction d'initialisation permet de
 créer les threads utilisé pour les horloges comme nous le verrons dans la
-section \ref{simuhorologes} ainsi que d'initialiser toutes les variables
+Section \ref{simuhorologes} ainsi que d'initialiser toutes les variables
 nécssaire au bon fonctionnement de la simulation. Dans la fonction de
 terminaison, on termine simplement les threads des horloges. Dans ce fichier, on
 peut aussi ajouer d'autre fonctions spécifiques au framework.
@@ -929,7 +929,7 @@ Les sous-répertoires de test permettent aussi de stocker les fichiers qui
 contiennent les éléments nécessaire à la simulation des composants. Par exemple,
 les fichiers qui permettent de simuler les composants interfacés avec le
 protocole Cctalk sont stocker dans le répertoire \verb|commun/Cctalk/Test|. Nous
-traiterons ce protocole dans la section \ref{interfacecctalk}.
+traiterons ce protocole dans la Section \ref{interfacecctalk}.
 
 \subsubsection{Les tests}
 
@@ -1045,7 +1045,7 @@ compteur manuellement. Il est aussi possible de mettre les horloges en pause et
 de les relancer. Enfin, il y a une fonction \verb|Stop| qui permet de
 détruire les threads. Les fonctions \verb|Start| et \verb|Stop| sont
 appelées dans les fonctions d'initialisation et de terminaison globales décrites
-dans la section \ref{configuration-de-criterion}.\\
+dans la Section \ref{configuration-de-criterion}.\\
 
 Les horloges représentaient donc une partie importante du projet car elles sont
 énormément utilisées dans le code et si les compteurs ne sont pas incrémentés,
@@ -1126,14 +1126,14 @@ démarrer la communication et l'esclave répond lorsque c'est nécessaire. La
 connexion est réalisée par l'intermédiaire de deux fils, SDA (Serial Data Line)
 qui permet de transmettre les données et SCL (Serial Clock Line) qui correspond
 à l'horloge, quand SCL est à 1, on envoi un bit sur SDA. Ces deux lignes sont
-bidirectionnelles. Le schéma de la figure \ref{fig:schemai2c} illustre le
+bidirectionnelles. Le schéma de la Figure \ref{fig:schemai2c} illustre le
 principe de l'I²C.
 
 % [schéma i2c] {{{
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.4]{./img/schema-i2c.png}
-    \caption{Liaison maître/esclave (I²C)}
+    \caption{Liaison maître/esclave (I²C).}
     \label{fig:schemai2c}
   \end{center}
 \end{figure}
@@ -1193,7 +1193,7 @@ permis de comprendre comment sont utilisés les périphériques de stockage. À
 noter qu'ici, la ligne permettant de transmettre des données est modélisée par
 une variable (globale). Cette variable est gérée par la bibliothèque du
 \gls{pic} et est définie dans le fichier \verb|PicVariables| mentionné dans la
-section \ref{gcc}.
+Section \ref{gcc}.
 
 Pour écrire sur un composant, la carte démarre la communication puis envoie
 l'adresse du périphérique de stockage auquel ele s'adresse avec le bit de mode à
@@ -1232,7 +1232,7 @@ machine à états de la simulation.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.5]{./graphs/sm-i2c.png}
-    \caption{Diagramme d'états de l'émulation de l'interface I²C du stockage}
+    \caption{Diagramme d'états de l'émulation de l'interface I²C du stockage.}
     \label{fig:machineetatsi2c}
   \end{center}
 \end{figure}
@@ -1275,7 +1275,7 @@ le fait d'utiliser deux lignes permet au maître et à l'esclave d'échanger des
 données en même temps. La dernière ligne, $\overline{CS}$, permet, quand elle
 est à zéro, de sélectionner le composant avec lequel on souhaite échanger. Cette
 ligne est relié à un seul composant, il faut donc autant de lignes
-$\overline{CS}$ (Chip Select) que d'esclaves. Sur la figure \ref{fig:schemaspi},
+$\overline{CS}$ (Chip Select) que d'esclaves. Sur la Figure \ref{fig:schemaspi},
 on peut voir un schéma représentant la liaison entre la carte et un composant en
 SPI.
 
@@ -1283,7 +1283,7 @@ SPI.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.6]{./img/schema-spi.png}
-    \caption{Liaison maître/esclave (SPI)}
+    \caption{Liaison maître/esclave (SPI).}
     \label{fig:schemaspi}
   \end{center}
 \end{figure}
@@ -1325,14 +1325,14 @@ qui reprend les étapes décrites dans le paragraphe précédent. Là aussi, pou
 utiliser la simulation, il faut modifier la fonction d'initialisation en
 ajoutant les composant de façon similaire à l'I²C. À noter que la simulation de
 la mémoire ne change pas et que l'on peut très bien configurer le même composant
-à la fois sur lI²C et le SPI. On peut voir sur la figure \ref{fig:smspi} le
+à la fois sur lI²C et le SPI. On peut voir sur la Figure \ref{fig:smspi} le
 diagramme de la machine à états du SPI.
 
 % [schéma sm spi] {{{
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[scale=0.4]{./graphs/sm-spi.png}
-    \caption{Machine à états de la simulation du stockage en SPI}
+    \caption{Machine à états de la simulation du stockage en SPI.}
     \label{fig:smspi}
   \end{center}
 \end{figure}
@@ -1355,7 +1355,7 @@ pour la simulation des interfaces de ces deux protocoles. Si les étapes ne sont
 pas respectées à la lettre et que les bonnes fonctions ne sont pas appelées
 dans le bon ordre le résultat est indéterminé. C'est un énorme problème étant
 donnée le fait que l'on ne sait plus d'où viennent les erreurs, du code ou de la
-simulation ? C'est une question qu'il est légitime de se poser étant donné la
+simulation? C'est une question qu'il est légitime de se poser étant donné la
 complexité de la simulation des interfaces du stockage.
 
 Pour tenter de résoudre ce problème, un système d'évènements a été pensé. Ce
@@ -1408,13 +1408,13 @@ possibilité de chiffrer les trames (standard \gls{des}). Ce protocole est
 destiné à être utilisé pour assurer la communication entre différents composants
 reliés à une même carte.
 
-Comme le SPI et l'I²C , le Cctalk fonctionne en mode maître et esclave. Ce
+Comme le SPI et l'I²C, le Cctalk fonctionne en mode maître et esclave. Ce
 standard utilise un système de d'entête pour transmettre des commandes, par
 exemple, l'entête 253 permet de demander son adresse à un composant. Il y a en
 tout 256 entêtes différentes, numérotées de 0 à 255 ce qui permet la
 transmission d'une entête sur un octet. Les entêtes de 20 à 100 sont réservées
 pour les développeurs des applications utilisant le Cctalk, le reste est décrit
-dans la documentation \cite{cctalkpt2}. Sur la figure \ref{tramecctalk} on peut
+dans la documentation \cite{cctalkpt2}. Sur la Figure \ref{tramecctalk} on peut
 voir la composition d'une trame Cctalk qui comprend six éléments. Le premier est
 l'adresse du composant ciblé par la trame (l'adresse du destinataire). Cette
 adresse est suivit du nombre d'octets de données qui vont être envoyées. Ce
@@ -1428,7 +1428,7 @@ la réception.
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.4]{./img/trame-cctalk.png}
-  \caption{Trame Cctalk}
+  \caption{Trame Cctalk.}
     \label{tramecctalk}
   \end{center}
 \end{figure}
@@ -1451,7 +1451,7 @@ société à donc utilisé une des entêtes mise à disposition des développeur
 l'entête 34. Cette entête ne sert que pour réaliser cette action, il n'y a donc
 pas de sous-entête à envoyer. La trame qui sera transmise au système vocal sera
 donc composée de l'entête 34 et des données requises à la lecture du fichier
-comme le nom du fichier à lire, le nombre de répétitions, \dots Là aussi, le
+comme le nom du fichier à lire, le nombre de répétitions,\dots Là aussi, le
 composant doit répondre par acquittement.
 \\~\\
 
@@ -1475,7 +1475,7 @@ il y a le fichier \verb|CctalkMaster.c| qui permet de gérer la structure de
 données qui modélise les commandes. Ce fichier possède aussi une fonction
 \verb|Control| qui permet de gérer les \textit{Core Commands}, qui sont des
 commandes généralement exécutées à l'initialisation et qui permettent d'obtenir
-des informations sur les composant (constructeur, numéro de version, \dots).
+des informations sur les composant (constructeur, numéro de version,\dots).
 Ensuite, il y a le fichier \verb|CctalkMasterSerial.c| qui gère la
 communication. Ce second fichier sert de pont entre le code haut niveau des
 communs et le code bas niveau des bibliothèques du \gls{pic}. Pour l'envoi des
@@ -1733,7 +1733,7 @@ niveau} est utilisée. Comme il n'y a pas de réponse prés-définies, il n'y a 
 de fonction \verb|HandleResponse|. L'obligation de configurer toutes les
 réponses aux commandes rend certains tests complexe à écrire, c'est pour cela
 qu'un système de scénarios a été ajouté au MDB, ce système est décrit dans la
-section \ref{sysscenar}.
+Section \ref{sysscenar}.
 
 TODO: code en annexe
 
@@ -1779,7 +1779,7 @@ TODO: code en annexe
 \section{Les historiques}%{{{
 
 Dans cette section, nous allons nous intéresser à la gestion des historiques
-(historique de paiement, \dots). Ils sont stokés en mémoire sur la carte dans
+(historique de paiement,\dots). Ils sont stokés en mémoire sur la carte dans
 une base de données circulaire et ils sont régulièrement sauvegardé sur un
 serveur. C'est un élément important car la sauvegarde des historiques est
 juridiquement obligatoire quand ils concernent la monétique (loi finance de
@@ -1812,7 +1812,7 @@ implémentations, par contre, étant donné que les fonctions ont le même nom, 
 ne peut pas compiler tous les fichiers en même temps (une interface et deux
 implémentations). C'est pour cette raison que l'on génère deux exécutables
 différents, où chaque exécutable est compilé avec une configuration différente.
-Comme expliqué dans la section \ref{cmake}, pour passer d'une configuration à
+Comme expliqué dans la Section \ref{cmake}, pour passer d'une configuration à
 une autre, on utilise des constantes préprocesseurs définies à la compilation.
 Il y aura donc aussi deux tests différents, un pour les flash et un pour les
 eeproms.
@@ -1829,7 +1829,7 @@ dans le CDB. Dans un premier temps, on insère un élément dans la base et on
 regarde si les données ont bien été écrites dans la flash. Ensuite, on vérifie
 que les données du CDB sont aussi écrites au début de la mémoire. En effet,
 lorsque l'on redémarre la carte, on a besoin de récupérer l'état de la base de
-données (le nombre d'élément stockés, \dots). Pour pouvoir faire cela, la
+données (le nombre d'élément stockés,\dots). Pour pouvoir faire cela, la
 structure qui permet de gérer le CDB est écrite en début de mémoire
 (\verb|CDB->Control|). Une fois que l'on vérifié qu'une insertion dans le CDB
 fonctionnait, on teste s'il est possible de remplir la base en ajoutant le
@@ -1847,10 +1847,10 @@ Test(CDB_Test, TESTCDB_Add, .init = TESTCDB_Setup, .fini = TESTCDB_Teardown)
     int Cpts;
 
     TESTCDB_IndexToAddrRelative(CDB,0,&Addr);
-    TESTCDB_RandomBufferGenerate(Buff,sizeof(TITEM_PAYMENT));
-    cr_assert(true == CDB_Add(CDB ,Buff));
+    TESTCDB_RandomBufferGenerate(Buff, sizeof(TITEM_PAYMENT));
+    cr_assert(true == CDB_Add(CDB, Buff));
     // le cdb a bien été écrit dans la flash
-    cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_FLASHM[0] + Addr,Buff));
+    cr_assert(eq(u8[sizeof(TITEM_PAYMENT)], TESTMEM_FLASHM[0] + Addr, Buff));
     // on vérifie que le control est bien écrit au début
     CDB->Control.CounterChange--;
     cr_assert(eq(u8[sizeof(CDB->Control)],
@@ -1860,15 +1860,15 @@ Test(CDB_Test, TESTCDB_Add, .init = TESTCDB_Setup, .fini = TESTCDB_Teardown)
 
     /* remplissage de la base */
     for (Cpts = 1; Cpts < CDB->RecordMax; ++Cpts) {
-        TESTCDB_RandomBufferGenerate(Buff,sizeof(TITEM_PAYMENT));
-        cr_assert(true == CDB_Add(CDB ,Buff));
-        TESTCDB_IndexToAddrRelative(CDB,Cpts,&Addr);
-        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],TESTMEM_FLASHM[0] + Addr,Buff));
+        TESTCDB_RandomBufferGenerate(Buff, sizeof(TITEM_PAYMENT));
+        cr_assert(true == CDB_Add(CDB, Buff));
+        TESTCDB_IndexToAddrRelative(CDB, Cpts,&Addr);
+        cr_assert(eq(u8[sizeof(TITEM_PAYMENT)], TESTMEM_FLASHM[0] + Addr, Buff));
     }
     cr_assert(true == CDB_IsFull(CDB));
 }
 \end{minted}
-\caption{Test d'insertion dans un CDB}
+\caption{Test d'insertion dans un CDB.}
 \label{extestinsertcdb}
 \end{listing}
 
@@ -2001,7 +2001,7 @@ build-job:       # This job runs in the build stage, which runs first.
     paths:
       - commun/Test/build
 \end{minted}
-\caption{.gitlab-ci.yml: build job}
+\caption{.gitlab-ci.yml: build job.}
 \label{buildjob}
 \end{listing}
 
@@ -2033,7 +2033,7 @@ launch-test-job:   # This job runs in the test stage.
       artifacts: true
   coverage: '/Percentage Coverage: \d+\.\d+/'
 \end{minted}
-\caption{.gitlab-ci.yml: test job}
+\caption{.gitlab-ci.yml: test job.}
 \label{testjob}
 \end{listing}
 
@@ -2041,7 +2041,7 @@ La création de cette pipeline a clos la première partie du stage qui concernai
 la création d'un outil de test sur la branche principale du code C. Le travail
 suivant a consisté en l'adaptation de l'outil sur la branche évènementiel qui
 est l'autre branche du projet \verb|dev_pic| que nous avons détaillé dans la
-section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
+Section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
 aux modifications apportées à l'outil pour que ce dernier fonctionne sur la
 seconde branche.
 %}}}
@@ -2063,7 +2063,7 @@ or cela n'était mentionné nul part. Cependant, le fait de faire cela en amont 
 grandement facilité le reste du travail.
 
 Lorsque les premiers fichiers de tests ont étaient ajoutés, un problème très
-intéressant a été rencontré. Comme expliqué dans la section \ref{brancheevent},
+intéressant a été rencontré. Comme expliqué dans la Section \ref{brancheevent},
 pour pouvoir déclencher un appel de fonction à l'émission d'un signal, il faut
 utiliser un \verb|Connect| et le lier à la fonction. Pour ce faire, on utilise
 la fonction \verb|CONNECT_Define| qui prend en paramètre, un \verb|Connect|
@@ -2080,9 +2080,9 @@ void CONNECT_Define(TCONNECT * Connect,
                                             uchar * ReceiverData,
                                             uchar * ReceiverDataItem),
                     uchar * ReceiverData,
-                    uchar * ReceiverDataItem,uchar Type);
+                    uchar * ReceiverDataItem, uchar Type);
 \end{minted}
-\caption{Signature de la fonction CONNECT\_Define}
+\caption{Signature de la fonction CONNECT\_Define.}
 \label{sigconnectdefine}
 \end{listing}
 
@@ -2105,13 +2105,13 @@ crée.
 \begin{minted}{C}
 CONNECT_Define(CONNECT_Create(&Signal),
                nullptr,
-               CONNECT_Event(Signal,DISPLAYSCCTALK_EV_RCV_INIT),
+               CONNECT_Event(Signal, DISPLAYSCCTALK_EV_RCV_INIT),
                SM_Control,
                (uchar*)&Sm,
                (uchar*)&This,
                CONNECT_QUEUE);
 \end{minted}
-\caption{Première utilisation de la fonction CONNECT\_Define}
+\caption{Première utilisation de la fonction CONNECT\_Define.}
 \label{firstconnectdefine}
 \end{listing}
 
@@ -2163,6 +2163,10 @@ temps.
 été adaptées avec le nouveau système. Si cela doit être le cas pour le stockage,
 il faudra aussi modifier la simulation
 
+Le stockage n'a donc pas été modifié et n'a donc pas pris beaucoup de temps à
+intégrer sur la nouvelle branche. Dans la section suivante, nous verrons comment
+ont été ajoutés des composants Cctalk et MDB.
+
 \subsubsection*{Cctalk et MDB}
 
 La partie qui a pris le plus de temps à adapter a été celle sur les protocoles
@@ -2172,7 +2176,19 @@ fonction \verb|Run| et \verb|Control| ont été changées pour pouvoir fonctionn
 avec le \verb|Sate Manager|. Les tests qui avaient été écrits ont aussi du être
 changés car certaines fonctionnalités ne fonctionnaient plus de la même façon.
 
-TODO: détailler les modif avec exemple de code
+Les modifications apportées au niveau des composants simulés concernent la
+fonction \verb|Run| qui utilise maintenant les fonction liées au \verb|Connects|
+plutôt que d'appeler directement les fonction \verb|Control|. À noter qu'ici,
+que ce soit pour la version haut niveau ou la bas niveau, la fonction \verb|Run|
+doit être utilisée dans les test pour éviter d'appeler des fonctions à la main.
+Au niveau des tests, on ne peut plus utiliser les fonctions comme on le faisait
+sur la branche principale, comme dans la simulation, il faut déclencher les
+\verb|Connects|. Un gros avantage de notre simulation est le fait que l'on peut
+entièrement contrôler l'horloge, on peut donc facilement déclencher les
+évènement de \verb|timeout| car la plupart des fonctions sont appelée au bout
+d'une certaine période de temps. La méthode la plus simple est d'utiliser la
+fonction \verb|TESTTIMER_Wait| pour simuler une attente et ensuite d'appeler la
+fonction \verb|TIMER_Task|.
 
 À noter qu'ici, il y a eu beaucoup moins d'éléments simulés que sur la branche
 principale. En effet, cette branche est secondaire et elle n'est pas
@@ -2180,9 +2196,12 @@ nécessairement à jour car tous les composants ne sont pas utilisés. De ce fai
 la plupart des composants Cctalk et MDB qui étaient présents sur l'autre branche
 ne l'étaient pas ici.
 
+Dans la section suivante, nous allons traiter l'envoi des historiques sur le
+CKWash avant de conclure la partie sur la branche secondaire.
+
 \subsubsection*{Les historiques}
 
-Comme dit dans la section \ref{cdbs}, les historiques sont stockés dans la
+Comme dit dans la Section \ref{cdbs}, les historiques sont stockés dans la
 mémoire de la carte. Étant donné que le stockage n'a pas nécessité de
 modifications sur ce branche, toute la partie concernant les CDBs était presque
 fonctionnelle. Ici, des modifications ont été apportées au niveau du code de
@@ -2240,7 +2259,7 @@ fichiers à tester. Pour palier à ce problème, un système de suite de test à
 
 \subsubsection*{Système de suites de tests}
 
-Comme nous l'avons vu dans la section \ref{nouvframe}, étant donné la simplicité
+Comme nous l'avons vu dans la Section \ref{nouvframe}, étant donné la simplicité
 du framework Qt Test, un système de suite de test a du être implémenté. Ce
 système permet d'enregistrer et de lancer plusieurs classes de test. Il vient
 avec une macro qui permet de générer la fonction \verb|main| pour la suite.
@@ -2256,8 +2275,57 @@ d'instancier les classes dans la macro. Le second défi était le fait qu'il n'y
 aucun moyen simple de séparer les arguments dans \verb|VA_ARGS|. Pour réussir à
 créer cette macro, il a fallut utiliser un \textit{template variadique}.
 
-TODO: code
-TODO: reste des explication
+Sur le Listing \ref{lst:macrovarmain}, on peut voir le code de la macro
+permettant de générer la fonction principale pour une suite. Cette dernière créé
+une suite nommée \verb|LocalSuite| et fait appel à la fonction \verb|AddAllTest|
+pour ajouter tous les tests passé en paramètre via \verb|VA_ARGS| à la suite.
+Ensuite, on lance tous les tests avec la méthode Run.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+#define TESTSUITE_MAIN(...) \
+    int main(int argc, char *argv[]) { \
+        QCoreApplication app(argc, argv); \
+        app.setAttribute(Qt::AA_Use96Dpi, true); \
+        TEST_SUITE LocalSuite(argc, argv); \
+        AddAllTest<__VA_ARGS__>(LocalSuite);\
+        return LocalSuite.Run(); \
+    }\
+\end{minted}
+\caption{Macro variadique pour générer la fonction main.}
+\label{lst:macrovarmain}
+\end{listing}
+
+La fonction template permettant d'instancier les suites est disponible sur le
+Listing \ref{lst:templateinst}. Ce template utilise \verb|sizeof...| pour savoir
+s'il reste des élément à instancier (si TS est vide ou non). À noter qu'ici, il
+est obligatoire de fournir une valeur par défaut pour le type \verb|T|, étant
+donné que tous les tests hérite de la classe \verb|QObject|, c'est elle qui a
+été choisie.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+template<class T=QObject, class... Ts>
+void AddAllTest(TEST_SUITE& Suite)
+{
+    Suite.TestAdd(new T());
+    if (sizeof...(Ts) > 0) {
+        AddAllTest<Ts...>(Suite);
+    }
+}
+\end{minted}
+\caption{Template permettant l'instanciation des tests.}
+\label{lst:templateinst}
+\end{listing}
+
+Cet élément du code n'est pas le plus important mais son fonctionnement est
+intéressant. Il présente deux élément assez peut utilisés dans le code qui on
+permet de créer une macro simple à utiliser qui se comporte comme celle du
+framework mais qui permet en plus d'exécuter plusieurs tests en même temps. \\
+
+Maintenant que nous avons traiter la mise en place du nouveau framework de test,
+nous allons traiter la mise en place de l'outil de test dans le code (simulation
+et tests simples). Nous suivront le même ordre que dans les parties précédentes.
 
 \subsection{Le stockage}
 
@@ -2404,7 +2472,7 @@ développement du projet de tests. Ici, c'est l'interface en ligne de commande d
 qui a été privilégiée ainsi que l'utilisation du plugin \textbf{fugitive} sur
 neovim.
 %}}}
-\subsubsection{GDB}%{{{
+\subsubsection{Gdb}%{{{
 
 La taille et la complexité du code a nécessité l'utilisation d'un déboguer. Les
 déboguer sont des outils très utiles pour comprendre comment un code
@@ -2427,7 +2495,7 @@ module python intégré et il est possible d'utiliser python pour réécrire des
 commandes. Par exemple, on peut réécrire la fonction d'affichage lorsque l'on
 souhaite afficher des structures de données complexes. À noter également que GDB
 a aussi été très utile pour faire fonctionner la solution utilisant des threads
-décrite dans la section \ref{echecthread} en aidant à suivre l'exécution du
+décrite dans la Section \ref{echecthread} en aidant à suivre l'exécution du
 programme dans les différents threads.
 
 GDB est aussi un outil configurable et sa configuration intègre un langage de
@@ -2447,7 +2515,7 @@ l'interface TUI par défaut du programme qui a été utilisée (accompagnée de
 macros aidant à la mise en place de breakpoints). Par la suite, l'utilisation de
 \verb|Termdebug| a été privilégiée. C'est une interface proposée par l'éditeur
 \verb|(neo)vim| qui permet une utilisation très simple du débogueur une fois
-configurée. Sur la figure \ref{fig:termdebug}, on peut voir à quoi ressemble
+configurée. Sur la Figure \ref{fig:termdebug}, on peut voir à quoi ressemble
 l'interface Termdebug. Le code exécuté se trouve à gauche et sur la droite il y
 a une fenêtre montrant les affichages dans le terminal (sortie standard) et une
 fenêtre permettant d'interagir avec GDB pour exécuter des commandes complexes.
@@ -2456,7 +2524,7 @@ fenêtre permettant d'interagir avec GDB pour exécuter des commandes complexes.
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.2]{./img/termdebug.png}
-    \caption{Termdebug: GDB intégré à (neo)vim}
+    \caption{Termdebug: GDB intégré à (neo)vim.}
   \end{center}
   \label{fig:termdebug}
 \end{figure}
@@ -2469,33 +2537,80 @@ indispensable pour comprendre le fonctionnement d'un code. GDB n'est pas simple
 d'utilisation mais c'est un outil léger puissant et flexible qu'il est très
 intéressant de connaitre.
 %}}}
-\subsubsection{IDE}%{{{
+\subsubsection{Environnement de Développement}%{{{
 
 TODO: nvim -> vim-fugitive, clangd, l'intégration de gdb ... Présentation rapide
 de ma configuration.
 %}}}
 %}}}
 \subsection{Rédaction de la documentation}%{{{
+
+Un élément important de ce stage à été la rédaction de la documentation. En
+effet, l'objectif final étant de créer un outil qui soit utilisable et
+modifiable par les développeurs de la société, il était important de détailler
+toute l'implémentation et l'utilisation de l'outil. L'objectif de la
+documentation est donc de permettre d'une part l'utilisation de l'outil, ce qui
+comprend la rédaction de tests et l'utilisation de la simulation. D'autre part,
+elle doit permettre au développeurs de comprendre comment la simulation
+fonctionne pour pouvoir simuler de nouveaux composants facilement ou modifier
+les composant existants si besoin.
+
+La stratégie employée pour produire la documentation a été de rédiger les
+explications tout au long du développement. Cela a pour avantage de permettre
+une grande précision dans les explication car on se souvient plus aisément de
+tous les détaille lorsque l'on vient de produire une solution. Le défaut par
+contre est que le code bouge beaucoup et des éléments sont souvent modifiés voir
+même complètement reimplémentés comme cela a été le cas lors de l'abandon des
+threads en début de projet. Cela oblige à constamment réécrire des éléments de
+documentation et peut faire perdre beaucoup de temps.
+
+Au final, la documentation de l'outil à pris deux formes. Tout d'abord, il y a
+une documentation complètement rédigée qui apparait dans le wiki du projet.
+Cette documentation décrit toutes les méthodes employées pour mettre en place
+l'outil de test (CMake, modification des fichiers, éléments simulé,\dots). Le
+wiki possède aussi une partie composées de tutoriels décrivant toutes les étapes
+à réaliser pour mettre en place un nouveau test ou encore simuler un nouveau
+composant. Ensuite, la documentation apparait aussi dans le code sous forme de
+commentaires au format \textbf{doxygen}. Le principe est que chaque fonction
+possède un commentaire décrivant son fonctionnement ainsi que ses paramètres et
+la valeur qu'elle renvoi. Les structures ainsi que les éléments qui les compose
+sont aussi commentés. Les commentaires dans le code sont très important,
+cependant il ne faut pas trop en abuser pour ne pas le surcharger. Chaque
+fonction possède un commentaire générale décrivant son utilité mais il n'y a que
+très peu de commentaire à l'intérieur du code car il doit être compréhensible de
+lui même. Pour ce faire il y a plusieurs méthode, tout d'abord il faut bien
+nommer les variables est les fonctions, ensuite, on peut utiliser des variables
+intermédiaires pour nommer les conditions par exemple.
+
+La rédaction de la documentation a donc été un élément très important du stage
+et a pris presque autant de temps que le développement. Dans la section
+suivante, nous allons détailler la planification des tâches.
+
 \clearpage
 %}}}
 \subsection{Planification des tâches}%{{{
 
-Les tâches prévues lors du stage étaient les suivantes. Au départ, il était
-prévu de faire le choix du framework de tests puis de faire une revue des
-éléments du code à tester. Ensuite, il était prévu de faire des tests sur des
-fichiers simples pour s'habituer au code de l'entreprise et aussi permettre de
-compiler une première partie du projet. Une fois le projet pris en mains,
-l'objectif était de s'attaquer aux grandes parties qui étaient tout d'abord le
-stockage, puis le Cctalk et le MDB. Les historiques devaient être testés à la
-fin du fait de leur dépendance au stockage. Il était aussi prévu de réaliser de
-la documentation en parallèle tout au long du projet.
+Dans cette section, nous comparer la planification du projet réalisée au départ
+avec le déroulement réèl du projet à l'aide de deux diagrammes de Gantt.
+
+Les tâches prévues lors du stage sont fisibles sur la Figure
+\ref{fig:expectedgantt}. Au départ, il était prévu de faire le choix du
+framework de tests puis de faire une revue des éléments du code à tester.
+Ensuite, il était prévu de faire des tests sur des fichiers simples pour
+s'habituer au code de l'entreprise et aussi permettre de compiler une première
+partie du projet. Une fois le projet pris en mains, l'objectif était de
+s'attaquer aux grandes parties qui étaient tout d'abord le stockage, puis le
+Cctalk et le MDB. Les historiques devaient être testés à la fin du fait de leur
+dépendance au stockage. Il était aussi prévu de réaliser de la documentation en
+parallèle tout au long du projet.
 
 % [expected gantt] {{{
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.6]{./img/expected-gantt.png}
-  \caption{Diagramme de Gantt prévisionnel}
+  \caption{Diagramme de Gantt prévisionnel.}
   \end{center}
+  \label{fig:expectedgantt}
 \end{figure}
 %}}}
 
@@ -2518,6 +2633,7 @@ NOTE: diagramme actuel
   \begin{center}
   \includegraphics[scale=0.6]{./img/current-gantt.png}
   \caption{Diagramme de Gantt actuel.}
+    \label{fig:finalgantt}
   \end{center}
 \end{figure}~\\
 %}}}
@@ -2679,8 +2795,8 @@ Test affichage biblio:
 
 \clearpage{}
 \pagestyle{empty}
-\printbibliography[keyword={paper},title={Bibliographie}]
-\printbibliography[keyword={web},title={Webographie}]
+\printbibliography[keyword={paper}, title={Bibliographie}]
+\printbibliography[keyword={web}, title={Webographie}]
 
 %------------------------------------------------------------------------------%
 %                                  glossaire                                   %
@@ -2733,7 +2849,7 @@ int main(void) {
   return (number_failed == 0) ? 0 : 1;
 }
 \end{minted}
-\caption{Check: Exemple simple}
+\caption{Check: Exemple simple.}
 \label{check-example}
 \end{listing}
 
@@ -2795,7 +2911,7 @@ int main(void)
   return 0;
 }
 \end{minted}
-\caption{CUnit: exemple simple}
+\caption{CUnit: exemple simple.}
 \label{cunit-example}
 \end{listing}
 
@@ -2822,7 +2938,7 @@ Test(sample, passing, .signal = SIGSEGV) {
     *ptr = 42;
 }
 \end{minted}
-\caption{Criterion: exemple simple}
+\caption{Criterion: exemple simple.}
 \label{criterion-example}
 \end{listing}
 
@@ -2845,7 +2961,7 @@ int main(void)
   return MU_EXIT_CODE;
 }
 \end{minted}
-\caption{Minunit: exemple simple}
+\caption{Minunit: exemple simple.}
 \label{minunit-example}
 \end{listing}
 
@@ -2897,7 +3013,7 @@ int main(void)
   return munit_suite_main(&suite, NULL, 0, NULL);
 }
 \end{minted}
-\caption{Munit: exemple simple}
+\caption{Munit: exemple simple.}
 \label{munit-example}
 \end{listing}
 
@@ -2928,7 +3044,7 @@ int main(void) {
     return UNITY_END();
 }
 \end{minted}
-\caption{Unity: exemple simple}
+\caption{Unity: exemple simple.}
 \label{unity-example}
 \end{listing}
 
@@ -2954,7 +3070,7 @@ TEST(foo, bar2) {
 
 TAU_MAIN() // sets up Tau (+ main function)
 \end{minted}
-\caption{Tau: exemple simple}
+\caption{Tau: exemple simple.}
 \label{tau-example}
 \end{listing}
 
@@ -2975,11 +3091,11 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill,
 
     // 1. remplire le cdb
     for (Cpts = 0; Cpts < History->RecordMax - 1; ++Cpts) {
-        CDB_IndexToAddr(History,History->Control.Count,&Addr);
+        CDB_IndexToAddr(History, History->Control.Count,&Addr);
         TESTCKSPROHISSND_RandomItemGenerate();
         // sauvegarde des éléments enregistrés
         memcpy(HisElts[HisEltsCount++],
-               &TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+               &TESTCKSPROHISSND_ItemHisPayment, sizeof(TITEM_PAYMENT));
         cr_assert(true == CDB_Add(History,(uchar*)
                                   &TESTCKSPROHISSND_ItemHisPayment));
         cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],
@@ -3018,7 +3134,7 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill,
         TESTCKSPROHISSND_RandomItemGenerate();
         // sauvegarde des éléments enregistrés
         memcpy(HisElts[HisEltsCount++],
-               &TESTCKSPROHISSND_ItemHisPayment,sizeof(TITEM_PAYMENT));
+               &TESTCKSPROHISSND_ItemHisPayment, sizeof(TITEM_PAYMENT));
         cr_assert(true == CDB_Add(History,
                                   (uchar*) &TESTCKSPROHISSND_ItemHisPayment));
         cr_assert(eq(u8[sizeof(TITEM_PAYMENT)],
@@ -3039,14 +3155,14 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill,
         // on récupère l'élément que l'on est sensé envoyer et on vérifie
         // l'envoi
         memcpy(&TESTCKSPROHISSND_ItemHisPayment,
-               HisElts[HisEltsCount++],sizeof(TITEM_PAYMENT));
+               HisElts[HisEltsCount++], sizeof(TITEM_PAYMENT));
         cr_assert(true == TESTCKSPROHISSND_CmdCheck());
         CKSPROHISSND_Control();
     }
 }
 \end{minted}
 \label{testsaveckwash}
-% \caption{Test sur l'envoi des historiques sur le serveur}
+% \caption{Test sur l'envoi des historiques sur le serveur.}
 % \end{listing}
 %}}}
 
