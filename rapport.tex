@@ -195,7 +195,25 @@ prêt pour mon premier stage en entreprise.
 \section*{Résumé}
 \addcontentsline{toc}{section}{Résumé}
 
-Le super résumer !
+Ce rapport décrit le travail accompli dans la société CKsquare effectué dans le
+cadre du stage de deuxième année d'école d'ingénieur à l'ISIMA. Ce stage d'une
+durée de cinq mois avait pour objectif la mise en place d'un outil d'intégration
+continue permettant de tester le code utilisé sur les cartes électroniques de
+l'entreprise. Les tests devaient compiler et s'exécuter sur Linux pour permettre
+leur automatisation dans une pipeline Gitlab.\\
+
+L'outil devait permettre de tester du code écrit en C et s'exécutant sur une
+carte électronique de type \gls{pic}. Le code C++, qui utilise la bibliothèque
+Qt et qui s'exécute sur une carte type Beagle devait aussi pouvoir être testé.
+Le défit de cette tâche réside dans le fait que les composants électroniques
+connectés aux cartes devaient être simulés pour permettre de tester les
+différents programmes. De plus, les composants électroniques sont interfacé avec
+des protocoles qui n'étaient pas connus avant le stage et qu'il a donc fallut
+découvrir.\\
+
+L'outil créé à la fin remplit bien le cahier des charges, la simulation des
+composants permet bien d'exécuter et de tester le code et les tests ont
+correctement été automatisés dans une pipeline Gitlab.
 \\~\\
 
 \noindent
@@ -205,7 +223,23 @@ Mots-clés: \textbf{C/C++}, \textbf{intégration continue}, \textbf{tests},
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
 
-the amazing abstract
+This rapport describes the work accomplished in the CKsquare company during the
+second year internship in the engineering school of ISIMA. This objective of
+this five months long internship was to create of a continuous integration tool
+able to test the code used in the company's circuit boards. The tests had to be
+compiled and executed on a Linux system in order to be automated in a Gitlab
+pipeline.\\
+
+The tool had to be able to test C code running on PIC circuit boards as well as
+C++ code running on Beagle board and using the Qt library. The challenge was the
+fact that the electronic components normally connected to the boards had to be
+simulated in order to test the various programs. Moreover, the electronic
+components are interfaced using protocols that were unknown before this
+internship.\\
+
+The resulting tool completes all the specifications, the simulation of the
+electronic components allows the code and the tests to run without being on the
+circuit board. Finally, the tests have been automated in a Gitlab pipeline.
 \\~\\
 
 \noindent
