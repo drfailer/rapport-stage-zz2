@@ -2347,21 +2347,21 @@ outils de Qt. En effet, comme c'est le développeur du code qui écrit les tests
 si ce dernier manipule mal les outils de Qt, il y a de fortes chance pour que ça
 soit aussi le cas dans les tests. Pour éviter ce problème, on ne réutilise pas
 les même outils dans le code et dans les tests. De plus, cela pourra permettre
-la détection de problème avec Qt si jamais il y en a.
+la détection de problème avec Qt si jamais il y en a.\\
+
+Pour la partie Qt, les tests sur le stockage n'ont donc pas nécessiter la mise
+en place d'une simulation comme pour la partie C. Dans la section suivante, nous
+verrons que cela n'a pas été le cas pour les protocoles monétique.
 
 \subsection{Les protocoles monétiques}
 
-- une seule version
-- mocking pour tester les fichiers bas niveaux
+Comme pour le C, la partie la plus chronophage a concerner le Cctalk et le MDB.
+Cette fois ci, il a fallut mettre en place de la simulation et cette dernière
+suis le même principe que celle du C sauf qu'ici, on utilise des objets et le
+polimorphisme pour simplifier l'implémentation.
 
-\subsection{Le problème de l'encapsulation}
-
-- fonctions control privées et actionnées avec des évènements timer
-- solution avec des wait pas idéale
-- mocking pas toujours possible ou trop complexe
-- pas de solution pour controler les timers
-- solution du define pas utilisée mais envisagée
-- fonctionnement du Méta Object Compiler pas évident au départ
+TODO: explications
+TODO: diagrammes de classes
 
 \subsection{La mise en place de la pipeline}
 
@@ -2656,13 +2656,12 @@ sur la partie Qt.\\
 
 Concernant la partie C, l'outil final à été complètement intégré au code commun
 sur les deux branches. Tout d'abord, l'outil met en place un framework de test
-complet et simple d'utilisation: \verb|Criterion|. L'utilisation framework a été
-détaillée dans la documentation rédigée durant le stage pour compléter celle du
-framework. Une configuration de CMake a aussi été mise en place pour simplifier
-la compilation. Cette configuration utilise CTest qui permet beaucoup
-d'opérations sur les tests comme le calcule de la couverture (lancement
-automatique de \verb|gcov|) ou encore l'analyse de fuites mémoire (lancement
-automatique de \verb|valgrind|). L'outil propose aussi un système permettant de
+complet et simple d'utilisation: \verb|Criterion|. L'utilisation du framework a
+été détaillée dans la documentation rédigée durant le stage pour compléter celle
+du framework. Une configuration de CMake a aussi été mise en place pour
+simplifier la compilation. Cette configuration utilise CTest qui permet beaucoup
+d'opérations sur les tests comme le calcule de la couverture du code (lancement
+automatique de \verb|gcov|). L'outil propose aussi un système permettant de
 simuler les interfaces des composants électroniques utilisés dans les projets de
 l'entreprise. Cela comprend les périphériques de stockage (registres, eeproms et
 flash) utilisés en I²C et en SPI mais aussi d'autre périphériques interfacés en
@@ -2680,14 +2679,36 @@ changer du code qui ne pouvait pas être compilé. Au final, il est bien possibl
 d'écrire des tests où le code testé interagir avec les composants simulés.
 Depuis ces test, on peut accéder aux données que les composants reçoivent pour
 vérifier que cela correspond à ce qui était attendu. Enfin, la pipeline
-permettant d'automatiser les tests sur Gitlab a bien été mise en place et cette
-dernière permet même de calculer le pourcentage de couverture des tests. Cela
-n'était pas demandé au départ et permet aux développeur d'avoir une idée de la
-qualité des tests.
+permettant d'automatiser les tests sur Gitlab a bien été mise en place et permet
+des opérations qui n'était pas demandés à la base comme le calcule de la
+couverture du code.
 
-Description de l'outil final réalisé à la fin du stage.
+La partie C résout aussi un problème du à la programmation embarquée côté C. En
+effet, l'optimisation du code pour la carte électronique rendait impossible
+l'utilisation d'un débogueur. L'outil de test permet d'exécuter une partie du
+code sur PC sans optimisation. De ce fait, l'utilisation d'un déboguer est
+maintenant possible et un script a été ajouté au projet pour lancer
+automatiquement le bon test dans \verb|gdbgui|.
 
-TODO: Rétrospective sur le choix du framework (problème macros, ...).
+Côté Qt une solution similaire à celle du C a aussi été mise en place. Les
+procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
+programmation orientée objet a été utilisée pour simplifier le code. La
+technique du mocking consistant en la création de classes intermédiaires
+donnant accès à certains élément protégés des classes a été utilisée pour
+permettre de rendre les tests possibles. Ici, tout n'a pas été fait comme prévu
+puisqu'à l'origine, le framework utilisé côté devait aussi servir côté C++,
+cependant, le framework QTest s'est avéré être plus adapté. Des modifications
+sur l'utilisation du framework ont tout de même été apportées pour permettre la
+mise en place de suites de tests. Enfin, la pipeline mise en place est plus
+complexe que celle du C car ici, un nouveau test à été ajouté. En effet, les
+développeurs avait des difficultés à utiliser valgrind sur Windows, pour palier
+à ce problème, un test memcheck a été mis en place au niveau de la pipeline.
+Lorsque ce test échoue, on peut récupérer les logs en téléchargeant les
+artefacts.\\
+
+Le cahier des charges est donc remplit que ce soit pour la partie C ou la partie
+C++. Dans la section suivante, nous allons discuter des défaut de l'outil et des
+perspectives d'évolution.
 
 \clearpage
 
