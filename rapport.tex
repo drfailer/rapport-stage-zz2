@@ -1651,12 +1651,52 @@ fonctions suivantes:
     fonction \verb|HandleResponse| à la variable globale \verb|HANDLE_RESPONSE|.
 \end{itemize}
 
-TODO: code en annexe
+Maintenant que nous avons traité l'implémentation de la simulation des
+composants Cctalk, intéressons nous à la façon dont on peut l'utiliser pour
+rédiger des tests.
 
 \subsubsection{Exemple de test}
 
-TODO: conclusion sur le cctalk
+Dans cette section, nous allons traiter un exemple de test très simple sur
+l'écran Cctalk. Ici, on test la fonction \verb|DISPLAYCCTALK_Print| qui permet
+d'afficher du texte à l'écran. Comme on peut le voir sur le Listing
+\ref{fig:exemplecctalkprint}, utilise la fonction à tester pour afficher le
+texte \textit{"Commande simple"} (il y a un autre test sur cette fonction qui
+utilise une commande étendue). On sait que cette fonction doit envoyer une trame
+Cctalk contenant une entête spécifique à l'écran et une sous entête demandant
+l'affichage d'un texte. Le reste des données doit être le texte à afficher. Dans
+le test, on fait appel à la fonction d'affichage puis on utilise la fonction
+\verb|Control| deux fois pour amener la machine dans l'état où la trame doit
+être envoyée. Ensuite on lance le composant simulé qui va récupérer la trame est
+envoyer une réponse. Enfin, on peut tester que les données reçues par le
+composants sont correctes.
 
+\begin{listing}[ht!]
+\begin{minted}{C}
+char *Data =  "Commande simple";
+
+DISPLAYCCTALK_Print(DISPLAYCCTALK_CUSTOMER, Data);
+DISPLAYCCTALK_DisplayControl();
+DISPLAYCCTALK_DisplayControl(); // envoi d'une commande étendue
+
+TESTDISPLAYCCTALK_Run(); // lancement du composant
+// validation de la commande
+cr_assert(CCTALK_HEADER_DISPLAY == FRAMECCTALK_HeaderGet());
+cr_assert(4 == FRAMECCTALK_DataGet(0));            // sous header
+cr_assert(eq(u8[15], FRAMECCTALK.Data + 1, Data)); // texte
+\end{minted}
+\caption{Contenu du test de la fonction DISPLAYCCTALK\_Print.}
+\label{fig:exemplecctalkprint}
+\end{listing}
+
+Cet exemple simple montre le bon fonctionnement du système de simulation et que
+l'on peut facilement avoir accès au données transmises aux composants.
+\\~\\
+
+La simulation des composants Cctalk fonctionne donc bien et on peut aisément
+vérifier les trames envoyées par le programme de la carte depuis les tests. Dans
+la section suivante nous traiterons l'autre protocole monétique utilisé durant
+le stage, le protocole MDB.
 %}}}
 \subsection{L'interface MDB}%{{{
 
@@ -2736,21 +2776,20 @@ code sur PC sans optimisation. De ce fait, l'utilisation d'un déboguer est
 maintenant possible et un script a été ajouté au projet pour lancer
 automatiquement le bon test dans \verb|gdbgui|.
 
-Côté Qt une solution similaire à celle du C a aussi été mise en place. Les
-procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
+Pour la partie Qt une solution similaire à celle du C a aussi été mise en place.
+Les procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
 programmation orientée objet a été utilisée pour simplifier le code. La
-technique du mocking consistant en la création de classes intermédiaires
-donnant accès à certains élément protégés des classes a été utilisée pour
-permettre de rendre les tests possibles. Ici, tout n'a pas été fait comme prévu
-puisqu'à l'origine, le framework utilisé côté devait aussi servir côté C++,
-cependant, le framework QTest s'est avéré être plus adapté. Des modifications
-sur l'utilisation du framework ont tout de même été apportées pour permettre la
-mise en place de suites de tests. Enfin, la pipeline mise en place est plus
-complexe que celle du C car ici, un nouveau test à été ajouté. En effet, les
-développeurs avait des difficultés à utiliser valgrind sur Windows, pour palier
-à ce problème, un test memcheck a été mis en place au niveau de la pipeline.
-Lorsque ce test échoue, on peut récupérer les logs en téléchargeant les
-artefacts.\\
+technique du mocking consistant en la création de classes intermédiaires donnant
+accès à certains élément protégés des classes a été utilisée pour permettre de
+rendre les tests possibles. Ici, tout n'a pas été fait comme prévu puisqu'à
+l'origine, le framework utilisé côté devait aussi servir côté C++, cependant, le
+framework QTest s'est avéré être plus adapté. Des modifications sur
+l'utilisation du framework ont tout de même été apportées pour permettre la mise
+en place de suites de tests. Enfin, la pipeline mise en place est plus complexe
+que celle du C car ici, un nouveau test à été ajouté. En effet, les développeurs
+avait des difficultés à utiliser valgrind sur Windows, pour palier à ce
+problème, un test memcheck a été mis en place au niveau de la pipeline. Lorsque
+ce test échoue, on peut récupérer les logs en téléchargeant les artefacts.\\
 
 Le cahier des charges est donc remplit que ce soit pour la partie C ou la partie
 C++. Dans la section suivante, nous allons discuter des défaut de l'outil et des
@@ -2763,6 +2802,10 @@ perspectives d'évolution.
 Regard sur ce qui a été fait et comment cela a été fait (parler de l'échec
 des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou a
 améliorer.
+
+TODO: parler du fait qu'on est obliger d'utiliser des wait en Qt
+TODO: l'outil a permet de faciliter le merge du master dans le master event
+TODO: les tests ne sont pas faciles à écrire (machines à états)
 
 \clearpage
 
