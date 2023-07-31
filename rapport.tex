@@ -172,8 +172,10 @@ Parmi les membres de l'entreprise, je tiens à remercier mon tuteur Ludovic
 DESCOUT ainsi que Amine GHARBI pour leur accueil et les conseils qu'ils m'ont
 donnés durant le stage. Je tiens aussi à remercier Andy CHALENDARD et Louis
 PESTEIL qui m'ont guider tout au long du projet. Parmi les membres de l'équipe
-Qt, merci à Denis GREFFET, Manel ELICHOOUIA pour leurs aide concernant la mise
-en place de l'outil de test sur dans le code C++.
+Qt, merci à Denis GREFFET, Manel ELICHOOUIA et Quentin LAGIER pour leurs aide
+concernant la mise en place de l'outil de test sur dans le code C++. Enfin,
+merci à Emmanuel BERTRAND dont les remarques ont aussi contribué à faire avancer
+le projet.
 
 Parmi les professeurs de l'ISIMA, merci à mon tuteur Christian LAFOREST pour ses
 conseils concernant le rapport et la soutenance. Merci aussi aux autres
@@ -256,12 +258,37 @@ Keywords: \textbf{C/C++}, \textbf{continuous integration}, \textbf{testing},
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
 
-Introduction
+Dans ce rapport, nous allons présenter le travail réaliser au sein de
+l'entreprise CKsquare dans le carder d'un stage d'une durée de cinq moins.
+L'objectif du stage était la création d'un outil permettant l'automatisation de
+tests sur du code embarqué depuis une pipeline Gitlab.\\
 
-TODO: la partie sur la branche C principale très détailler puis on parlera de ce
-qui a été fait coté évent et Qt (qui suit globalement le même principe).
+Le code de l'entreprise doit normalement être exécuté sur des cartes
+électroniques. Les tests doivent être exécutés dans une pipeline où l'on a pas
+accès aux cartes. Pour rendre cela possible, les composants électronique
+normalement reliés à la carte ont été simulés. À noter également que l'outil de
+test doit être utilisé sur la partie du code qui est commune à tous les projets
+de l'entreprise, il n'est pas fait pour tester toute une application mais
+seulement les bloques communs.\\
 
-plan !
+Au départ, le stage ne portait que sur la création d'un outil permettant de
+tester une partie du code écrit en C. La mise en place de cet outil est
+complètement détaillée dans ce rapport. Cependant, cette première implémentation
+a pris moins de temps que prévu au départ ce qui a rendu possible
+l'implémentation de l'outil sur la seconde branche du code C (la branche
+événementiel) ainsi que sur la partie C++ (partie Qt).\\
+
+Dans cette présentation, nous commencerons par expliquer le choix du framework
+de test qui a été utilisé pour créer l'outil. Ensuite, nous aborderons
+l'organisation du projet ainsi que son fonctionnement général pour permettre une
+meilleur compréhension des choix qui ont était fait durant le développement.
+Dans les parties suivantes, nous traiterons la résolution du problème principal
+de ce stage en expliquant la simulation des divers éléments. Une fois que nous
+aurons détailler le fonctionnement de l'outil et de la simulation, nous verrons
+la mise place de la pipeline qui permet l'automatisation des tests sur Gitlab.
+Nous parlerons ensuite de la mise en place de l'outil sur la branche événementiel
+du C et sur les communs Qt. Enfin, nous nous intéresserons au déroulement du
+projet avant de présenter les résultats.
 
 \clearpage{}
 
