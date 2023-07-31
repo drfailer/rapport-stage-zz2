@@ -138,6 +138,13 @@
     description={fonctions membres des classes Qt qui peuvent être appelées avec
     l'émission signaux.}
 }
+
+\newglossaryentry{lsp}
+{
+    name=LSP,
+    description={(Language Server Protocol) standard de communication pour les
+    outils de développements développé par Microsoft.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -2663,57 +2670,59 @@ intéressantes à noter. GDB permet la création de checkpoints (commande
 l'exécution pour pouvoir recharger cet état sans relancer tout le programme. Il
 permet aussi d'enregistrer une suite d'instructions pour pouvoir faire de
 l'exécution inversée et revenir en arrière dans l'exécution du code (commandes
-\verb|record| et \verb|reverse-step|). Il propose aussi un interpréteur et un
-module python intégré et il est possible d'utiliser python pour réécrire des
-commandes. Par exemple, on peut réécrire la fonction d'affichage lorsque l'on
-souhaite afficher des structures de données complexes. À noter également que GDB
-a aussi été très utile pour faire fonctionner la solution utilisant des threads
-décrite dans la Section \ref{echecthread} en aidant à suivre l'exécution du
-programme dans les différents threads.
+\verb|record| et \verb|reverse-step|). À noter également que GDB a aussi été
+très utile pour faire fonctionner la solution utilisant des threads décrite dans
+la Section \ref{echecthread} en aidant à suivre l'exécution du programme dans
+les différents threads.
 
-GDB est aussi un outil configurable et sa configuration intègre un langage de
+C'est aussi un outil configurable et sa configuration intègre un langage de
 script qui permet de créer des commandes personnalisées. Comme on peut le voir
 sur cet article \cite{gdbinit}, il est possible de faire des choses assez
 complexes avec la configuration de GDB comme créer une commande pour afficher un
 arbre binaire.
 
-Bien que GDB soit à l'origine fait pour être utilisé dans le terminal, il existe
-beaucoup d'interface compatibles. Tout d'abord il existe des interfaces
-graphiques comme \verb|ddd| qui a été créé pour permettre la visualisation de
-structures des données. GDB est aussi intégré dans des éditeurs de textes, par
-exemple, \textit{vim} et \textit{emacs} possèdes des intégrations de GDB
-permettant de déboguer directement depuis l'éditeur. Enfin, certains des serveur
-DAP comme \verb|cpptools|, utilisent aussi GDB. Lors de ce stage, c'est d'abord
-l'interface TUI par défaut du programme qui a été utilisée (accompagnée de
-macros aidant à la mise en place de breakpoints). Par la suite, l'utilisation de
-\verb|Termdebug| a été privilégiée. C'est une interface proposée par l'éditeur
-\verb|(neo)vim| qui permet une utilisation très simple du débogueur une fois
-configurée. Sur la Figure \ref{fig:termdebug}, on peut voir à quoi ressemble
-l'interface Termdebug. Le code exécuté se trouve à gauche et sur la droite il y
-a une fenêtre montrant les affichages dans le terminal (sortie standard) et une
-fenêtre permettant d'interagir avec GDB pour exécuter des commandes complexes.
-
-% [termdebug] {{{
-\begin{figure}[h!]
-  \begin{center}
-  \includegraphics[scale=0.2]{./img/termdebug.png}
-    \caption{Termdebug: GDB intégré à (neo)vim.}
-  \end{center}
-  \label{fig:termdebug}
-\end{figure}
-%}}}
-
 GDB a permis de gagner énormément de temps pendant le développement de l'outil
 de test et c'est malheureusement un outil assez sous-estimé à l'école. Certains
 développeurs comme John Carmack considèrent l'utilisation d'un débogueur
-indispensable pour comprendre le fonctionnement d'un code. GDB n'est pas simple
-d'utilisation mais c'est un outil léger puissant et flexible qu'il est très
-intéressant de connaitre.
+indispensable pour comprendre le fonctionnement d'un programme. GDB n'est pas
+simple d'utilisation mais c'est un outil léger puissant et flexible qu'il est
+très intéressant de connaitre.
 %}}}
 \subsubsection{Environnement de Développement}%{{{
 
-TODO: nvim -> vim-fugitive, clangd, l'intégration de gdb ... Présentation rapide
-de ma configuration.
+Étant donné le fait que le projet a été développé sur Linux, l'IDE des
+développeurs de la société (MPLAB) n'a pas été utilisé. En effet, il était
+préférable de développer sous Linux étant donné le fait que la pipeline ne
+s'exécute pas sur Windows. Le problème est que l'IDE et les compilateurs de
+Microship ne fonctionnent pas bien sur Linux. Pour la partie Qt, QtCreator n'a
+pas été utilisé non plus car les projet ne sont pas fait pour être compilé avec
+gcc. Pour utiliser cet outil, il aurait fallut tout reconfigurer ce qui n'était
+pas souhaitable étant donné le fait que cela aurait complexifier la création de
+l'outil de test. L'environnement de développement utilisé durant le stage était
+donc \textit{neovim}.
+
+Neovim est un éditeur de texte puissant et surtout configurable. Par défaut il
+ne vient pas avec toutes de fonctionnalités que l'on retrouve avec la plupart
+des environnements de développement. Cependant, cet outil supporte nativement le
+gls{lsp} qui permet à l'éditeur de se connecter à un serveur qui analyse le code
+en temps réel. Le serveur utilisé pour le C et le C++ se nomme \textbf{clangd},
+il permet de détecter les erreurs de compilations, d'analyser les symboles
+(variables, fonctions, \dots) pour faire de la recherche ou du renommage. Il
+fourni aussi une complétion de texte intelligente. Cet outil permet à n'importe
+quel éditeur supportant le \gls{lsp}, d'être utilisé comme un IDE. La
+configuration utilisée durant le stage possède beaucoup d'autres fonctionnalités
+comme des outils de recherche de fichier ou de texte, une intégration de git,
+\dots
+
+Cet outil est assez peu apprécié par beaucoup de développeurs car il est très
+difficile à prendre en main étant donné qu'il n'a presque pas d'éléments
+d'interface et que tout doit se faire au clavier. Cependant c'est un éditeur
+très puissant qui, une fois maitrisé, permet de faire beaucoup d'opérations
+rapidement tout en minimisant les mouvement de l'utilisateur. En effet, il
+permet de tout faire en utilisant uniquement les touches les plus accessibles du
+clavier ce qui évite de devoir déplacer ses mains sur la souris ou les touches
+directionnelles. C'est donc un outil confortable qui a grandement faciliter le
+développement de l'outil de test.
 %}}}
 %}}}
 \subsection{Rédaction de la documentation}%{{{
