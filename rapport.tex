@@ -1848,8 +1848,6 @@ réponses aux commandes rend certains tests complexe à écrire, c'est pour cela
 qu'un système de scénarios a été ajouté au MDB, ce système est décrit dans la
 Section \ref{sysscenar}.
 
-TODO: code en annexe
-
 \subsubsection{Système de scénarios}
 \label{sysscenar}
 
@@ -1877,17 +1875,79 @@ d'étapes et chaque étape est modélisée par une structure. Les étapes sont
 stockées dans un tableau global. Lorsque l'on souhaite jouer un scénario, on
 appel la fonction \textit{play} correspondante au début du test. Cette dernière
 fait un enregistrement d'étapes dans le tableau global. Ensuite, l'envoi
-réponses et la vérification des commande envoyées par la carte est automatique,
+réponses et la vérification des commandes envoyées par la carte est automatique,
 il suffit juste d'appeler les fonctions du code pour passer par toutes les
 étapes du scénario. À noter que la plupart du temps, il faut initialiser les
 machines à états au préalable car les étapes de démarrage ne sont pas prises en
-comptes dans les scénarios.
+comptes dans les scénarios. Sur l'annexe \ref{appendix:exscenariomdb}, on peut
+voir la création du scénario de validation d'une vente simple pour un système de
+paiement sans contacte décrit sur la documentation \cite[169]{mdbdoc}.\\
 
-TODO: exemple de scénario et de test\\
-TODO: code en annexe
+Dans la section suivante, nous allons voir un exemple simple de test
+utilisant la simulation de composants MDB.
 
-\subsubsection{Exemple de test}
+\subsubsection{Exemples de tests}
+
+Dans cette section nous allons traiter une partie d'un test réalisé sur le
+système de paiement sans contacte. L'objectif de ce test était de vérifier le
+bon fonctionnement de la simulation du composant ainsi que de servir d'exemple
+aux développeurs. Ce dernier passe par une suite d'état dans la fonction
+\verb|Control| de l'accepteur et vérifie les actions réalisées dans chaque
+état.\\
+
+Dans ce test, la carte va interroger le composant qui va devoir envoyer sa
+configuration composée de son numéro de fabricant, son numéro de série, son
+modèle et sa version de logiciel. On peut voir sur le Listing \ref{extestmdb}
+que le test commence par passer dans les états d'initialisation de la machine
+puis prépare les donnée à envoyer avant de recevoir le code du polling. Lorsque
+la commande est envoyée, le composant simulé répond. On relance ensuite la
+machine à état puis on vérifie que les bonnes modifications ont été faites.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+unsigned char PollData[33] = {
+    0x09,                    // sous-commande
+    0,0,4,                   // ManufactureCode
+    0,0,0,0,0,0,0,0,0,0,0,1, // serial number
+    0,0,0,0,0,0,0,0,0,0,0,2, // model number
+    0,3,                     // software version
+      // rien ensuite car level 2
+};
+
+// initialisation du composant
+
+// on prépare les données à envoyer au prochain polling
+OUTPUTMDB_Set((char*) PollData,30);
+
+MDBCASHLESS_ControlTest(); // CONTROL_INIT/InitializeControl: INITIALIZE_SETUP_CONFIG_CTRL
+TESTTIMER_Wait(31);        // temps d'attente
+MDBCASHLESS_ControlTest(); // CONTROL_INIT/InitializeControl: INITIALIZE_POLL_SND
+
+TESTMDBCASHLESS_Run();
+cr_assert(0x12 == FRAMEMDB_AddrCmdGet());
+
+MDBCASHLESS_ControlTest(); // CONTROL_INIT/InitializeControl: INITIALIZE_POLL_CTRL
+cr_assert(eq(u8[3],MDBCASHLESS_CONTROL.Devices[1].ReadConfig.ManufactureCode,PollData + 1));
+cr_assert(eq(u8[12],MDBCASHLESS_CONTROL.Devices[1].ReadConfig.SerialNumber,PollData + 4));
+cr_assert(eq(u8[12],MDBCASHLESS_CONTROL.Devices[1].ReadConfig.ModelNumber,PollData + 16));
+cr_assert(eq(u8[2],MDBCASHLESS_CONTROL.Devices[1].ReadConfig.SoftwareVersion,PollData + 28));
+\end{minted}
+\caption{Test de l'interrogation du système de paiement sans contacte.}
+\label{extestmdb}
+\end{listing}
+
+À noter que ce composant était simple à tester car les variables liées à la
+machine à état étaient toutes visibles. Cependant, parfois, les tests sont plus
+complexe à mettre en place car on a pas accès à tout. Dans ce cas, il faut
+tester un maximum d'éléments secondaires accessible pour s'assurer que la
+machine passe par les bons états mais on ne peut pas toujours valider toutes les
+opérations.\\~\\
 %}}}
+
+La simulation des composants interfacés en Cctalk et en MDB fonctionne donc
+correctement et il est possible de tester le code qui doit interagir avec les
+composants. Dans la section suivante, nous allons nous intéresser à la gestion
+des historiques ainsi qu'à leurs sauvegarde sur le serveur de la société.
 %}}}
 \section{Les historiques}%{{{
 
@@ -2039,7 +2099,7 @@ uniquement lorsque le CDB était remplit plusieurs fois (problème d'index dans 
 CDB). Pour détecter ce problème, on remplit le CDB, on envoie tous les
 historiques et on refait ces opérations en vérifiant à chaque fois que tous les
 éléments sont envoyés. Le test fonctionne bien et sont code est disponible à
-l'annexe \ref{}.
+l'annexe \ref{appendix:savehist}.
 
 Les tests sur l'envoi des historiques sont relativement complexes dans le sens
 où ils doivent utiliser plusieurs des éléments mis en place par l'outil de test.
@@ -2790,7 +2850,7 @@ test tout le code. La méthode consistant à créer des versions modifiées des
 fichiers a beaucoup été utilisée pour rendre les tests plus simples ou pour
 changer du code qui ne pouvait pas être compilé. Au final, il est bien possible
 d'écrire des tests où le code testé interagir avec les composants simulés.
-Depuis ces test, on peut accéder aux données que les composants reçoivent pour
+Depuis ces tests, on peut accéder aux données que les composants reçoivent pour
 vérifier que cela correspond à ce qui était attendu. Enfin, la pipeline
 permettant d'automatiser les tests sur Gitlab a bien été mise en place et permet
 des opérations qui n'était pas demandés à la base comme le calcule de la
@@ -2803,6 +2863,13 @@ code sur PC sans optimisation. De ce fait, l'utilisation d'un déboguer est
 maintenant possible et un script a été ajouté au projet pour lancer
 automatiquement le bon test dans \verb|gdbgui|.
 
+L'outil de test a déjà en partie prouvé son utilité en permettant la résolution
+de beaucoup de bugs suite à la fusion de la branche principale dans la branche
+événementiel. En effet, la branche principale avait plusieurs mois d'avances sur
+la branche secondaire et beaucoup de changements avaient été fait. La fusion des
+deux branche a nécessité près de deux semaines de travail et les tests ont
+permis la détection de plusieurs problèmes.
+
 Pour la partie Qt une solution similaire à celle du C a aussi été mise en place.
 Les procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
 programmation orientée objet a été utilisée pour simplifier le code. La
@@ -2814,7 +2881,7 @@ framework QTest s'est avéré être plus adapté. Des modifications sur
 l'utilisation du framework ont tout de même été apportées pour permettre la mise
 en place de suites de tests. Enfin, la pipeline mise en place est plus complexe
 que celle du C car ici, un nouveau test à été ajouté. En effet, les développeurs
-avait des difficultés à utiliser valgrind sur Windows, pour palier à ce
+avaient des difficultés à utiliser valgrind sur Windows, pour palier à ce
 problème, un test memcheck a été mis en place au niveau de la pipeline. Lorsque
 ce test échoue, on peut récupérer les logs en téléchargeant les artefacts.\\
 
@@ -2831,7 +2898,6 @@ des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou a
 améliorer.
 
 TODO: parler du fait qu'on est obliger d'utiliser des wait en Qt
-TODO: l'outil a permet de faciliter le merge du master dans le master event
 TODO: les tests ne sont pas faciles à écrire (machines à états)
 
 \clearpage
@@ -3214,7 +3280,7 @@ TAU_MAIN() // sets up Tau (+ main function)
 %---------------------------------------------------------------------------}}}
 % Test d'envoi historiques sur CKWash ---------------------------------------{{{
 \clearpage{}
-\section{Test sur l'envoi des historiques sur le serveur}\label{appendix:frameworks-code}
+\section{Test sur l'envoi des historiques sur le serveur}\label{appendix:savehist}
 
 % \begin{listing}[ht!]
 \begin{minted}{C}
@@ -3301,6 +3367,45 @@ Test(CKSPROHISSND_Tests, TESTCKSPROHISSND_CdbFill,
 \label{testsaveckwash}
 % \caption{Test sur l'envoi des historiques sur le serveur.}
 % \end{listing}
+%}}}
+% Exemple de scénario MDB ---------------------------------------------------{{{
+\clearpage{}
+\section{Exemple de scénario MDB}\label{appendix:exscenariomdb}
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+void TESTMDBCASHLESS_ValidSingleVendPlay(void)
+{
+    TESTMDB_SCENARIO.NbActions = 0;
+    TESTMDB_SCENARIO.Index = 0;
+    uchar VendRequest[1] = { 0x00 };
+    uchar VendSuccess[1] = { 0x02 };
+    uchar SessionComplete[1] = { 0x04 };
+    uchar InitialCredit[2] = { 0, 50 };
+    uchar Money[2] = { 0, 10 };
+    uchar BEGIN_SESSION = 0x03;
+    uchar VEND_APPROVED = 0x05;
+    uchar END_SESSION = 0x07;
+
+    // début de session
+    SCENARIOMDB_StepAdd(0x10, POLL, NULL, 0, BEGIN_SESSION, InitialCredit, 2);
+    SCENARIOMDB_StepAdd(0x10, ACK, NULL, 0, -1, NULL, 0);
+
+    // traitement d'une vente
+    SCENARIOMDB_StepAdd(0x10, VEND, VendRequest, 1, ACK, NULL, 0);
+    SCENARIOMDB_StepAdd(0x10, POLL, NULL, 0, VEND_APPROVED, Money, 2);
+    SCENARIOMDB_StepAdd(0x10, ACK, NULL, 0, -1, NULL, 0);
+    SCENARIOMDB_StepAdd(0x10, VEND, VendSuccess, 1, ACK, NULL, 0);
+
+    // fin de session
+    SCENARIOMDB_StepAdd(0x10, VEND, SessionComplete, 1, ACK, NULL, 0);
+    SCENARIOMDB_StepAdd(0x10, POLL, NULL, 0, END_SESSION, NULL, 0);
+    SCENARIOMDB_StepAdd(0x10, ACK, NULL, 0, -1, NULL, 0);
+}
+\end{minted}
+\caption{Scénario de validation d'une vente simple.}
+\label{check-example}
+\end{listing}
 %}}}
 
 \end{document}
