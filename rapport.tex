@@ -149,7 +149,7 @@
 \newglossaryentry{tap}
 {
     name=TAP,
-    description={(Test Anything Protocol) protocol qui permet d'assuer la
+    description={(Test Anything Protocol) protocole qui permet d'assurer la
     communication entre des modules de test et les outils qui permettent
     l'automatisation des tests.}
 }
@@ -186,14 +186,14 @@
 Parmi les membres de l'entreprise, je tiens à remercier mon tuteur Ludovic
 DESCOUT ainsi que Amine GHARBI pour leur accueil et les conseils qu'ils m'ont
 donnés durant le stage. Je tiens aussi à remercier Andy CHALENDARD et Louis
-PESTEIL qui m'ont guider tout au long du projet. Parmi les membres de l'équipe
-Qt, merci à Denis GREFFET, Manel ELICHOOUIA et Quentin LAGIER pour leurs aide
-concernant la mise en place de l'outil de test sur dans le code C++. Enfin,
+PESTEIL qui m'ont guidé tout au long du projet. Parmi les membres de l'équipe
+Qt, merci à Denis GREFFET, Manel ELICHOOUIA et Quentin LAGIER pour leur aide
+concernant la mise en place de l'outil de test dans le code C++. Enfin,
 merci à Emmanuel BERTRAND dont les remarques ont aussi contribué à faire avancer
 le projet.
 
 Parmi les professeurs de l'ISIMA, merci à mon tuteur Christian LAFOREST pour ses
-conseils concernant le rapport et la soutenance. Merci aussi aux autres
+conseils quant au rapport et la soutenance. Merci aussi aux autres
 professeurs de l'école qui, à travers leurs enseignements m'ont permis d'être
 prêt pour mon premier stage en entreprise.
 
@@ -222,10 +222,10 @@ leur automatisation dans une pipeline Gitlab.\\
 L'outil devait permettre de tester du code écrit en C et s'exécutant sur une
 carte électronique de type \gls{pic}. Le code C++, qui utilise la bibliothèque
 Qt et qui s'exécute sur une carte type Beagle devait aussi pouvoir être testé.
-Le défit de cette tâche réside dans le fait que les composants électroniques
+Le défi de cette tâche réside dans le fait que les composants électroniques
 connectés aux cartes devaient être simulés pour permettre de tester les
-différents programmes. De plus, les composants électroniques sont interfacé avec
-des protocoles qui n'étaient pas connus avant le stage et qu'il a donc fallut
+différents programmes. De plus, les composants électroniques sont interfacés avec
+des protocoles qui n'étaient pas connus avant le stage et qu'il a donc fallu
 découvrir.\\
 
 L'outil créé à la fin remplit bien le cahier des charges, la simulation des
@@ -279,27 +279,27 @@ L'objectif du stage était la création d'un outil permettant l'automatisation d
 tests sur du code embarqué depuis une pipeline Gitlab.\\
 
 Le code de l'entreprise doit normalement être exécuté sur des cartes
-électroniques. Les tests doivent être exécutés dans une pipeline où l'on a pas
-accès aux cartes. Pour rendre cela possible, les composants électronique
+électroniques. Les tests doivent être exécutés dans une pipeline où l'on n'a pas
+accès aux cartes. Pour rendre cela possible, les composants électroniques
 normalement reliés à la carte ont été simulés. À noter également que l'outil de
 test doit être utilisé sur la partie du code qui est commune à tous les projets
-de l'entreprise, il n'est pas fait pour tester toute une application mais
-seulement les bloques communs.\\
+de l'entreprise, il n'est pas fait pour tester toute une application, mais
+seulement les blocks communs.\\
 
 Au départ, le stage ne portait que sur la création d'un outil permettant de
 tester une partie du code écrit en C. La mise en place de cet outil est
 complètement détaillée dans ce rapport. Cependant, cette première implémentation
 a pris moins de temps que prévu au départ ce qui a rendu possible
 l'implémentation de l'outil sur la seconde branche du code C (la branche
-événementiel) ainsi que sur la partie C++ (partie Qt).\\
+de l'événementiel) ainsi que sur la partie C++ (partie Qt).\\
 
 Dans cette présentation, nous commencerons par expliquer le choix du framework
 de test qui a été utilisé pour créer l'outil. Ensuite, nous aborderons
-l'organisation du projet ainsi que son fonctionnement général pour permettre une
-meilleur compréhension des choix qui ont était fait durant le développement.
+l'organisation du projet ainsi que son fonctionnement général pour permettre une meilleure
+compréhension des choix qui ont été fait durant le développement.
 Dans les parties suivantes, nous traiterons la résolution du problème principal
 de ce stage en expliquant la simulation des divers éléments. Une fois que nous
-aurons détailler le fonctionnement de l'outil et de la simulation, nous verrons
+aurons détaillé le fonctionnement de l'outil et de la simulation, nous verrons
 la mise place de la pipeline qui permet l'automatisation des tests sur Gitlab.
 Nous parlerons ensuite de la mise en place de l'outil sur la branche événementiel
 du C et sur les communs Qt. Enfin, nous nous intéresserons au déroulement du
@@ -323,18 +323,18 @@ la conception de systèmes de paiement automatisés. La société, au départ no
 cbsquare, a été créée en 2003 par Emmanuel Bertrand et compte aujourd'hui plus
 de 30 employés. Au départ, l'entreprise se tourne vers le secteur des stations
 de lavage auto en créant une gamme de distributeurs de jetons. Par la suite,
-elle élargie sa collection de produits articulés autour de la monétique et se
+elle élargit sa collection de produits articulés autour de la monétique et se
 lance dans la conception de ses propres cartes électroniques.
 
 L'entreprise conçoit des bornes principalement pour les stations de lavage auto
-ainsi que les laveries mais s'intéresse aussi à d'autres marchés comme
+ainsi que les laveries, mais s'intéresse aussi à d'autres marchés comme
 l'hôtellerie. Un projet de casiers automatisés, qui a été présenté sur TF1, est
-aussi en train de se mettre en place. Ce nouveau projet est innovent et
+aussi en train de se mettre en place. Ce nouveau projet est innovant et
 écologique, car il privilégiera les producteurs locaux et évitera les voyages en
 voiture pour se rendre dans les grandes surfaces. Ce projet permettra à
 l'entreprise de faire face au déclin des stations de lavage auto auxquelles on
 impose des restrictions à cause des sécheresses de plus en plus fréquentes.
-Aujourd'hui, plus de 40000 stations de lavage auto sont équipées de bornes
+Aujourd'hui, plus de 40 000 stations de lavage auto sont équipées de bornes
 CKsquare. On peut voir sur la Figure \ref{bornes-intro} un exemple de produits
 conçues par l'entreprise.
 
@@ -357,7 +357,7 @@ mécanique pour les bornes CKsquare et M-Innov. La société Ehrse, née au sein
 même de CKsquare, se charge des tests, du prés-montage et du câblage des cartes
 électroniques. Enfin, il y a la société Logawin, société fille de CKsquare qui
 est une entreprise de développement informatique. La société Logawin est
-composée de deux pôles, Logawin France basé à Clermont-Ferrand et Logawin
+composée de deux pôles, Logawin France basée à Clermont-Ferrand et Logawin
 Tunisie basé à Tunis. Ces cinq sociétés travaillent en coopération ce qui permet
 au groupe CKsquare d'avoir la maitrise de la conception et de la fabrication de
 tous les composants des produits. On peut voir sur la Figure \ref{lpp-logos} les
@@ -378,19 +378,19 @@ logos des sociétés citées précédemment.
 L'objectif de la société CKsquare est de pouvoir fournir des produits
 configurables et adaptables aux besoins des différents clients. C'est pour cela
 que les bornes possèdent beaucoup d'options et que l'entreprise entretient un
-savoir faire quant à la gestion de la plupart des systèmes de paiements
+savoir-faire quant à la gestion de la plupart des systèmes de paiements
 disponibles sur le marché. De plus, une équipe SAV reste à l'écoute du besoin
 des clients ce qui permet à l'entreprise de concevoir des solutions encore plus
 spécifiques et personnalisées.
 
-Un des gros atouts de la société est son savoir faire concernant l'utilisation
+Un des gros atouts de la société est son savoir-faire concernant l'utilisation
 des cartes électroniques. En effet, presque toutes bornes CKsquare sont équipées
 de cartes électroniques beaucoup plus fiables et moins énergivores que des PC.
 Cependant, ces cartes doivent assurer beaucoup de fonctionnalités et gérer un
 grand nombre de composants ce qui pose de gros problèmes en terme d'optimisation
 du stockage. En plus, la gestion de systèmes de paiements bancaires implique
 encore plus de contraintes. Par exemple, la loi finance de 2016 (appliquée en
-2018) a imposer la collection et la sauvegarde sécurisée des historiques de
+2018) a imposé la collection et la sauvegarde sécurisée des historiques de
 paiement.
 %}}}
 \section{Travail demandé}%{{{
@@ -412,11 +412,11 @@ permettre d'aisément modifier ou copier les différents éléments. Par exemple
 faudra que tous les composants simulés aient la même structure et que cette
 structure soit suffisamment simple et générique pour pouvoir être copiée pour la
 création d'un nouveau composant. Ici, le produit final n'est pas tellement le
-code en lui même mais plus la méthode employée pour mettre en place les tests.
+code en lui-même, mais plus la méthode employée pour mettre en place les tests.
 
 À noter que l'objectif du projet n'est pas d'écrire des tests, la philosophie de
-l'entreprise est que ce sont les développeurs qui testent leurs code. Des tests
-ont été écrits durant le stage mais ces derniers ont pour objectif de valider
+l'entreprise est que ce sont les développeurs qui testent leur code. Des tests
+ont été écrits durant le stage, mais ces derniers ont pour objectif de valider
 le bon fonctionnement des composants simulés et non celui du code de la société.
 Par contre, il faudra fournir une documentation complète décrivant comment
 tester les programmes. Cette documentation devra présenter le framework de test
@@ -429,16 +429,16 @@ partie C, il y aura deux branches à traiter, et ces dernières ont un
 fonctionnement différent, il faudra donc adapter l'outil de test pour les deux
 branches.
 
-Maintenant que nous avons décrit les bases du projet, intéressons nous un peut
+Maintenant que nous avons décrit les bases du projet, intéressons-nous un peu
 plus en détail au problème posé.
 %}}}
 \section{Analyse du problème}%{{{
 \label{analproblem}
 
 Le but du stage est de créer un outil permettant de faire de l'intégration
-continue. De ce fait, cela va nécessiter de trouver un framework de test complet
+continue. De ce fait, cela va nécessiter de trouver un framework de test complet,
 mais aussi suffisamment simple d'utilisation. En effet, les développeurs de
-l'entreprise ne sont pas nécessairement formés à l'utilisation de ce types
+l'entreprise ne sont pas nécessairement formés à l'utilisation de ce type
 d'outils. Concernant le framework, il faudra aussi que ce dernier soit simple à
 mettre en place dans une pipeline. Cela signifie que les frameworks disponibles
 dans les bases des gestionnaires de paquets seront privilégiés.
@@ -470,7 +470,7 @@ Enfin, le plus gros défi de ce stage va être le fait de comprendre et d'utilis
 le code de l'entreprise. En effet, la taille du code est assez conséquente et
 beaucoup de choses ont été réécrites par l'entreprise, notamment des
 bibliothèques du compilateur. Il faudra soigneusement choisir ce qui va être
-simulé et où va se placer la simulation car tout le code ne pourra pas
+simulé et où va se placer la simulation, car tout le code ne pourra pas
 certainement pas être testé. Par exemple, la partie concernant le protocole
 TCPIP est assez ancienne et suffisamment complexe pour que les développeurs de
 l'entreprise ne souhaitent pas la modifier ou la tester.
@@ -483,25 +483,25 @@ l'entreprise ne souhaitent pas la modifier ou la tester.
 \section{Choix du framework de test}%{{{
 
 Le but du projet est de concevoir un outil permettant de tester du code, la
-première tâche à donc été de choisir un framework de test. Le framework de test
+première tâche a donc été de choisir un framework de test. Le framework de test
 constitue la base de l'outil, c'est donc un choix assez important. Dans cette
-partie nous traiterons de la procédure qui a été utilisée pour trouver et
+partie, nous traiterons de la procédure qui a été utilisée pour trouver et
 comparer des frameworks et des bibliothèques de test.
 
 \subsection{Les critères de comparaison}%{{{
 
 Étant donné le fait que le langage C est très utilisé, il y a beaucoup de choix
-quand aux différentes bibliothèques de test utilisables. Le premier travail a
+quant aux différentes bibliothèques de test utilisables. Le premier travail a
 été de comparer bibliothèques et frameworks de tests existants. Une liste des
 frameworks disponibles sur Wikipédia \cite{enwikiframeworks} a permis de prendre
 connaissance des frameworks disponibles pour ensuite pouvoir faire plus de
-recherches. Ce travail de recherche à permis de faire un prés tri et d'éliminer
-les framework incomplets ou trop peu utilisés. Une fois la liste des meilleurs
-frameworks terminée, il a fallut trouver des critères pour les comparer.\\
+recherches. Ce travail de recherche a permis de faire des prés tri et d'éliminer
+les frameworks incomplets ou trop peu utilisés. Une fois la liste des meilleurs
+frameworks terminée, il a fallu trouver des critères pour les comparer.\\
 
 Tout d'abord, l'équipe de développement souhaitait pouvoir tester à la fois du
 code \textbf{C} et du code \textbf{C++} pour certaines parties développées par
-l'équipe \textbf{Qt}. Ce critère était optionnel mais apprécié. À noter que
+l'équipe \textbf{Qt}. Ce critère était optionnel, mais apprécié. À noter que
 lorsque l'on parle de pouvoir tester du code C++, cela ne prend pas seulement en
 compte le fait de pouvoir exécuter des fonctions basiques puisque c'est possible
 avec tous les frameworks C étant donné la compatibilité entre le C et le C++.
@@ -514,14 +514,14 @@ verrons dans la section \ref{nouvframe} qu'un autre framework a au final été
 utilisé pour Qt.
 
 Un autre critère concerne la modernité et la facilité d'utilisation du
-framework. Cela peut sembler anodin mais l'écriture des tests est une tâche
+framework. Cela peut sembler anodin, mais l'écriture des tests est une tâche
 aussi longue que le développement du programme à tester. Pour ne pas perdre de
 temps, il est préférable que les tests soient le plus simple possible à mettre
 en place. De plus, les tests peuvent aussi servir de documentation, c'est donc
 un avantage non négligeable que d'avoir un framework qui permette d'écrire des
 tests simples, lisibles et compréhensibles. Enfin, ce critère impacte aussi le
-temps de conception de l'outil de test car le fait d'utiliser un framework trop
-complexe va nécessité la conception de fonctions et macros (pour réduire la
+temps de conception de l'outil de test, car le fait d'utiliser un framework trop
+complexe va nécessiter la conception de fonctions et macros (pour réduire la
 complexité) et rallongé le temps d'écriture de la documentation. À noter que
 pour valider ce critère, la documentation des différents outils a aussi été
 étudiée, les frameworks devaient donc fournir une documentation suffisamment
@@ -531,28 +531,28 @@ proposées.
 % TODO: reformuler
 Le critère le plus important est celui du statut du développement du framework.
 En effet, lorsque l'on souhaite utiliser un outil, une question importante à se
-poser est de savoir ce que l'on peut faire en cas de problème. Ici, il a fallut
-regarder la taille, la popularité et l'age des projets. En effet, plus un projet
+poser est de savoir ce que l'on peut faire en cas de problème. Ici, il a fallu
+regarder la taille, la popularité et l'âge des projets. En effet, plus un projet
 est populaire plus il sera facile de trouver de l'aide en cas de problème. De
-plus, les projet important ont souvent beaucoup plus de collaborateurs ce qui
-peut accélérer la corrections des bugs ou la vitesse de réponse au issue. Enfin
-la dates de dernières mis à jours ont aussi été répertoriées car là aussi, il
+plus, les projets important ont souvent beaucoup plus de collaborateurs ce qui
+peut accélérer la correction des bugs ou la vitesse de réponse aux issues. Enfin
+les dates de dernières mis à jour ont aussi été répertoriées, car là aussi, il
 est beaucoup plus simple de résoudre les problèmes sur un projet qui est encore
 activement maintenu.
 
 % TODO: mal dit
 D'autres critères ont permis de démarquer les frameworks comme par exemple le
 fait que les frameworks fournissent des fonctionnalités supplémentaires comme
-l'export des résultats des tests dans différents format comme \gls{tap} ou XML
-(utile pour faire des rapports) ou encore des générateur de nombres pseudo
-aléatoires pour faire des tests avec des entrée aléatoires,\dots Une autre
+l'export des résultats des tests dans différents formats comme \gls{tap} ou XML
+(utile pour faire des rapports) ou encore des générateurs de nombres pseudo
+aléatoires pour faire des tests avec des entrées aléatoires,\dots Une autre
 fonctionnalité intéressante est que les frameworks exécutent les tests dans des
 threads séparés ce qui permet de tester des signaux ou encore de ne pas stopper
 tous les tests à cause d'une sortie erreur. Le fait que les frameworks utilisent
-beaucoup de macros à aussi été pris en compte car bien que ces dernières
+beaucoup de macros a aussi été pris en compte, car bien que ces dernières
 permettent de rendre le code beaucoup plus simple, elles peuvent aussi être
 source de problèmes (elles ont parfois un comportement non souhaité et elles
-sont très compliquées à déboguer). Le frameworks qui a été choisi possède ce
+sont très compliquées à déboguer). Le framework qui a été choisi possède ce
 défaut et nous verrons les problèmes que cela pose dans la conclusion de cette
 partie.
 %}}}
@@ -564,9 +564,9 @@ choix final.
 
 \subsubsection*{Check}
 
-Le premier framework de la liste est Check, il propose un interface simple pour
+Le premier framework de la liste est Check, il propose une interface simple pour
 l'écriture des tests, cependant, toute la mise en place des suites de tests est
-plus complexe mais peut être changée facilement. Check permet d'exécuter les
+plus complexe, mais peut être changée facilement. Check permet d'exécuter les
 tests dans des zones mémoires séparées ce qui permet de ne pas s'arrêter à cause
 de certaines erreurs comme les erreurs de segmentation. La bibliothèque Check
 est disponible avec un paquet aptitude, ce qui le rend simple à installer et
@@ -575,7 +575,7 @@ un rapport clair et facile à utiliser après l'exécution des tests. Le framewo
 permet de construire une structure de tests classique où l'on groupe les tests
 dans des suites, par contre, il n'est pas compatible C++.
 
-Pour présenter les framework aux développeurs de la société, des exemples de
+Pour présenter les frameworks aux développeurs de la société, des exemples de
 codes ont été présentés pour permettre d'avoir une idée de comment le framework
 s'utilise. Sur le listing \ref{check-example} de l'annexe
 \ref{appendix:frameworks-code} on peut voir un exemple d'utilisation de Check.
@@ -583,7 +583,7 @@ s'utilise. Sur le listing \ref{check-example} de l'annexe
 \subsubsection*{CUnit}
 
 Le second framework est CUnit, il est aussi disponible avec un paquet aptitude
-cependant. Le frameworks est assez complet et fourni beaucoup de fonctions
+cependant. Le framework est assez complet et fourni beaucoup de fonctions
 d'assertion. CUnit permet de construire la même structure de tests que Check, et
 utilise des pointeurs de fonctions pour construire les suites. Pour chaque suite
 de tests, on peut fournir deux fonctions qui seront exécutées avant et après les
@@ -601,14 +601,14 @@ On peut voir sur le listing \ref{cunit-example} de l'annexe
 Le framework suivant est Criterion qui est assez récent et aussi disponible avec
 un paquet aptitude. Il propose une interface très simple pour écrire des tests
 et des suites de tests. On peut facilement ajouter les fonctions de setup et
-teardown (pour les tests et les suites de tests) et les tests peuvent êtres
+teardown (pour les tests et les suites de tests) et les tests peuvent être
 paramétrés. Comme Check, les tests sont exécutés dans des zones mémoires
 séparées. De plus, le framework propose beaucoup de macros permettant de faire
 des assertions non seulement sur les types primitifs, mais aussi sur les
 tableaux. Enfin, Criterion possède aussi une interface C++.
 
 À noter tout de même que la simplicité de l'interface de Criterion vient du fait
-que le frameworks utilise beaucoup les macros ce qui peut poser problème.
+que le framework utilise beaucoup les macros ce qui peut poser un problème.
 
 On peut voir sur le listing \ref{criterion-example} de l'annexe
 \ref{appendix:frameworks-code} un example de tests écrits avec Criterion.
@@ -618,8 +618,8 @@ On peut voir sur le listing \ref{criterion-example} de l'annexe
 Minunit est la plus simple des bibliothèques de tests trouvée. Elle ne se
 compose que d'un fichier d'entête. L'interface proposée est très simple mais
 très basique, elle permet seulement l'écriture de tests et de suites de tests.
-Cette bibliothèque est une collections de macros qui pourraient être utilisées
-pour créer un framework de test plus complet. La bibliothèque fourni aussi
+Cette bibliothèque est une collection de macros qui pourraient être utilisées
+pour créer un framework de test plus complet. La bibliothèque fournie aussi
 quelque fonctions d'assertion.
 
 On peut voir sur le listing \ref{minunit-example} de l'annexe
@@ -627,12 +627,12 @@ On peut voir sur le listing \ref{minunit-example} de l'annexe
 
 \subsubsection*{Munit}
 
-Munit propose une interface plus complexe car cela nécessite d'utiliser des
+Munit propose une interface plus complexe, car cela nécessite d'utiliser des
 tableaux et des structures. Pour les tests, les fonctions de tests sont très
-simple à écrire et il y a la possibilités d'avoir différents types de retours.
+simple à écrire et il y a la possibilité d'avoir différents types de retours.
 Pour chaque test, on peut associer les fonctions de setup et de teardown. Les
 tests peuvent aussi être paramétrés. Il est aussi possible de construire une
-structure de test plus complexe cas on peut avoir des suites de suites de tests.
+structure de test plus complexe cas, on peut avoir des suites de suites de tests.
 Le framework propose aussi des générateurs de nombres aléatoires.
 
 On peut voir sur le listing \ref{munit-example} de l'annexe
@@ -642,10 +642,10 @@ On peut voir sur le listing \ref{munit-example} de l'annexe
 
 Framework de test spécialisé pour les systèmes embarqué, il est léger et simple.
 Il ne permet pas de construire une structure de tests très complexe (seulement
-de simple tests) mais possède beaucoup de fonctions d'assertion. En terme
+de simple test) mais possède beaucoup de fonctions d'assertion. En terme
 d'interface, le framework propose une collection de macros simples et lisibles.
 
-Le framework possède beaucoup de fonctions d'assertions mais il ne possède pas
+Le framework possède beaucoup de fonctions d'assertions, mais il ne possède pas
 beaucoup plus de fonctionnalités. Il ne sera pas utilisable pour tester du code
 qui utilise des fonctionnalités propres à c++ comme les exceptions par exemple.
 
@@ -667,8 +667,8 @@ On peut voir sur le listing \ref{tau-example} de l'annexe
 
 Le choix final s'est porté sur Criterion car le framework possède beaucoup
 d'avantages. Tout d'abord, il est le seul à être complètement compatible avec le
-C++ et ce, sans proposer une interface nécessitant la mise en place de classe
-comme ce que l'on pourrais voir avec CPPUnit. De plus, ce framework est très
+C++, et ce, sans proposer une interface nécessitant la mise en place de classe
+comme ce que l'on pourrait voir avec CPPUnit. De plus, ce framework est très
 simple d'utilisation, il permet d'écrire des tests clairs facilement et
 rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité de
 générer des logs, les tests paramétrés ou encore les théories (tests des
@@ -683,11 +683,11 @@ expliqué dans les parties précédentes, le framework génère son propre point
 d'entrée, cependant il est possible d'écrire la fonction \verb|main| à la
 main si besoin. Le problème est que pour une raison inconnue, cela n'a pas
 marché lors des essais au début du projet (d'après le message d'erreur, le
-problème venait des threads). Ce n'est pas un problème grave car Criterion
+problème venait des threads). Ce n'est pas un problème grave, car Criterion
 propose beaucoup d'outils qui permettent de mettre en place des solutions
-alternatives mais c'est tout de même un point important à noter. De plus, le
+alternatives, mais c'est tout de même un point important à noter. De plus, le
 fait que le framework utilise beaucoup de macros pose parfois problème car ces
-dernière peuvent avoir des comportements indésirables. Par exemple, il peut
+dernières peuvent avoir des comportements indésirables. Par exemple, il peut
 arriver qu'un test basique d'égalité avec la fonction d'assertion principale ne
 compile plus lorsque l'on échange les expressions de par et d'autre de
 l'opérateur \verb|==|. Les macros peuvent être très utiles et très
@@ -695,11 +695,11 @@ puissantes, elles permettent ici de rendre le code beaucoup plus lisible,
 cependant, il faut noter que les macros trop complexe sont très difficiles à
 écrire et à déboguer.
 
-Le framework choisit possède donc beaucoup de qualités mais aussi quelques
+Le framework choisi possède donc beaucoup de qualités, mais aussi quelques
 défauts. Au final, bien qu'il ne soit pas parfait, il remplit bien son rôle et
 propose beaucoup de fonctionnalités très utiles pour écrire les tests. De
 plus, il faut noter que ce framework est assez récent, il est donc normal qu'il
-y ai encore des défaut qui seront certainement corrigés au fil des années de
+y ait encore des défauts qui seront certainement corrigés au fil des années de
 développement.
 %}}}
 %}}}
@@ -707,19 +707,19 @@ développement.
 
 L'outil créé pendant ce stage a été testé sur un projet de l'entreprise. Cela a
 permis dans un premier temps de pouvoir voir et comprendre comment le code à
-tester fonctionnait puis ensuite cela à permis de vérifier la bonne intégration de
+tester fonctionnait, ensuite cela a permis de vérifier la bonne intégration de
 l'outil dans le projet. Dans cette partie, nous détaillerons comment sont
-organisés les projets de CKsquare. Cela permettra une meilleur compréhension des
-choix qui ont été fait par la suite.
+organisés les projets de CKsquare. Cela permettra une meilleure compréhension des
+choix qui ont été faits par la suite.
 
 \subsection{Organisation des fichiers}
 \label{orgaprojck}
 
 Dans cette partie, nous allons résumer l'organisation des fichiers dans un
 projet CKsquare puis nous traiterons le fonctionnement du code dans la partie
-suivante. On rappel que ce projet d'intégration continue ne concerne que la
-partie du code qui est commune à tous les projets. Elles fait parties des
-bibliothèques ajoutés aux projets sous la forme de \gls{smodg}. \\
+suivante. On rappelle que ce projet d'intégration continue ne concerne que la
+partie du code qui est commune à tous les projets. Elle fait parties des
+bibliothèques ajoutées aux projets sous la forme de \gls{smodg}. \\
 
 Pour pouvoir penser le fonctionnement de l'outil de test à créer pendant ce
 stage, il était important de comprendre le fonctionnement général du projet.
@@ -747,7 +747,7 @@ Comme on peut le voir sur l'arborescence de la Figure \ref{fig:arbrprojck},
 chaque projet comporte une partie locale ou les noms de fichiers commencent par
 \textbf{l}. Cette partie contient tous les fichiers qui sont spécifiques au
 projet courant (fonction d'initialisation, fonction principale,\dots). Chaque
-projet contient au moins deux fichiers de configuration qui sont des fichier
+projet contient au moins deux fichiers de configuration qui sont des fichiers
 d'entête contenant des constantes préprocesseur utilisées pour faire de la
 compilation conditionnelle. La gestion de la configuration s'est avérée complexe
 pour créer l'outil de test à cause du grand nombre d'options. Chaque projet
@@ -755,7 +755,7 @@ contient aussi un répertoire \verb|CKLibs| dans lequel se trouvent des
 \gls{smodg}. Sur le projet d'étude qui a permis la mise en place du projet de
 test, il y avait deux sous modules. Le premier sous module se nomme
 \verb|commun_global| et il contient la partie du code qui est commune à tous les
-projet C, C++ et python. Le second sous module est \verb|dev_pic|, ce dernier ne
+projets C, C++ et python. Le second sous module est \verb|dev_pic|, ce dernier ne
 concerne que la partie C.
 
 % [projet ck] {{{
@@ -774,7 +774,7 @@ La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|
 contient la partie du code à tester. À la racine des communs, se trouvent aussi
 une partie des bibliothèques des différents compilateurs. L'entreprise CKsquare
 a réécrit une grande partie de ces bibliothèques pour avoir plus de maitrise
-quand à la gestion des différents éléments. Ces bibliothèques ont été très
+quant à la gestion des différents éléments. Ces bibliothèques ont été très
 utiles pour mettre en place une partie de l'émulation des composants dans le
 projet de test, nous traiterons cela plus loin dans ce rapport. Le reste des
 bibliothèques des microcontrôleurs a aussi été utilisé pour compiler avec gcc,
@@ -782,13 +782,13 @@ là aussi, ce sera traité dans les prochaines sections.
 
 Le répertoire \verb|commun| s'organise en catégories. Par exemple, on retrouve
 le dossier \verb|StorageDriver| qui contient les fichiers qui gèrent le stockage
-ou encore le dossier \verb|Payment| qui contient tous ce qui concerne le
+ou encore le dossier \verb|Payment| qui contient tout ce qui concerne le
 paiement (types de paiement, accepteur de pièce,\dots). L'objectif est de
-pouvoir faire des recherche par catégories et de garder les dépendance au plus
+pouvoir faire des recherches par catégories et de garder les dépendances au plus
 proche des fichiers. Par exemple, plusieurs des sous répertoires de
 \verb|commun| contiennent un dossier \verb|Web| qui regroupe les dépendances web
-des fichiers de chaque catégories. On peut ainsi retrouver facilement les
-dépendance des fichiers.
+des fichiers de chaque catégorie. On peut ainsi retrouver facilement les
+dépendances des fichiers.
 
 Maintenant que nous avons expliqué l'organisation générale du projet, nous
 allons pouvoir traiter le fonctionnement de ce dernier.
@@ -801,7 +801,7 @@ branche sur l'événementiel a été traitée en deuxième partie de stage.
 
 Sur les deux branches, le code est géré par des machines à états. Elles sont
 utilisées autant du côté du C que de celui du C++. Les machines à état sont un
-outil très puissant est très pratique car elles permettent d'avoir un meilleur
+outil très puissant et très pratique, car elles permettent d'avoir un meilleur
 contrôle sur l'exécution du code et ont un fonctionnement assez intuitif. De
 plus, elles peuvent permettre de rendre le code plus clair en particulier quand
 il y a beaucoup de cas à traiter. Enfin, elles permettent de gérer les erreurs
@@ -817,7 +817,7 @@ fonctionnalité. Par exemple, pour un accepteur de billet, la fonction
 \verb|Control| aura des états qui seront utilisés au début et qui vont permettre
 de faire de l'initialisation. Ces états peuvent faire des requêtes au composant
 pour récupérer sa configuration. La machine à états aura aussi un état servant à
-interroger le composant durant sont exécution, pour par exemple savoir si il y a
+interroger le composant durant son exécution, par exemple savoir s'il y a
 un billet à traiter.
 
 Les fonctions \verb|Control| sont appelées par un gestionnaire
@@ -832,17 +832,17 @@ fonction sera appelée par le gestionnaire et il y aura au minimum dix centième
 de seconde entre chaque appel.
 
 Les fonctions \verb|Control| vont être un élément très important à tester. Ces
-fonctions ont beaucoup servi lors des essais réalisé sur les fichiers pendant la
+fonctions ont beaucoup servi lors des essais réalisés sur les fichiers pendant la
 création de l'outil. Elles sont très intéressantes car elles permettent de
-couvrir une grande quantifié de code et de tester la plupart des cas (pour le
+couvrir une grande quantité de code et de tester la plupart des cas (pour le
 code de l'outil de test). À noter cependant que les machines à états sont très
 compliquées à tester puisqu'il ne faut normalement pas avoir accès aux états
 dans les tests \cite{teststatemachines}. Il faut donc être capable de manipuler
-l'environnement dans le code pour savoir dans quel états on se trouve et choisir
+l'environnement dans le code pour savoir dans quels états on se trouve et choisir
 l'état dans lequel se rendre. L'utilisation d'un débogueur a grandement facilité
 la mise en place des tests réalisés sur ces fonctions.
 
-\subsubsection{Branche événementiel}
+\subsubsection{Branche de l'événementiel}
 \label{brancheevent}
 
 Cette branche a été créée pour simplifier le code, elle utilise un système mis
@@ -852,19 +852,19 @@ limiter les appels de fonctions dans la boucle principale. En effet, sur l'autre
 branche, les fonctions \verb|Control| des composants sont continuellement
 appelées par le \verb|Contro Manager|, ce qui peut poser des problèmes de
 performance. Ici, les fonctions qui gèrent les composants ne sont appelées que
-lorsqu'un évènement est émit. Par exemple, lorsqu'une trame est envoyée, un
-évènement est émit pour signifier la fin de la communication. Cela aura pour
-effet de déclencher l'appel de la fonction de gestion du composants qui a envoyé
+lorsqu'un évènement est émis. Par exemple, lorsqu'une trame est envoyée, un
+évènement est émis pour signifier la fin de la communication. Cela aura pour
+effet de déclencher l'appel de la fonction de gestion du composant qui a envoyé
 la trame. Cette fonction est une machine à états qui passera dans un état
 d'attente de réponse (par exemple). Le défaut de ce système est qu'il nécessite
 l'utilisation de structures de données assez lourdes en mémoire, cependant, ce
 défaut est compensé par le fait que la taille du code diminue fortement.
 
-Le fonctionnent de ce systèmes repose sur deux structures de données, les
+Le fonctionnement de ce système repose sur deux structures de données, les
 \verb|SMs| et les \verb|Connects|. \verb|SM| signifie \textit{State Machine},
 comme son nom l'indique, cette structure permet de gérer les machines à états.
 La seconde structure de données permet de gérer les signaux. Ici, les fonctions
-\verb|Contro| sont remplacer par des fonctions \verb|SwitchControl| qui prennent
+\verb|Contro| sont remplacés par des fonctions \verb|SwitchControl| qui prennent
 en paramètre un \verb|SM| qui va permettre la gestion de la machine à états dans
 la fonction. Les \verb|SM| contiennent des pointeurs vers des données utiles
 pour les machines à états, comme des arguments ou encore une horloge spécifique
@@ -874,16 +874,16 @@ Pour que l'appel à une fonction soit déclenché à l'émission d'un signal, il
 connecter la fonction au signal. Pour ce faire, on utilise la structure des
 \verb|Connects|. Un \verb|Connect| est un signal qui est connecté à une
 fonction. Lors de la connections, on spécifie les arguments à donner à la
-fonctions qui est connectée. Lorsque l'on a créé un \verb|Connect| et que ce
+fonction qui est connectée. Lorsque l'on a créé un \verb|Connect| et que ce
 dernier a été lié à une fonction, on peut utiliser une fonction \verb|Emit|, qui
 va émettre le signal. Cela aura pour effet de déclencher l'appel de toutes les
 fonctions connectées au signal (immédiatement ou non). Ce système est très
 similaire à celui de Qt en C++.
 
 À noter que les fonctions \verb|SwitchControl| prennent aussi en paramètre un
-évènement. En effet, dans certains état, on ne souhaite pas que les machines
+évènement. En effet, dans certains états, on ne souhaite pas que les machines
 soient lancées par n'importe quel signal. Pour palier à ce problème, on entre
-toujours dans une machine à état avec une évènement, et ce dernier sera vérifié
+toujours dans une machine à état avec un évènement, et ce dernier sera vérifié
 ou non en fonction de l'état dans lequel se trouve la machine.\\
 
 Ce système est assez élégant et très intéressant d'un point de vue génie
@@ -897,16 +897,16 @@ suivante, nous traiterons l'organisation du projet de test.
 Dans cette partie, nous allons détailler la structure du projet de test. Cette
 structure s'appuie sur celle des projets de l'entreprise.
 
-Il est important de noter que l'organisation du projet de test à changée. Au
+Il est important de noter que l'organisation du projet de test a changée. Au
 départ, le projet de test devait être un géré à part. Ce dernier devait être
 cloné dans la pipeline du code commun pour pouvoir tester les fichiers. Au
 final, il a été décidé d'intégrer complètement l'outil de test dans
-\verb|dev_pic|. L'organisation des tests suis les principes expliqués dans la
-Section \ref{orgaprojck}. De ce fait, les tests sont stocké à proximité des
+\verb|dev_pic|. L'organisation des tests suit les principes expliqués dans la
+Section \ref{orgaprojck}. De ce fait, les tests sont stockés à proximité des
 fichiers testés. Sur la Figure \ref{fig:integrtestcommun}, on peut voir une
 représentation de l'arborescence des fichiers dans le projet commun.
 
-% TODO: une partie de l'arborescence est normalement présenté dans la partie
+% TODO: une partie de l'arborescence est normalement présentée dans la partie
 % précédente
 
 % [Intégration des tests dans le code commun] {{{
@@ -923,7 +923,7 @@ Cette arborescence montre une partie du contenu du répertoire
 \verb|dev_pic/commun|. Ici, on peut voir trois des catégories qui ont été
 mentionnées dans la Section \ref{orgaprojck}. Le répertoire \verb|Test| a été
 ajouté lors de l'intégration du projet de test dans le projet commun, ce dernier
-contient les fichiers généraux spécifiques aux test. À noter qu'il y a un autre
+contient les fichiers généraux spécifiques aux tests. À noter qu'il y a un autre
 répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même niveau
 que \verb|commun|. Ce dernier contient la simulation des interfaces pour le
 stockage. Étant donné que le stockage est un élément assez général, il a été mis
@@ -946,30 +946,30 @@ Ce fichier contient des versions modifiées des fichiers du projet local (ceux
 dont le nom est préfixé d'un \verb|l|). Il contient aussi les fichiers de
 configuration. Pendant la création de l'outil, il s'est avéré qu'il y avait des
 dépendances entre les fichiers des communs et le projet local. Cela pose
-problème car depuis la pipeline, on a pas accès aux fichiers locaux puisqu'ils
+problème, car depuis la pipeline, on n'a pas accès aux fichiers locaux puisqu'ils
 sont spécifiques aux différents projets. Une solution envisageable est le
 clonage d'un projet depuis la pipeline, cependant cette méthode possède deux
-gros défaut. Le premier réside dans le fait de devoir cloner un projet entier
+gros défauts. Le premier réside dans le fait de devoir cloner un projet entier
 juste pour exécuter une pipeline, cela prend du temps et des ressources. Le
 deuxième défaut vient du fait que la configuration des tests n'est pas la même
 que celle du projet local. En effet, dans les tests, on ne peut pas compiler
-tous les fichier (car tout n'a pas été simulé et tout ne doit pas être testé) et
-on utilise une configuration qui permet de pouvoir tester plusieurs
+tous les fichiers (car tout n'a pas été simulé et tout ne doit pas être testé) et
+l'on utilise une configuration qui permet de pouvoir tester plusieurs
 fonctionnements différents. De ce fait, il est impossible de compiler les tests
 en utilisant les fichiers originaux. C'est pour ces raisons qu'il a été décidé
-de récupérer seulement les fichiers nécessaire à la compilation des tests et de
+de récupérer seulement les fichiers nécessaires à la compilation des tests et de
 les modifier si besoin.
 
 \subsubsection*{Gcc}
 \label{gcc}
 
-Ce répertoire contient des versions modifié des fichiers du compilateur
+Ce répertoire contient des versions modifiées des fichiers du compilateur
 \verb|c32| (normalement stockés dans le répertoire \verb|C32| à la racine des
 communs). Là aussi, les fichiers sont modifiés pour que le code puisse compiler
 avec \verb|gcc|. À noter que ce répertoire contient un fichier créé à partir de
 la bibliothèque \verb|plib| qui définie toutes les variables globales
 normalement utilisées par les bibliothèques carte. Tous les fichiers contenus
-dans ce répertoire permettent donc de compiler le code sans avoir accès au
+dans ce répertoire permettent donc de compiler le code sans avoir accès aux
 bibliothèques du \verb|PIC|.
 
 \subsubsection*{Configuration de Criterion}
@@ -978,77 +978,77 @@ bibliothèques du \verb|PIC|.
 Pour que les tests incluant l'émulation de composants fonctionnent, il faut
 pouvoir lancer et initialiser la simulation. Pour ce faire, on utilise un
 fichier qui fourni des fonctions d'initialisation et de terminaison globales qui
-peuvent être utilisées dans les test. La fonction d'initialisation permet de
-créer les threads utilisé pour les horloges comme nous le verrons dans la
+peuvent être utilisées dans les tests. La fonction d'initialisation permet de
+créer les threads utilisés pour les horloges comme nous le verrons dans la
 Section \ref{simuhorologes} ainsi que d'initialiser toutes les variables
 nécssaire au bon fonctionnement de la simulation. Dans la fonction de
 terminaison, on termine simplement les threads des horloges. Dans ce fichier, on
-peut aussi ajouer d'autre fonctions spécifiques au framework.
+peut aussi ajouer d'autres fonctions spécifiques au framework.
 
 \subsection{Les répertoires de test secondaires}
 
 Comme dit précédemment, les développeurs de l'entreprise souhaitaient stocker
 les tests à proximité des fichiers testés. C'est pour cela que l'on a des
-répertoires de test secondaires dans chaques répertoire du projet. Dans les
-section suivant, nous allons décrire le contenu de ces dossiers.
+répertoires de test secondaires dans chaque répertoire du projet. Dans les
+sections suivant, nous allons décrire le contenu de ces dossiers.
 
 \subsubsection{Les fichiers modifiés}
 
-Certains tests nécessitent la création de versions modifies de certains des
+Certains tests nécessitent la création de versions modifiées de certains des
 fichiers de l'entreprise pour permettre d'isoler des fonctionnalités du
 programme et faciliter les tests. Par exemple, les entrées et sorties sont
 gérées pas un fichier nommé \verb|Ios.c|. Il est très compliqué de savoir si les
 fonctions de ce fichier sont appelées depuis les tests or parfois, on a besoin
-de tester si une action d'entré ou de sortie a été réalisée. Une version modifiée
+de tester si une action d'entrée ou de sortie a été réalisée. Une version modifiée
 de ce fichier a donc été créée pour les tests. Les fonctions de la version test
 du fichier mettent à jour des variables globales accessibles depuis les tests
 permettant ainsi de savoir si des actions d'entrée ou de sortie ont été
 réalisées. Les versions test des fichiers sont compilés à la place des fichiers
 originaux pour les tests. Cette solution est similaire au \textit{mocking} (au
-niveau des fichier) qui est très utilisé avec les langages objets
+niveau des fichiers) qui est très utilisé avec les langages objets
 \ref{spadini2017mock}.
 
 \subsubsection{Les fichiers de la simulation}
 
 Les sous-répertoires de test permettent aussi de stocker les fichiers qui
-contiennent les éléments nécessaire à la simulation des composants. Par exemple,
+contiennent les éléments nécessaires à la simulation des composants. Par exemple,
 les fichiers qui permettent de simuler les composants interfacés avec le
-protocole Cctalk sont stocker dans le répertoire \verb|commun/Cctalk/Test|. Nous
+protocole Cctalk sont stocké dans le répertoire \verb|commun/Cctalk/Test|. Nous
 traiterons ce protocole dans la Section \ref{interfacecctalk}.
 
 \subsubsection{Les tests}
 
-Pour les tests, on ajoute encore un nouveau sous-répertoires à l'arborescence.
+Pour les tests, on ajoute encore un nouveau sous-répertoire à l'arborescence.
 Chaque répertoire \verb|Test| contient un sous-dossier \verb|Tests| qui permet le
 stockage des fichiers de test.
 
 \subsection{Cmake}
 \label{cmake}
 
-Dans cette partie nous allons voir comment est compilé le projet de test. Nous
+Dans cette partie, nous allons voir comment est compilé le projet de test. Nous
 justifierons tout d'abord le choix de l'utilisation de CMake. Ensuite, nous
 détaillerons l'organisation et le fonctionnement de la configuration de cet
 outil.
 
 Au début du projet, l'outil choisit pour compiler était Makefile. L'avantage de
 Makefile est qu'il est assez proche du script, ce qui donne une grande
-flexibilité car on défini toutes les commandes à la main. Le défaut de Makefile
+flexibilité, car on définit toutes les commandes à la main. Le défaut de Makefile
 est qu'il peut très vite devenir peu lisible. De plus, sur de gros projet, mettre
 en place de la compilation séparée peut être très complexe, or cela était
-nécessaire pour le développement du projet étant donnée le nombre de fichier à
+nécessaire pour le développement du projet étant donné le nombre de fichiers à
 compiler. L'outil de test à créer devait être suffisamment simple à utiliser et à
 modifier, la complexité croissante du Makefile à mesure que le projet avançait a
-pousser à l'utilisation de CMake.
+poussé à l'utilisation de CMake.
 
 CMake est un outil qui permet de générer un Makefile très complexe. Il permet de
 mettre en place de la compilation séparée sur de gros projets automatiquement.
 La configuration de CMake est assez simple et beaucoup plus lisible que celle de
 Makefile. De plus, CMake propose des fonctionnalités avancées comme la gestion
-automatique des bibliothèque ou encore \textbf{CTest}, qui permet d'automatiser
+automatique des bibliothèques ou encore \textbf{CTest}, qui permet d'automatiser
 l'exécution de tests. Détaillons à présent la configuration de cet outil.
 
 Le fichier de configuration de CMake est le fichier \verb|CMakeLists.txt|
-(il doit avoir exactement ce nom). Il faut un ficher de configuration par sous
+(il doit avoir exactement ce nom). Il faut un fichier de configuration par sous
 projet. Ici, il n'y a que le projet de tests alors ce fichier se trouve dans le
 répertoire \verb|commun/Tests|.
 
@@ -1063,14 +1063,14 @@ La configuration comporte les six sections suivantes:
     avec gdb).
   \item[$\bullet$] \textbf{jeux de tests}: dans cette partie, il y a plusieurs
     listes de fichiers tests (stockées dans des variables réutilisables plus
-    loin). Il y a plusieurs jeux de tests car on souhaite générer plusieurs
+    loin). Il y a plusieurs jeux de tests, car on souhaite générer plusieurs
     exécutables. Comme dit précédemment, il y a plusieurs configurations du
     projet à tester. Chaque exécutable correspond à une fonctionnalité qui
     nécessite une configuration particulière.
   \item[$\bullet$] \textbf{projet de test}: cette partie contient la liste des
     fichiers relatifs au projet de test.
-  \item[$\bullet$] \textbf{projet commun}: ici on a une liste qui contient les
-    fichiers du projet \verb|dev_pic| qui sont à compilés avec tous les
+  \item[$\bullet$] \textbf{projet commun}: ici, on a une liste qui contient les
+    fichiers du projet \verb|dev_pic| qui sont à compiler avec tous les
     exécutables. Ce sont les fichiers dont tous les jeux de tests ont besoin.
   \item[$\bullet$] \textbf{exécutables}: dans cette partie, on génère les
     exécutables en spécifiant les bonnes listes de fichiers à compiler. De plus,
@@ -1078,7 +1078,7 @@ La configuration comporte les six sections suivantes:
     des constantes préprocesseur lors de la compilation (option \verb|-D|
     de gcc). Cela permet de choisir les configurations du projet pour les tests.
   \item[$\bullet$] \textbf{tests}: dans cette section, on ajoute les exécutables
-    à la liste des tests. Ces tests pourront être lancé par \verb|CTest|
+    à la liste des tests. Ces tests pourront être lancés par \verb|CTest|
     après la compilation.
 \end{itemize}
 
@@ -1093,7 +1093,7 @@ durant le projet, les horloges.
 
 Le premier élément qui a été simulé était l'horloge principale du programme. Par
 la suite, c'est l'horloge Rtc qui a été simulée en suivant le même principe que
-pour l'horloge principale. Dans cette section nous allons traiter le
+pour l'horloge principale. Dans cette section, nous allons traiter le
 fonctionnement de ces composants.\\
 
 Au début du projet, quelques tests simples ont été réalisés sur certains
@@ -1106,7 +1106,7 @@ doit être incrémentée pour que le temps passe. Dans le cas contraire, le
 programme reste bloqué.
 
 Le problème technique que pose la simulation des horloges est qu'il faut que ces
-dernières fonctionnent en même temps que le programme principale tourne.
+dernières fonctionnent en même temps que le programme principal tourne.
 L'implémentation la plus simple consiste à incrémenter les variables d'horloge
 dans les tests à chaque fois que l'on sait qu'un temps d'attente est mis en
 place. Cette solution n'était pas suffisamment pratique et réaliste. Pour ce
@@ -1116,14 +1116,14 @@ s'exécutant dans un processus séparé en même temps que le programme principa
 
 Cette solution a été très simple et rapide à mettre en place étant donné que les
 processus n'avaient pas besoin d'être synchronies. Au final, les deux horloges
-fonctionnent sur le même principe. Pour chacun des fichiers on a une fonction
+fonctionnent sur le même principe. Pour chacun des fichiers, on a une fonction
 \verb|Start| qui permet de créer le thread. Cette fonction possède une
 sécurité qui fait que l'on peut faire autant d'appels que l'on souhaite, le
 thread n'est créé qu'une seule fois (cela rend l'utilisation plus simple dans
 les tests). À noter que dans le cas du Rtc, l'horloge démarre à la date du jour.
-Les fichier comportent aussi une fonction \verb|Loop| qui est la fonction
-qui s'exécute dans le thread. De plus, des moyen d'interagir avec les horloges
-ont étaient ajoutés. Par exemple, à certains endroits du code, on met en place
+Les fichiers comportent aussi une fonction \verb|Loop| qui est la fonction
+qui s'exécute dans le thread. De plus, des moyen d'interagir avec les horloges ont été
+ajoutés. Par exemple, à certains endroits du code, on met en place
 des temps d'attente relativement long. Pour éviter de bloquer le programme,
 chaque fichier propose une fonction \verb|Wait| qui permet d'incrémenter le
 compteur manuellement. Il est aussi possible de mettre les horloges en pause et
@@ -1132,11 +1132,11 @@ détruire les threads. Les fonctions \verb|Start| et \verb|Stop| sont
 appelées dans les fonctions d'initialisation et de terminaison globales décrites
 dans la Section \ref{configuration-de-criterion}.\\
 
-Les horloges représentaient donc une partie importante du projet car elles sont
+Les horloges représentaient donc une partie importante du projet, car elles sont
 énormément utilisées dans le code et si les compteurs ne sont pas incrémentés,
 il devient impossible de tester les fonctions. La solution qui a été trouvée est
 très simple et assez réaliste en plus d'être assez pratique à utiliser dans les
-tests. Dans la section suivante, nous traiterons le deuxième éléments qui a été
+tests. Dans la section suivante, nous traiterons le deuxième élément qui a été
 simulé lors de la création de l'outil de test et qui propose une solution
 différente de celle utilisée avec les horloges.
 %}}}
@@ -1151,13 +1151,13 @@ qui permet d'interagir avec les périphériques. Il y a deux protocoles qui sont
 utilisés avec le stockage. Tout d'abord il y a le protocole I²C qui est utilisé
 avec les registres et certaines eeproms. Ensuite il y a le protocole SPI qui est
 utilisé avec les eeproms et les mémoires flash. La simulation de ces deux
-interface a nécessité l'apprentissage des deux protocoles qui ne sont pas traité
+interfaces a nécessité l'apprentissage des deux protocoles qui ne sont pas traités
 dans les cours de la filière 2 à l'ISIMA.
 
-TODO: mettre des images des composants (montrer l'objet au delà du code est
+TODO: mettre des images des composants (montrer l'objet au-delà du code est
 intéressant)
 
-Dans cette partie nous allons voir comment a été réalisée l'émulation de
+Dans cette partie, nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
 \subsection{Échec des threads}%{{{
@@ -1165,28 +1165,28 @@ l'interface permettant d'utiliser le stockage avec les différents protocoles.
 
 La première solution qui a été implémentée utilisait des \textbf{threads} de la
 même façon que les horloges. L'objectif été de pouvoir simuler les composants de
-sorte à ce qu'ils se comportent comme les composants réels installés sur la
-carte. Pour se faire, il été souhaitable que les composants simulés soient actif
+sorte qu'ils se comportent comme les composants réels installés sur la
+carte. Pour ce faire, il était souhaitable que les composants simulés soient actifs
 en même temps que la carte (représentée ici par le programme à tester) et c'est
 pour cela que les threads ont été utilisés. Le principe était que les composants
 étaient représentés par des machines à états qui bouclaient dans un état de base
 jusqu'à ce que le composant soit appelé (donc jusqu'à ce que le programme
-principale décide de lancer une communication en utilisant un des protocoles
+principal décide de lancer une communication en utilisant un des protocoles
 cités précédemment). Une fois le composant appelé, la machine à états permettait
 d'assurer la communication. Pour que les composants simulés s'exécutent en même
-temps que le programme principale, ils s'exécutaient dans des threads séparés.
+temps que le programme principal, ils s'exécutaient dans des threads séparés.
 \\
 
 Le problème des threads réside dans la synchronisation de ces derniers. Il y a
 différentes méthodes pour synchroniser des threads. Sur ce projet, il a au
-départ été utiliser des boucles infinies qui permettait de faire attendre les
-threads. Par exemple, le programme principale était stoppé par une boucle pour
-attendre que le les composants émulés s'exécutent et le débloque. Cette solution
-a été utilisée au départ car ce genre de boucles été déjà présentes dans
+départ été utilisé des boucles infinies qui permettaient de faire attendre les
+threads. Par exemple, le programme principal était stoppé par une boucle pour
+attendre que les composants émulés s'exécutent et le débloque. Cette solution
+a été utilisée au départ, car ce genre de boucles été déjà présentes dans
 l'implémentation de l'I²C. Par la suite, cette solution s'est avérée complexe
-d'utilisation et peu élégante, les boucles ont donc étaient remplacées par des % todo: expliquer les sémaphores
+d'utilisation et peu élégante, les boucles ont donc étaient remplacées par des % todo: expliquer les
 sémaphores. Au final, la synchronisation des threads est devenue trop compliquée
-et très peu fiable (l'exécution du programme ne donnait pas toujours les même
+et très peu fiable (l'exécution du programme ne donnait pas toujours les mêmes
 résultats). L'objectif du projet étant de concevoir un outil qui soit facilement
 réutilisable, cette solution était trop complexe et donc pas adaptée. Il a donc
 été décidé de ne plus les utiliser les threads même si la nouvelle solution
@@ -1201,7 +1201,7 @@ protocole I²C puis nous détaillerons le fonctionnement de la simulation.
 \subsubsection*{Le protocole I²C}
 
 Le protocole I²C (Inter Integrated Circuit) est un \gls{protoserie}
-bidirectionnel en \gls{halfduplex}. La plupart des connaissances sur l'I²C on
+bidirectionnel en \gls{halfduplex}. La plupart des connaissances sur l'I²C ont
 été trouvées sur ce document \cite{mankar2014review} et de Wikipédia
 \cite{frwiki:197726464}, le reste vient des développeurs de l'entreprise. Ce
 protocole fonctionne en mode maître et esclave. Par exemple, la carte
@@ -1210,7 +1210,7 @@ eux sont les esclaves. Un esclave ne prend jamais la parole, c'est au maître de
 démarrer la communication et l'esclave répond lorsque c'est nécessaire. La
 connexion est réalisée par l'intermédiaire de deux fils, SDA (Serial Data Line)
 qui permet de transmettre les données et SCL (Serial Clock Line) qui correspond
-à l'horloge, quand SCL est à 1, on envoi un bit sur SDA. Ces deux lignes sont
+à l'horloge, quand SCL est à 1, on envoie un bit sur SDA. Ces deux lignes sont
 bidirectionnelles. Le schéma de la Figure \ref{fig:schemai2c} illustre le
 principe de l'I²C.
 
@@ -1224,45 +1224,45 @@ principe de l'I²C.
 \end{figure}
 %}}}
 
-Pour démarrer la communication, le maître envoi un octet que l'on appel
+Pour démarrer la communication, le maître envoi un octet que l'on appelle
 \textit{l'octet d'adresse}. Sur ce premier octet, les sept premiers bits
-corresponde à l'adresse du destinataire (l'esclave qui est appelé par le
+correspondent à l'adresse du destinataire (l'esclave qui est appelé par le
 maître). Le dernier bit permet de spécifier le mode d'accès, s'il est à 0, le
 maître va envoyer des données à l'esclave. S'il est à 1, c'est l'esclave qui
-devra envoyer des données aux maître. Si on prend l'exemple du stockage, quand
+devra envoyer des données au maître. Si l'on prend l'exemple du stockage, quand
 ce bit est à 0, la carte va envoyer des données à écrire, sinon, la carte
 souhaite lire les données écrites sur le composant. La suite de la communication
-va vairée en fonction de ce qui a été demandé par la carte.
+va vairer en fonction de ce qui a été demandé par la carte.
 
 Pour résumer, ce protocole fonctionne en mode maître et esclaves avec deux
 lignes, SDA qui permet de transmettre des données et SCL qui correspond à
 l'horloge. Lors d'une communication, la carte électronique (le maître) va
-envoyer un permet octet contenant l'adresse du composant (l'esclave) auquel elle
+envoyer un octet contenant l'adresse du composant (l'esclave) auquel elle
 s'adresse ainsi que le mode d'accès. Ensuite, l'esclave et le maître se
 transmettent des données jusqu'à la fin de la communication. Ce protocole
-possède d'autre subtilités qui ne seront pas détaillées ici car elles n'ont pas
-été utiles pour la réalisation de ce projet. Dans la section suivante nous
-allons aborder le fonctionnement de l'implémentation du protocole par CKsquare
+possède d'autres subtilités qui ne seront pas détaillées ici, car elles n'ont pas
+été utiles pour la réalisation de ce projet. Dans la section suivante, nous allons
+aborder le fonctionnement de l'implémentation du protocole par CKsquare
 puis nous traiterons les différents éléments qui permettent de simuler
 l'interface I²C pour le stockage.
 
 \subsubsection*{Émulation}
 
 Maintenant que nous avons abordé le fonctionnement du protocole I²C dans la
-première partie, intéressons nous à la façon dont l'interface a été simulée pour
+première partie, intéressons-nous à la façon dont l'interface a été simulée pour
 le stockage. Pour mettre en œuvre l'émulation, une étude du fonctionnement de
 l'implémentation du protocole par l'entreprise ainsi que son utilisation a été
-nécessaire. Pour ce faire, il a fallut s'intéresser à l'organisation des
+nécessaire. Pour ce faire, il a fallu s'intéresser à l'organisation des
 fichiers et aux fonctions qu'ils contiennent. À la demande des développeurs de
 l'entreprise, la simulation devait permettre de tester tout le code. C'est pour
 cette raison qu'elle a été placée au plus proche des bibliothèques de Microship
 (fournisseurs des cartes) au lieu de simplement remplacer des fichiers. Il était
-obligatoire de comprendre comment l'entreprise utilise l'I²C car le protocole en
-lui même ne décrit que la façon dont les composants communiquent en non les
+obligatoire de comprendre comment l'entreprise utilise l'I²C, car le protocole en
+lui-même ne décrit que la manière dont les composants communiquent en non les
 données qu'ils envoient. Par exemple, ce protocole peut être utilisé avec
 plusieurs types de composants, pas seulement du stockage. Pour deux types de
 composants différents, la communication suivant le même protocole n'aura pas la
-même forme car ces derniers ne proposent pas les même fonctionnalités. La
+même forme, car ces derniers ne proposent pas les mêmes fonctionnalités. La
 simulation mise en place est donc spécifique au stockage sur les cartes
 Microship.
 
@@ -1271,8 +1271,8 @@ l'entreprise. Le compilateur sur lequel se base les tests est le \verb|c32|, ce
 sont donc les bibliothèques de ce compilateur qui seront utilisées pour mettre
 en place la simulation. Ces fichiers mettent à disposition plusieurs fonctions
 permettant de démarrer et stopper la communication ainsi que d'envoyer des
-données (les fonctions correspondent à toutes le fonctionnalités décrites par le
-protocole). La communication en elle même est gérée par d'autres fichiers qui
+données (les fonctions correspondent à toutes les fonctionnalités décrites par le
+protocole). La communication en elle-même est gérée par d'autres fichiers qui
 eux font partie du code commun. Les fonctions définies dans les fichiers ont
 permis de comprendre comment sont utilisés les périphériques de stockage. À
 noter qu'ici, la ligne permettant de transmettre des données est modélisée par
@@ -1281,34 +1281,34 @@ une variable (globale). Cette variable est gérée par la bibliothèque du
 Section \ref{gcc}.
 
 Pour écrire sur un composant, la carte démarre la communication puis envoie
-l'adresse du périphérique de stockage auquel ele s'adresse avec le bit de mode à
+l'adresse du périphérique de stockage auquel elle s'adresse avec le bit de mode à
 0 (comme le demande le protocole). Ensuite, elle envoie une adresse qui va
 permettre de placer le curseur du composant. Cela va permettre de spécifier au
 composant à quelle adresse on souhaite écrire. Le nombre d'octets à envoyer pour
 le déplacement du curseur dépend du composant ciblé. Dans le cas d'un registre,
-on envoie un octet, dans le cas d'une eeprom 2 (les flash ne sont pas utilisées
+on envoie un octet, dans le cas d'une eeprom 2 (les flashs ne sont pas utilisées
 avec l'I²C). Enfin, la carte envoie les données à écrire sur le composant avant
 de terminer la communication. La lecture suis le même principe sauf qu'ici, on
 ne spécifie pas la position du curseur. La subtilité est que si on souhaite lire
 à une certaine adresse, il faut commencer par écrire, déplacer le curseur du
 composant puis redémarrer la communication en mode lecture.
 
-Maintenant que nous savons comment utiliser le protocole, intéressons nous à la
+Maintenant que nous savons comment utiliser le protocole, intéressons-nous à la
 simulation. Comme dit précédemment, la simulation doit se positionnée au niveau
-des bibliothèques du \gls{pic}, la meilleur option était donc de modifier les
+des bibliothèques du \gls{pic}, la meilleure option était donc de modifier les
 fichiers de cette bibliothèque. Comme nous l'avons vu dans la section
-\ref{echecthread}, la première solution utilisait une machine a états qui
+\ref{echecthread}, la première solution utilisait une machine à états qui
 s'exécutait dans un thread. Pour réaliser la nouvelle solution, il a été décidé
 de reprendre le code de la machine à état et d'en faire une fonction
 \verb|Control| similaire à ce que l'on peut trouver dans le code de
 CKsquare. Cette décision apporte deux avantages, le premier étant que le
 fonctionnement est très similaire à celui du code de l'entreprise, ce qui est
 intéressant étant donné le fait que l'outil est destiné à être utilisé par les
-développeurs de la société. Le deuxième avantage est le gain de temps du à la
+développeurs de la société. Le deuxième avantage est le gain de temps dû à la
 réutilisation du code de la solution précédente. Les appels à cette fonction
-\verb|Control| ont étaient fait dans une version modifiée pour les tests du
-fichier de \verb|C32| compilé à la place de l'original. Cela permet aux
-développeur des tests de ne pas avoir à se préoccuper de la simulation, de son
+\verb|Control| ont été fait dans une version modifiée pour les tests du
+fichier de \verb|C32| compilé à la place de l'original. Cela permet aux développeur
+ des tests de ne pas avoir à se préoccuper de la simulation, de son
 point de vue, tout fonctionne comme sur la carte. On peut voir sur la figure
 \ref{fig:machineetatsi2c} le diagramme représentant le fonctionnement de la
 machine à états de la simulation.
@@ -1354,12 +1354,12 @@ précédente. 'étude de ce protocole à était faite à l'aide de deux document
 \cite{dhaker2018introduction} et \cite{li2014design}. Le protocole SPI (Serial
 Peripheral Interface) est un \gls{protoserie} en \gls{fullduplex}. Là où l'I²C
 possédait seulement deux lignes, ici, il y en a au minimum quatre. Il y a tout
-d'abord SCLK qui permet de gérer l'horologe. Ensuite il y a MOSI (Master Out
+d'abord SCLK qui permet de gérer l'horloge. Ensuite, il y a MOSI (Master Out
 Slave In) et MISO (Master In Slave Out) qui permette d'envoyer des données. Ici,
 le fait d'utiliser deux lignes permet au maître et à l'esclave d'échanger des
 données en même temps. La dernière ligne, $\overline{CS}$, permet, quand elle
 est à zéro, de sélectionner le composant avec lequel on souhaite échanger. Cette
-ligne est relié à un seul composant, il faut donc autant de lignes
+ligne est reliée à un seul composant, il faut donc autant de lignes
 $\overline{CS}$ (Chip Select) que d'esclaves. Sur la Figure \ref{fig:schemaspi},
 on peut voir un schéma représentant la liaison entre la carte et un composant en
 SPI.
@@ -1379,7 +1379,7 @@ simulation.
 
 \subsubsection*{Émulation}
 
-Pour réaliser la simulation de l'interface SPI, la démarche a était la même que
+Pour réaliser la simulation de l'interface SPI, la démarche a été la même que
 pour l'I²C. La mise en place d'une solution a été précédée d'une étude du
 fonctionnement du code permettant d'utiliser le protocole.
 
@@ -1387,28 +1387,28 @@ La gestion du protocole dans le code est très similaire à celle de l'I²C. Il 
 un fichier dans le répertoire \verb|C32| contenant les fonctions basiques
 du protocole. Là aussi, les lignes sont gérées à l'aide de variables globales
 définies dans le fichier \verb|PicVariables|. Les fichiers plus haut niveau
-du code commun ont permis de designer la machine a états au départ utilisée dans
-la solution avec les threads puis réutilisée dans la nouvelle solution. Ici le
+du code commun ont permis de designer la machine à états au départ utilisé dans
+la solution avec les threads puis réutilisée dans la nouvelle solution. Ici, le
 fonctionnement est un peu plus complexe qu'avec l'I²C. Pour faire une écriture
 sur un composant, on commence par démarrer la communication puis on sélectionne
-le composant auquel on souhaite s'adresser. Ensuite, on envoi un code qui va
+le composant auquel on souhaite s'adresser. Ensuite, on envoie un code qui va
 permettre de choisir une action à réaliser. Parmi les actions possibles, il y a
 la lecture, l'écriture ou encore la possibilité de supprimer des données
 (erase). Il y a aussi un code permettant d'activer les droits d'écriture sur un
 composant. Il faut donc activer l'écriture à chaque fois que l'on souhaite
 modifier les données sur le stockage. Par exemple, pour faire une écriture sur
-un composant, on commence par sélectionner la cible. Ensuite, on envoi le code
+un composant, on commence par sélectionner la cible. Ensuite, on envoie le code
 permettant d'activer l'écriture. Une fois fait, il faut redémarrer la
 communication puis envoyer le code permettant d'écrire. Avant de pouvoir envoyer
 les données à écrire, il faut déplacer le curseur du composant en envoyant une
-adresse sur deux où trois octets, les données serons ensuite écrites à partir de
+adresse sur deux ou trois octets, les données seront ensuite écrites à partir de
 la nouvelle adresse du curseur. Lorsque l'on a fini d'envoyer les données, on
 arrête la communication en repassant $\overline{CS}$ à 1.
 
 Comme pour lI²C, il y a une fonction \verb|Control| qui est une machine à états
 qui reprend les étapes décrites dans le paragraphe précédent. Là aussi, pour
 utiliser la simulation, il faut modifier la fonction d'initialisation en
-ajoutant les composant de façon similaire à l'I²C. À noter que la simulation de
+ajoutant les composants de façon similaire à l'I²C. À noter que la simulation de
 la mémoire ne change pas et que l'on peut très bien configurer le même composant
 à la fois sur lI²C et le SPI. On peut voir sur la Figure \ref{fig:smspi} le
 diagramme de la machine à états du SPI.
@@ -1423,7 +1423,7 @@ diagramme de la machine à états du SPI.
 \end{figure}
 %}}}
 
-Le principe de la simulation du stockage en SPI est donc similaire à celui de
+Le principe de la simulation du stockage en SPI est donc semblable à celui de
 l'I²C. De plus, il n'y a pas de différence au niveau de l'utilisation des
 composants simulés dans les tests. Dans la section suivant, nous allons discuter
 d'un problème posé par cette simulation et de la solution qui a été utilisée.
@@ -1435,19 +1435,19 @@ un problème important. Ce problème était que l'on ne pouvait pas savoir depui
 les machines à états si les protocoles étaient utilisés correctement. Par
 exemple, si un utilisateur oubliait de redémarrer la communication après le
 déplacement du curseur pour une lecture I²C, il pouvait être très compliqué de
-trouver l'origine du problème. Cela est du à la rigidité des machines à états
+trouver l'origine du problème. Cela est dû à la rigidité des machines à états
 pour la simulation des interfaces de ces deux protocoles. Si les étapes ne sont
 pas respectées à la lettre et que les bonnes fonctions ne sont pas appelées
 dans le bon ordre le résultat est indéterminé. C'est un énorme problème étant
-donnée le fait que l'on ne sait plus d'où viennent les erreurs, du code ou de la
+donné le fait que l'on ne sait plus d'où viennent les erreurs, du code ou de la
 simulation? C'est une question qu'il est légitime de se poser étant donné la
 complexité de la simulation des interfaces du stockage.
 
 Pour tenter de résoudre ce problème, un système d'évènements a été pensé. Ce
-système est loin d'être parfait mais il peut éviter une partie des erreurs. Le
+système est loin d'être parfait, mais il peut éviter une partie des erreurs. Le
 principe est que les machines à états de l'I²C et du SPI enregistrent des
-évènements au fur et à mesure de l'exécution. Une fois que l'on a terminer une
-action, on peut vérifier si les évènements enregistrés sont bon. Par exemple, on
+évènements au fur et à mesure de l'exécution. Une fois que l'on a terminé une
+action, on peut vérifier si les évènements enregistrés sont bons. Par exemple, on
 peut essayer de faire un certain nombre de lectures avec le SPI. Le fichier du
 SPI fournit une fonction qui permet de générer la liste des évènements attendus
 pour $n$ lectures. Il suffit donc de comparer la suite d'évènements attendus à
@@ -1456,10 +1456,10 @@ nécessite donc d'avoir un cas de test dédié qui fait la vérification des
 évènements pour chacune des actions possibles.
 %}}}
 \\
-Le stockage a représenter le premier défi en terme de simulation durant la
+Le stockage a représenté le premier défi en termes de simulation durant la
 réalisation de l'outil. Cela a nécessité l'apprentissage de deux protocoles
-ainsi que la compréhension d'une grande partie du code. Les fichier du
-compilateur ont aussi du être modifiés pour rendre la simulation possible. Au
+ainsi que la compréhension d'une grande partie du code. Les fichiers du
+compilateur ont aussi dû être modifiés pour rendre la simulation possible. Au
 final, le système fonctionne bien et est assez simple à utiliser dans les tests.
 Dans la section suivante, nous allons traiter la simulation de composant
 interfacé avec deux nouveaux protocoles, le Cctalk et le MDB.
@@ -1471,7 +1471,7 @@ Nous avons vu dans la partie précédente que les périphériques de stockage
 courant dans les systèmes embarqués. La société CKsquare est spécialisée dans la
 monétique et utilise donc beaucoup de périphériques interfacés avec des
 protocoles spécifiques à ce domaine. Une grosse partie du stage a été passée à
-la simulation d'interfaces utilisant deux protocoles très connus dans le milieux
+la simulation d'interfaces utilisant deux protocoles très connus dans le milieu
 de la monétique, le Cctalk et le MDB. Dans cette section, nous allons présenter
 ces deux protocoles ainsi la solution proposée pour l'outil de test.
 
@@ -1496,15 +1496,15 @@ reliés à une même carte.
 Comme le SPI et l'I²C, le Cctalk fonctionne en mode maître et esclave. Ce
 standard utilise un système de d'entête pour transmettre des commandes, par
 exemple, l'entête 253 permet de demander son adresse à un composant. Il y a en
-tout 256 entêtes différentes, numérotées de 0 à 255 ce qui permet la
+tout 256 entêtes différents, numérotées de 0 à 255 ce qui permet la
 transmission d'une entête sur un octet. Les entêtes de 20 à 100 sont réservées
 pour les développeurs des applications utilisant le Cctalk, le reste est décrit
 dans la documentation \cite{cctalkpt2}. Sur la Figure \ref{tramecctalk} on peut
 voir la composition d'une trame Cctalk qui comprend six éléments. Le premier est
 l'adresse du composant ciblé par la trame (l'adresse du destinataire). Cette
-adresse est suivit du nombre d'octets de données qui vont être envoyées. Ce
+adresse est suivie du nombre d'octets de données qui vont être envoyées. Ce
 nombre étant transmis sur un octet, on ne pourra jamais transmettre plus de 255
-octets de données. Ensuite, on envoi l'adresse de la source (le composant qui a
+octets de données. Ensuite, on envoie l'adresse de la source (le composant qui a
 envoyé la trame) puis l'entête. Une fois l'entête envoyée, on transmet les
 données puis le checksum qui va permettre de vérifier l'intégrité des données à
 la réception.
@@ -1530,9 +1530,9 @@ donc envoyer une trame dont l'entête sera 203 et les données seront la
 sous-entête 3 suivie du texte à afficher. L'écran doit normalement répondre par
 un acquittement (entête 0).
 
-Une exemple plus complexe est celui du système vocal. Ici, on va demander au
+Un exemple plus complexe est celui du système vocal. Ici, on va demander au
 système vocal de lire un fichier audio. Là, il n'y a pas d'entête dédiée, la
-société à donc utilisé une des entêtes mise à disposition des développeur:
+société a donc utilisé une des entêtes mise à disposition des développeurs:
 l'entête 34. Cette entête ne sert que pour réaliser cette action, il n'y a donc
 pas de sous-entête à envoyer. La trame qui sera transmise au système vocal sera
 donc composée de l'entête 34 et des données requises à la lecture du fichier
@@ -1548,19 +1548,19 @@ allons nous intéresser au fonctionnement du code de l'entreprise.
 Dans le code de l'entreprise, le Cctalk est utilisé avec beaucoup de composants
 comme un accepteur de billets, un lecteur de cartes, mais aussi le système vocal
 de la borne ou encore l'écran tactile. Il y a un fichier pour chacun des
-composants interfacé en Cctalk et ces fichiers permettent de gérer la partie
+composants interfacés en Cctalk et ces fichiers permettent de gérer la partie
 maître. Comme pour le stockage, la simulation a au départ été pensée pour se
-situer au plus proche des fichiers du compilateur. Cela a nécessiter une
+situer au plus proche des fichiers du compilateur. Cela a nécessité une
 compréhension de toute la chaine d'instruction qui permet la transmission des
 trames.
 
 % note vérifier pour le role de master
-Pour l'implémentation du Cctalk, il y a deux fichier principaux. Tout d'abord,
+Pour l'implémentation du Cctalk, il y a deux fichiers principaux. Tout d'abord,
 il y a le fichier \verb|CctalkMaster.c| qui permet de gérer la structure de
 données qui modélise les commandes. Ce fichier possède aussi une fonction
 \verb|Control| qui permet de gérer les \textit{Core Commands}, qui sont des
 commandes généralement exécutées à l'initialisation et qui permettent d'obtenir
-des informations sur les composant (constructeur, numéro de version,\dots).
+des informations sur les composants (constructeur, numéro de version,\dots).
 Ensuite, il y a le fichier \verb|CctalkMasterSerial.c| qui gère la
 communication. Ce second fichier sert de pont entre le code haut niveau des
 communs et le code bas niveau des bibliothèques du \gls{pic}. Pour l'envoi des
@@ -1589,8 +1589,8 @@ composants comme l'écran tactile, les développeurs ont mis en place un systèm
 permettant à la carte de passer en mode esclave. L'interface du Cctalk est aussi
 utilisée avec le TCPIP. En effet, le Cctalk est fait pour assurer la
 communication entre les composants reliés à une même carte. Il peut arriver que
-l'on ai besoin de lier des composants qui ne sont pas directement connectés et
-pour ce faire on utilise le protocole TCPIP qui est le plus adapté. Le code de
+l'on ait besoin de lier des composants qui ne sont pas directement connectés et
+pour ce faire, on utilise le protocole TCPIP qui est le plus adapté. Le code de
 la société propose une abstraction qui permet de gérer tous les composants en
 utilisant seulement l'interface du Cctalk. Pour rendre cela possible, le code
 utilise des drivers qui fonctionnent à l'aide de pointeurs de fonctions.
@@ -1604,9 +1604,8 @@ place du code permettant de simuler le comportement des esclaves (donc des
 composants) lors de la réception de trame. L'objectif des composants simulés est
 simplement de répondre aux commandes Cctalk qu'ils reçoivent. Ces commandes
 peuvent être automatiques ou paramétrées dans les tests. Un effet de bord
-souhaitable pour la simulation est aussi la récupération de la trame reçue, de
-sorte à ce que l'on puisse vérifier que les bonnes commandes sont envoyées dans
-les tests.
+souhaitable pour la simulation est aussi la récupération de la trame reçue, de sorte
+que l'on puisse vérifier que les bonnes commandes sont envoyées dans les tests.
 
 Pour simuler les composants, il a été décidé d'utiliser un fichier par
 composant. Lors du développement, il a été jugé plus simple et plus sage
@@ -1621,7 +1620,7 @@ modifier pour simuler un nouveau composant.
 
 Comme pour le stockage, la simulation devait se situer au plus proche des
 bibliothèques du compilateur. Cette approche a permis d'avoir une simulation
-très réaliste qui pousse à l'utilisation du tous le code créé pour gérer le
+très réaliste qui pousse à l'utilisation du tout le code créé pour gérer le
 Cctalk. C'est la première solution qui a été mise en place et qui a nécessité la
 compréhension de toute l'implémentation du protocole. Bien qu'il soit
 intéressant d'avoir une simulation réaliste permettant de faire des tests
@@ -1629,39 +1628,39 @@ d'intégration qui valident toute la chaine d'instruction, cette solution était
 relativement complexe et poussait les tests à dépendre de l'entièreté du code.
 Cela n'est pas souhaitable dans le cas où l'on veut faire des tests unitaires
 sur un fichier sans se préoccuper du reste de l'implémentation. Cela est
-intéressant car il permet de mieux repérer l'origine des problèmes car le code
+intéressant, car il permet de mieux repérer l'origine des problèmes, car le code
 testé est isolé, de ce fait, les échecs des tests sont dus uniquement aux
 erreurs dans le fichier testé et non aux erreurs dans le reste du code. C'est
-pour cette raison qu'une deuxième solution à été mise en place, permettant ainsi
+pour cette raison qu'une deuxième solution a été mise en place, permettant ainsi
 de faire à la fois des tests unitaires et des tests d'intégrations. Pour mettre
 en place cette solution, une version modifiée du fichier
-\verb|CctalkMasterSerial.c| a été crée, dans cette version, les machines à états
+\verb|CctalkMasterSerial.c| a été créé, dans cette version, les machines à états
 sont supprimées. La sauvegarde de la trame reçue ainsi que l'envoi de la réponse
 du composant est géré directement depuis la fonction qui permet d'envoyer les
 commandes. De ce fait, quand un élément du code testé envoie une commande
 Cctalk, cette dernière est enregistrée et la réponse est directement envoyée. On
-ne passe donc plus par les machines à états, ni par les fichier du compilateur,
-le code testé est donc bien isolé. Il est possible de passer d'une
+ne passe donc plus par les machines à états, ni par les fichiers du compilateur,
+le code testé est alors bien isolé. Il est possible de passer d'une
 implémentation de la simulation à une autre en définissant une constante
 préprocesseur. À noter que c'est deux solutions ont été pensées pour être
-interchangeables, de sorte à ce que les mêmes tests fonctionnent peu importe
+interchangeables, de sorte que les mêmes tests fonctionnent peu importe
 l'implémentation de la simulation.
 
 Comme nous l'avons mentionné dans un précédent paragraphe, tous les fichiers de
 la simulation ont la même forme. Après plusieurs tests, une \textit{forme
-standard} pour la simulation a été crée. Chaque fichier se compose des trois
+standard} pour la simulation a été créé. Chaque fichier se compose des trois
 fonctions suivantes:
 \begin{itemize}
-  \item[$\bullet$] \verb|Control|: Cette fonctions est utilisée avec la
+  \item[$\bullet$] \verb|Control|: Cette fonction est utilisée avec la
     simulation bas niveau qui est la première solution crée. C'est une machine
     qui se compose de trois états. Dans le premier état, la machine fait la
     vérification de l'adresse sur la commande envoyée sur le bus par le code
     testé. Si cette adresse ne correspond pas à l'adresse du composant simulé,
     la machine s'arrête. Dans le cas contraire, la machine commence par
     récupérer la trame sur le bus pour que cette dernière soit accessible depuis
-    les tests. Ensuite, elle envoi un écho qui permet de spécifier au maître que
+    les tests. Ensuite, elle envoie un écho qui permet de spécifier au maître que
     la trame a bien été reçu. Enfin, la machine à état envoi la réponse au
-    maître en fonctions des données reçues, en utilisant les fonction du
+    maître en fonctions des données reçues, en utilisant les fonctions du
     compilateur. % TODO: code en annexe
   \item[$\bullet$] \verb|Run|: Cette fonction permet de gérer la fonction
     décrite dans le point précédent. Elle fait une suite d'appels à la machine à
@@ -1673,7 +1672,7 @@ fonctions suivantes:
     réponse. La fonction \verb|Run| est à utiliser dans les tests à chaque fois
     qu'une commande doit être envoyée, elle permet gérer la simulation d'une
     communication entre la carte et un composant. À noter que cette fonction
-    n'est utile qu'avec la version bas niveau (version où l'on test tout le
+    n'est utile qu'avec la version bas niveau (version où l'on teste tout le
     code), cependant, il existe une version vide de cette fonction qui permet de
     ne pas avoir à modifier les tests quand on passe de la version bas niveau à
     la version haut niveau.
@@ -1681,7 +1680,7 @@ fonctions suivantes:
     avec la version haut niveau. Comme expliqué précédemment, dans cette
     version, tout est géré depuis la fonction \verb|CmdSnd| de la version
     modifiée pour les tests du fichier \verb|CctalkMasterSerial.c|. Ici, il n'y
-    a qu'un seul fichier pour tout les composants ce qui pose problème pour les
+    a qu'un seul fichier pour tous les composants ce qui pose problème pour les
     réponses prés définies. Pour pouvoir paramétrer des réponses pour plusieurs
     composants, on passe par un pointeur de fonction qui pointe sur la fonction
     \verb|HandleResponse| du composant testé. Cette fonction se compose juste
@@ -1691,13 +1690,13 @@ fonctions suivantes:
 \end{itemize}
 
 Maintenant que nous avons traité l'implémentation de la simulation des
-composants Cctalk, intéressons nous à la façon dont on peut l'utiliser pour
+composants Cctalk, intéressons-nous à la façon dont on peut l'utiliser pour
 rédiger des tests.
 
 \subsubsection{Exemple de test}
 
 Dans cette section, nous allons traiter un exemple de test très simple sur
-l'écran Cctalk. Ici, on test la fonction \verb|DISPLAYCCTALK_Print| qui permet
+l'écran Cctalk. Ici, on teste la fonction \verb|DISPLAYCCTALK_Print| qui permet
 d'afficher du texte à l'écran. Comme on peut le voir sur le Listing
 \ref{fig:exemplecctalkprint}, utilise la fonction à tester pour afficher le
 texte \textit{"Commande simple"} (il y a un autre test sur cette fonction qui
@@ -1706,9 +1705,9 @@ Cctalk contenant une entête spécifique à l'écran et une sous entête demanda
 l'affichage d'un texte. Le reste des données doit être le texte à afficher. Dans
 le test, on fait appel à la fonction d'affichage puis on utilise la fonction
 \verb|Control| deux fois pour amener la machine dans l'état où la trame doit
-être envoyée. Ensuite on lance le composant simulé qui va récupérer la trame est
-envoyer une réponse. Enfin, on peut tester que les données reçues par le
-composants sont correctes.
+être envoyée. Ensuite, on lance le composant simulé qui va récupérer la trame et
+envoyer une réponse. Enfin, on peut tester que les données reçues par le composant
+sont correctes.
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -1729,20 +1728,20 @@ cr_assert(eq(u8[15], FRAMECCTALK.Data + 1, Data)); // texte
 \end{listing}
 
 Cet exemple simple montre le bon fonctionnement du système de simulation et que
-l'on peut facilement avoir accès au données transmises aux composants.
+l'on peut facilement avoir accès aux données transmises aux composants.
 \\~\\
 
 La simulation des composants Cctalk fonctionne donc bien et on peut aisément
 vérifier les trames envoyées par le programme de la carte depuis les tests. Dans
-la section suivante nous traiterons l'autre protocole monétique utilisé durant
+la section suivante, nous traiterons l'autre protocole monétique utilisé durant
 le stage, le protocole MDB.
 %}}}
 \subsection{L'interface MDB}%{{{
 
-Dans la partie précédente nous avons traité le fonctionnement du protocole
+Dans la partie précédente, nous avons traité le fonctionnement du protocole
 Cctalk et nous avons aussi vu comment les composants Cctalk ont été simuler pour
 faire fonctionner les tests. Dans cette partie, nous allons traiter un autre
-protocole utilisé avec d'autre composants, le protocole MDB. À noter que le
+protocole utilisé avec d'autres composants, le protocole MDB. À noter que le
 fonctionnement du MDB dans le code de CKsquare ainsi que celui des composants
 simulés est très similaire au Cctalk, il y aura donc beaucoup de parallèles fait
 avec la partie précédente.
@@ -1767,33 +1766,33 @@ de mode. Lorsque le bit de mode est à 0, les huit premiers bits contiennent des
 données. S'il est à 1, alors les huit premiers bits peuvent contenir l'adresse
 d'un composant cible (l'adresse du composant auquel s'adresse le maître), une
 commande spéciale ou un checksum. Les commandes spéciales sont ACK
-(acquittement), NAK (non acquittement) et RET (demande de répétition). Un octet
+(acquittement), NAK (non-acquittement) et RET (demande de répétition). Un octet
 d'adresse contient généralement aussi une commande: un \textbf{ou} logique est
 fait entre l'adresse du composant et la commande à envoyer. À noter que le
 standard impose des adresses spécifiques pour chaque type de périphérique. Par
 exemple, un accepteur de billet doit avoir pour adresse \verb|0x30|. Les
 commandes envoyées avec l'adresse permettent de donner des ordres aux
-périphériques et chaque type de périphérique possède son propre jeux de
+périphériques et chaque type de périphérique possède son propre jeu de
 commandes. Les commandes correspondent à des catégories assez génériques, par
 exemple pour l'accepteur de billet, \verb|0x03| permet d'interroger le composant
 (pour savoir s'il y a un billet a été accepté par exemple). Ensuite, pour
-spécifier une action à réaliser on envoi à nouveau neuf bits avec le bit de mode
+spécifier une action à réaliser on envoie à nouveau neuf bits avec le bit de mode
 à 0 et une sous-commande dans les données. On peut envoyer plus de données si
 besoin mais les sous-commandes doivent toujours apparaitre au début.
 
 Traitons l'exemple du début de la validation d'une vente simple avec un
-périphérique de paiement sans contactes. Ce scénario est décrit dans la
+périphérique de paiement sans contacts. Ce scénario est décrit dans la
 documentation \cite[p.~169]{mdbdoc}. Ici, la carte va commencer par interroger
 le composant en utilisant la commande \textit{poll} (code \verb|0x02|). Les
-systèmes de paiement sans contactes ont pour adresse \verb|0x10| ou \verb|0x60|,
+systèmes de paiement sans contacts ont pour adresse \verb|0x10| ou \verb|0x60|,
 ici, la première trame sera donc composée de neuf bits. Le bit de mode sera à 1
-car on souhaite interroger un composant, et pour ce faire il faut envoyer son
-adresse sur le bus. La valeur des huit bits suivant est le résultat d'un ou
+car on souhaite interroger un composant, et pour ce faire, il faut envoyer son
+adresse sur le bus. La valeur des huit bits suivants est le résultat d'un ou
 logique entre la commande \verb|0x02| et l'adresse du composant donc \verb|0x12|
 ou \verb|0x62|. Ensuite, le composant va renvoyer neuf bits où le bit de mode
-sera à 0 et la huit bits suivant contiendront la commande \verb|0x03|, ce qui
+sera à 0 et les huit bits suivants contiendront la commande \verb|0x03|, ce qui
 permet de démarrer une session (échange de trames). Une fois la session
-démarrée, la carte va demander s'il y a une ventre à traiter, pour ce faire, on
+démarrée, la carte va demander s'il y a une vente à traiter, pour ce faire, on
 utilise la commande \textit{Vend} (\verb|0x03|) et cette dernière s'accompagne
 d'une sous-commande \textit{Vend Request} (\verb|0x00|). On peut noter ici que
 pour un même code, la commande correspondante sera différente en fonction de
@@ -1805,7 +1804,7 @@ commande \verb|0x03|) \verb|0x000| (bit de mode à 0 et sous-commande
 nuls. Comme mentionné plus haut, le reste du scénario est décrit dans la
 documentation du MDB.
 
-Maintenant que nous avons décrit les bases du protocole, intéressons nous au
+Maintenant que nous avons décrit les bases du protocole, intéressons-nous au
 code de l'entreprise. On pourra ensuite étudier le fonctionnement de la
 simulation des composants.
 
@@ -1824,9 +1823,9 @@ que la réponse soit disponible.
 
 Lorsque l'on souhaite envoyer une trame, on utilise la fonction \verb|CmdSnd|,
 qui va marquer la commande qu'elle reçoit en paramètre comme étant prête à être
-envoyée. Il n'y a pas de liste chaînées ici, toutes les commandes sont stockées
+envoyée. Il n'y a pas de liste chaînée ici, toutes les commandes sont stockées
 dans un tableau et elles sont affectée aux différents composants lorsqu'ils sont
-enregistré (a l'initialisation du programme). Toutes les commandes sont
+enregistrés (à l'initialisation du programme). Toutes les commandes sont
 accessibles depuis le fichier \verb|MDBApi.c| et elles sont simplement marquées
 pour être envoyées. Lorsque le \verb|ControManager| appelle la fonction
 \verb|Control| du fichier, cette dernière transmet toutes les commandes marquées
@@ -1843,7 +1842,7 @@ Comme le Cctalk, la simulation MDB est disponible en deux versions, une
 et une version \textit{bas niveau} qui passe par toute la chaine d'instructions
 jusqu'aux bibliothèques du compilateur. La grosse différence avec le Cctalk en
 terme d'utilisation est que la simulation ne propose pas de réponses
-prés-définies aux commandes envoyées par la carte. En effet, comme il peut y
+prés-définie aux commandes envoyées par la carte. En effet, comme il peut y
 avoir beaucoup de réponses différentes pour une même commande, il a été décidé
 que les réponses des composants devaient être configurées à chaque fois. Cela
 signifie que dans les tests, il faut configurer une réponse avant l'envoi d'une
@@ -1854,9 +1853,9 @@ Cctalk. Il y a une fonction \verb|Control| qui est utilisée avec la version
 \textit{bas niveau} et qui a la même utilité que la fonction du Cctalk. Là
 aussi, il y a une fonction \verb|Run| qui comme pour le Cctalk permet de lancer
 la simulation du composant depuis les tests lorsque la version \textit{bas
-niveau} est utilisée. Comme il n'y a pas de réponse prés-définies, il n'y a pas
+niveau} est utilisée. Comme il n'y a pas de réponse prés-définie, il n'y a pas
 de fonction \verb|HandleResponse|. L'obligation de configurer toutes les
-réponses aux commandes rend certains tests complexe à écrire, c'est pour cela
+réponses aux commandes rend certains tests complexes à écrire, c'est pour cela
 qu'un système de scénarios a été ajouté au MDB, ce système est décrit dans la
 Section \ref{sysscenar}.
 
@@ -1871,26 +1870,26 @@ composants. Pour pouvoir vérifier si ces échanges de trames sont possibles ave
 le code de l'entreprise, un système de scénarios a été mis en place. Ce système
 permet de définir une suite d'envoi de commande par le maître et de réponse par
 l'esclave. À chaque fois que le composant simulé reçoit une trame, il vérifie
-que cette dernière correspond à celle prévue par le scénarios avant de
+que cette dernière correspond à celle prévue par le scénario avant de
 transmettre la réponse. Si la trame reçue par l'esclave ne correspond pas à ce
 qui été prévue par le scénario, on fait échouer le test avec un \verb|exit(1)|.
 À noter que seul le test sur le scénario joué échoue et les tests suivants sont
-exécutés correctement car avec notre framework, chaque test s'exécute dans son
+exécutés correctement, car avec notre framework, chaque test s'exécute dans son
 propre thread. Cela simplifie grandement l'écriture des tests puisqu'il n'y a
 pas besoin de paramétrer les réponses du composant ni même de faire des
-assertions puisque si le test passe c'est que le scénarios a été joué
+assertions puisque si le test passe, c'est que le scénario a été joué
 correctement, sinon, c'est qu'il a planté. Ce système de scénario est donc un
 moyen très simple de valider le code CKsquare pour un type de périphérique.
 
 L'implémentation de ce système est très simple, les scénarios sont composés
 d'étapes et chaque étape est modélisée par une structure. Les étapes sont
 stockées dans un tableau global. Lorsque l'on souhaite jouer un scénario, on
-appel la fonction \textit{play} correspondante au début du test. Cette dernière
+appelle la fonction \textit{play} correspondante au début du test. Cette dernière
 fait un enregistrement d'étapes dans le tableau global. Ensuite, l'envoi
 réponses et la vérification des commandes envoyées par la carte est automatique,
 il suffit juste d'appeler les fonctions du code pour passer par toutes les
 étapes du scénario. À noter que la plupart du temps, il faut initialiser les
-machines à états au préalable car les étapes de démarrage ne sont pas prises en
+machines à états au préalable, car les étapes de démarrage ne sont pas prises en
 comptes dans les scénarios. Sur l'annexe \ref{appendix:exscenariomdb}, on peut
 voir la création du scénario de validation d'une vente simple pour un système de
 paiement sans contacte décrit sur la documentation \cite[169]{mdbdoc}.\\
@@ -1900,7 +1899,7 @@ utilisant la simulation de composants MDB.
 
 \subsubsection{Exemples de tests}
 
-Dans cette section nous allons traiter une partie d'un test réalisé sur le
+Dans cette section, nous allons traiter une partie d'un test réalisé sur le
 système de paiement sans contacte. L'objectif de ce test était de vérifier le
 bon fonctionnement de la simulation du composant ainsi que de servir d'exemple
 aux développeurs. Ce dernier passe par une suite d'état dans la fonction
@@ -1948,35 +1947,35 @@ cr_assert(eq(u8[2],MDBCASHLESS_CONTROL.Devices[1].ReadConfig.SoftwareVersion,Pol
 \label{extestmdb}
 \end{listing}
 
-À noter que ce composant était simple à tester car les variables liées à la
+À noter que ce composant était simple à tester, car les variables liées à la
 machine à état étaient toutes visibles. Cependant, parfois, les tests sont plus
-complexe à mettre en place car on a pas accès à tout. Dans ce cas, il faut
+complexes à mettre en place, car on n'a pas accès à tout. Dans ce cas, il faut
 tester un maximum d'éléments secondaires accessible pour s'assurer que la
-machine passe par les bons états mais on ne peut pas toujours valider toutes les
+machine passe par les bons états, mais on ne peut pas toujours valider toutes les
 opérations.\\~\\
 %}}}
 
 La simulation des composants interfacés en Cctalk et en MDB fonctionne donc
 correctement et il est possible de tester le code qui doit interagir avec les
 composants. Dans la section suivante, nous allons nous intéresser à la gestion
-des historiques ainsi qu'à leurs sauvegarde sur le serveur de la société.
+des historiques ainsi qu'à leur sauvegarde sur le serveur de la société.
 %}}}
 \section{Les historiques}%{{{
 
 Dans cette section, nous allons nous intéresser à la gestion des historiques
 (historique de paiement,\dots). Ils sont stokés en mémoire sur la carte dans
-une base de données circulaire et ils sont régulièrement sauvegardé sur un
-serveur. C'est un élément important car la sauvegarde des historiques est
+une base de données circulaire et ils sont régulièrement sauvegardés sur un
+serveur. C'est un élément important, car la sauvegarde des historiques est
 juridiquement obligatoire quand ils concernent la monétique (loi finance de
 2016). Dans cette partie, nous commencerons, dans un premier temps, par
 détailler le fonctionnement de la structure de données et des tests qui ont
-été fait dessus. Dans un second temps, nous traiterons l'envoi des
+été faits dessus. Dans un second temps, nous traiterons l'envoi des
 historiques sur le serveur de CKsquare.
 
 \subsection{Les CDBs}
 \label{cdbs}
 
-Tous les historiques sont stockés dans un base de donnée circulaire (CDB
+Tous les historiques sont stockés dans une base de donnée circulaire (CDB
 signifie \textit{Circular Data Base}). La première partie des tests concernant
 les historiques va porter sur la validation du bon fonctionnement de cette base.
 Un point important concernant cette structure est que les CDB sont stockées en
@@ -1985,13 +1984,13 @@ cette structure vont permettre de pleinement utiliser l'émulation du stockage.
 Ils vont donc constituer un exemple intéressant qui pourra être décrit dans la
 documentation.\\
 
-Comme mentionné dans le paragraphe précédent, un CDB est une une base de donnée
+Comme mentionné dans le paragraphe précédent, un CDB est une base de donnée
 circulaire. Un CDB est une structure qui se compose d'un tableau, d'un compteur
 d'éléments, d'une tête et d'une queue. La tête correspond à la première donnée
 insérée et la queue à la dernière. Les CDB sont sauvegardés en mémoire sur des
 eeproms ou des flashs en fonction de la configuration. Il y a une seule
-interface (fichier d'entête) pour deux implémentation différentes utilisant les
-deux types de périphériques de stockage et on peut passer d'une implémentation à
+interface (fichier d'entête) pour deux implémentations différentes utilisant les
+deux types de périphériques de stockage et l'on peut passer d'une implémentation à
 une autre avec la configuration. Il est important de pouvoir tester les deux
 implémentations, par contre, étant donné que les fonctions ont le même nom, on
 ne peut pas compiler tous les fichiers en même temps (une interface et deux
@@ -1999,11 +1998,11 @@ implémentations). C'est pour cette raison que l'on génère deux exécutables
 différents, où chaque exécutable est compilé avec une configuration différente.
 Comme expliqué dans la Section \ref{cmake}, pour passer d'une configuration à
 une autre, on utilise des constantes préprocesseurs définies à la compilation.
-Il y aura donc aussi deux tests différents, un pour les flash et un pour les
+Il y aura donc aussi deux tests différents, un pour les flashs et un pour les
 eeproms.
 
 Traitons à présent un exemple de test sur un CDB dont le code est visible sur le
-listing \ref{extestinsertcdb}. Ici, on test l'insertion d'éléments dans une
+listing \ref{extestinsertcdb}. Ici, on teste l'insertion d'éléments dans une
 flash. Pour réaliser ce test, on utilise plusieurs fonctions annexes. La
 fonction \verb|TESTCDB_IndexToAddrRelative| prend en paramètre un CDB, un indice
 et une référence sur une adresse. Elle permet de récupérer l'adresse de
@@ -2014,13 +2013,13 @@ dans le CDB. Dans un premier temps, on insère un élément dans la base et on
 regarde si les données ont bien été écrites dans la flash. Ensuite, on vérifie
 que les données du CDB sont aussi écrites au début de la mémoire. En effet,
 lorsque l'on redémarre la carte, on a besoin de récupérer l'état de la base de
-données (le nombre d'élément stockés,\dots). Pour pouvoir faire cela, la
+données (le nombre d'éléments stockés,\dots). Pour pouvoir faire cela, la
 structure qui permet de gérer le CDB est écrite en début de mémoire
-(\verb|CDB->Control|). Une fois que l'on vérifié qu'une insertion dans le CDB
+(\verb|CDB->Control|). Une fois que l'on a vérifié qu'une insertion dans le CDB
 fonctionnait, on teste s'il est possible de remplir la base en ajoutant le
 maximum d'éléments à l'aide d'une boucle. À noter qu'à chaque fois, on vérifie
 que l'élément (toujours généré aléatoirement) est bien écrit dans la mémoire. À
-la fin, on test que le CDB est bien plein.
+la fin, on teste que le CDB est bien plein.
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -2079,15 +2078,15 @@ c'est un problème  concernant l'envoi des historiques de paiement sur le
 stage.\\
 
 Pour envoyer les historiques sur le serveur, le \verb|ControlManager| va
-régulièrement faire appel à une fonction \verb|Control| qui va envoyer tous les
-nouveau historiques sur le \textit{CKWash} et les supprimer des CDB. Cette
+régulièrement faire appel à une fonction \verb|Control| qui va envoyer tous les nouveaux
+historiques sur le \textit{CKWash} et les supprimer des CDB. Cette
 fonction se trouve dans le fichier \verb|CksproHisSend.c| Pour transmettre les
 historiques, on utilise un protocole créé par la société qui est le protocole
-\textbf{CKspro}. Ici, seule une version haut niveau de la simulation à été mise
-en place car le code qui permet de gérer la transmission des données utilise
+\textbf{CKspro}. Ici, seule une version haut niveau de la simulation a été mise
+en place, car le code qui permet de gérer la transmission des données utilise
 directement des éléments bas niveau comme le TCPIP. Ces éléments étant
 relativement complexes et assez peu utilisés dans le code, ils n'ont pas été
-traités durant le stage car cela aurait pris trop de temps.
+traités durant le stage, car cela aurait pris trop de temps.
 
 Pour pouvoir tester l'envoi des commandes, une version modifiée du fichier
 chargé de la gestion du protocole CKspro a été créée. Comme pour le Cctalk et le
@@ -2101,16 +2100,16 @@ les commandes envoyées correspondent aux données qui avaient été enregistré
 vérifiant que les identifiants stockés dans les trames sont les mêmes que ceux
 des éléments dans CDB. À noter qu'ici, un test assez réaliste a été écrit pour
 vérifier que l'outil permet bien de créer un test capable de détecter le
-problème qui a pousser la société à créer ce sujet de stage. Le problème été
+problème qui a poussé la société à créer ce sujet de stage. Le problème était
 survenu plusieurs fois à cause de mauvaises manipulations de git, ce qui aurait
 pu être détecté facilement avec une pipeline. Il venait d'une erreur de
 configuration qui faisait que dans la fonction \verb|Control| de l'envoi des
 historiques, une fonction était appelée à la place d'une autre. Ce problème
 était assez difficile à détecter avec de simples tests puisqu'il apparaissait
-uniquement lorsque le CDB était remplit plusieurs fois (problème d'index dans le
+uniquement lorsque le CDB était rempli plusieurs fois (problème d'index dans le
 CDB). Pour détecter ce problème, on remplit le CDB, on envoie tous les
 historiques et on refait ces opérations en vérifiant à chaque fois que tous les
-éléments sont envoyés. Le test fonctionne bien et sont code est disponible à
+éléments sont envoyés. Le test fonctionne bien et son code est disponible à
 l'annexe \ref{appendix:savehist}.
 
 Les tests sur l'envoi des historiques sont relativement complexes dans le sens
@@ -2134,7 +2133,7 @@ soient exécutés de façon automatique à chaque nouvel envoi de code sur Gitla
 %}}}
 \section{Mise en place de la pipeline}%{{{
 
-Dans cette section nous allons voir comment a été mise en place la pipeline
+Dans cette section, nous allons voir comment a été mise en place la pipeline
 Gitlab.
 
 La configuration de la pipeline contient deux \textit{jobs}, un \textit{job} de
@@ -2145,23 +2144,23 @@ Pour la compilation, on commence par installer le nécessaire pour compiler avec
 le gestionnaire de paquets de la pipeline (\textit{Aptitude}). Cela comprend les
 outils comme \verb|gcc| et \verb|cmake| mais aussi le framework de test. Ici, on
 utilise l'image docker par défaut de Gitlab (\verb|ruby:3.1|) car il n'y a pas
-beaucoup de paquets à installer mais il serait possible d'utiliser une image
+beaucoup de paquets à installer, mais il serait possible d'utiliser une image
 plus complète ou d'en créer une. À noter que cela se fait dans une section à
-part (\verb|before_script|), ce qui permet de ne pas copier un partie de la
+part (\verb|before_script|), ce qui permet de ne pas copier une partie de la
 configuration pour tous les \textit{jobs} et permet aussi de spécifier à Gitlab
 de garder les éléments en cache pour ne pas tout télécharger à chaque fois. Le
 projet \verb|dev_pic| est dépendant du projet \verb|commun_global| qui comme
 expliqué en début de rapport correspond au code partagé entre tous les projets.
-Pour accéder à ce projet depuis la pipeline, il y a deux solution, la première
+Pour accéder à ce projet depuis la pipeline, il y a deux solutions, la première
 consiste à utiliser un \gls{smodg}. Le défaut de cette méthode est qu'elle
 nécessite la gestion d'un sous module dans les communs. De plus, cette solution
-n'est pas très logique et complexifierait énormément la gestion du projet car
-\verb|dev_pic| est déjà un sous module des projet de l'entreprise. La seconde
+n'est pas très logique et complexifierait énormément la gestion du projet, car
+\verb|dev_pic| est déjà un sous module des projets de l'entreprise. La seconde
 méthode est beaucoup plus simple puisqu'elle consiste juste en le clonage du
 projet \verb|commun_global| dans la pipeline. Pour pouvoir cloner un projet
 privé, on utilise un \textit{job token} accessible depuis la configuration à
 l'aide d'une variable. Une fois que l'on a téléchargé toutes les dépendances du
-projet, on met en place CMake et on compile les tests. Après la compilation, les
+projet, on met en place CMake et l'on compile les tests. Après la compilation, les
 exécutables se trouvent dans le répertoire \verb|buil/bin|, pour pouvoir y
 accéder depuis l'autre \textit{job}, on déclare le répertoire \verb|build| comme
 artefact ce qui permettra de le réutiliser. On peut voir la configuration sur le
@@ -2191,16 +2190,16 @@ build-job:       # This job runs in the build stage, which runs first.
 \end{listing}
 
 Dans le second \textit{job}, on va lancer les tests. On se rend dans le
-répertoire de build (qui était sauvegardé dans un artefact) et on exécute les
-les tests en utilisant la commande \verb|ctest|. \verb|CTest| est un exécutable
+répertoire de build (qui était sauvegardé dans un artefact) et on exécute les tests
+en utilisant la commande \verb|ctest|. \verb|CTest| est un exécutable
 installé avec CMake, il permet de gérer les tests de façon automatique. On peut
 voir sur le listing \ref{testjob} que CTest est utilisé avec plusieurs
 paramètres. Le premier permet de faire afficher les erreurs générées par le
-framework de test car avec l'affichage par défaut, on ne peut pas savoir quel
+framework de test, car avec l'affichage par défaut, on ne peut pas savoir quel
 test a échoué et pourquoi. Ensuite, on utilise l'option \verb|-T| pour spécifier
-deux actions à réaliser. Tout d'abord on souhaite que CTest exécute les tests
-puis ensuite on lui demande de calculer le pourcentage de couverture des tests.
-Ceci se fait à l'aide d'un outil installer par défaut avec gcc: \verb|gcov|. Cet
+deux actions à réaliser. Tout d'abord, on souhaite que CTest exécute les tests
+puis on lui demande de calculer le pourcentage de couverture des tests.
+Ceci se fait à l'aide d'un outil installé par défaut avec gcc: \verb|gcov|. Cet
 outil permet de savoir le pourcentage de lignes de codes compilées qui sont
 exécutées par les tests. Cela permet d'avoir une idée de la qualité des tests
 car il est intéressant de maximiser la couverture des tests pour être sûr que
@@ -2226,7 +2225,7 @@ La création de cette pipeline a clos la première partie du stage qui concernai
 la création d'un outil de test sur la branche principale du code C. Le travail
 suivant a consisté en l'adaptation de l'outil sur la branche évènementiel qui
 est l'autre branche du projet \verb|dev_pic| que nous avons détaillé dans la
-Section \ref{brancheevent}. Dans la partie suivante nous allons nous intéresser
+Section \ref{brancheevent}. Dans la partie suivante, nous allons nous intéresser
 aux modifications apportées à l'outil pour que ce dernier fonctionne sur la
 seconde branche.
 %}}}
@@ -2234,25 +2233,25 @@ seconde branche.
 
 Dans cette section, nous allons traiter l'intégration de l'outil de test dans la
 seconde branche. À noter que cette section sera courte étant donné le fait qu'il
-n'y a pas eu de nouvel élément créé pour l'événementiel et qu'il n'y a eu que
+n'y a pas eu de nouveaux éléments créé pour l'événementiel et qu'il n'y a eu que
 très peu de modifications apportées au code de l'outil.
 
 \subsubsection*{Compilation}
 
-Avant de commencer à intégrer l'outil de test, il a fallut mettre en place une
+Avant de commencer à intégrer l'outil de test, il a fallu mettre en place une
 première configuration de CMake capable de compiler une partie du code.
 L'objectif était de comprendre le fonctionnement du code et de compiler un
 maximum de fichier pour intégrer l'outil plus facilement. Cette tâche a pris
-beaucoup de temps car tous les fichiers présents ne pouvaient pas être compiler,
-or cela n'était mentionné nul part. Cependant, le fait de faire cela en amont a
+beaucoup de temps, car tous les fichiers présents ne pouvaient pas être compilé,
+or cela n'était mentionné nulle part. Cependant, le fait de faire cela en amont a
 grandement facilité le reste du travail.
 
-Lorsque les premiers fichiers de tests ont étaient ajoutés, un problème très
+Lorsque les premiers fichiers de tests ont été ajoutés, un problème très
 intéressant a été rencontré. Comme expliqué dans la Section \ref{brancheevent},
 pour pouvoir déclencher un appel de fonction à l'émission d'un signal, il faut
 utiliser un \verb|Connect| et le lier à la fonction. Pour ce faire, on utilise
 la fonction \verb|CONNECT_Define| qui prend en paramètre, un \verb|Connect|
-(sigal), un pointeur vers la fonction ciblée ainsi que d'autre informations. La
+(sigal), un pointeur vers la fonction ciblée ainsi que d'autres informations. La
 signature de la fonction est visible sur le listing \ref{sigconnectdefine}.
 
 \begin{listing}[ht!]
@@ -2271,7 +2270,7 @@ void CONNECT_Define(TCONNECT * Connect,
 \label{sigconnectdefine}
 \end{listing}
 
-Pour récupérer certains des arguments de cette fonction, cela nécessite des
+Pour récupérer certains des arguments de cette fonction, cela nécessite 
 l'utilisations d'autres fonctions secondaires. Le listing
 \ref{firstconnectdefine} comment était utilisée cette fonction au départ. On
 peut voir ici qu'il y a deux appels de fonctions dans les arguments, un appel à
@@ -2284,7 +2283,7 @@ doivent être évaluées les arguments des fonctions. Le compilateur utilisé pa
 société évalue les arguments dans l'ordre et tout se passe bien. Par contre, ce
 n'est pas le cas de gcc, c'est pour cela que cette ligne engendrait une erreur
 de segmentation à l'exécution, car \verb|Signal| était utilisé avant d'être
-crée.
+créé.
 
 \begin{listing}[ht!]
 \begin{minted}{C}
@@ -2300,15 +2299,15 @@ CONNECT_Define(CONNECT_Create(&Signal),
 \label{firstconnectdefine}
 \end{listing}
 
-Pour résoudre le problème, il a fallut faire intervenir une variable temporaire
+Pour résoudre le problème, il a fallu faire intervenir une variable temporaire
 pour créer le signal avant de le connecter à une fonction. L'erreur a été très
 difficile à trouver, même avec un débogueur. Cela montre bien qu'il est très
 important de connaitre un minimum le standard des langages que l'on utilise. Une
 autre erreur similaire est survenu lors de la création des tests sur les
 historiques de paiement. Ici, c'était un \verb|assert| qui stoppait le
 programme. La condition testait la taille d'une structure de données avec un
-\verb|sizeof|, le problème était que cette structure données utilisait des
-\verb|long|. Là aussi une meilleur connaissance du standard aurait permis de
+\verb|sizeof|, le problème était que cette structure de données utilisait des
+\verb|long|. Là aussi une meilleure connaissance du standard aurait permis de
 savoir que la taille des \verb|long| est variable entre les machines. Comme on
 peut le voir sur \cite{ISO:C99} et \cite{typescppref}, le standard spécifie les
 règles suivantes sur la taille des entiers:
@@ -2323,14 +2322,14 @@ règles suivantes sur la taille des entiers:
 \end{itemize}
 
 Pour résoudre ce second problème, la structure a été modifiée pour utiliser des
-des entier à taille fixe comme \verb|int32_t|. C'est problèmes sont très
-intéressant et montrent bien que pour écrire du code robuste il n'est pas
-suffisant de simplement connaitre la syntaxe du langage. Des connaissance sur
+entiers à taille fixe comme \verb|int32_t|. Ces problèmes sont très
+intéressants et montrent bien que pour écrire du code robuste il n'est pas
+suffisant de simplement connaitre la syntaxe du langage. Des connaissances sur
 les standards et le fonctionnement des compilateurs sont aussi très
-importantes.\\
+importants.\\
 
 Au final, le code a été modifié et la compilation d'une grande partie des
-fichiers a été possible. Dans section suivante nous traiterons le stockage sur
+fichiers a été possible. Dans la section suivante, nous traiterons le stockage sur
 la seconde branche.
 
 \subsubsection*{Le stockage}
@@ -2338,13 +2337,13 @@ la seconde branche.
 Le premier élément qui a été ajouté sur la nouvelle branche est le stockage.
 Étant donné que ce dernier est placé très bas niveau dans le code, il n'y a pas
 eu de modifications dessus. En effet, la partie évènementiel change le
-fonctionnement du code haut niveau mais les fichiers du compilateur eu ne sont
+fonctionnement du code haut niveau, mais les fichiers du compilateur eu ne sont
 pas modifiés. Le stockage étant une partie assez importante de l'outil de test,
 le fait que tout fonctionne sans modifications a permis de gagner beaucoup de
 temps.
 
 À noter que le fait que l'implémentation de l'I²C et du SPI ne soient pas en
-événementiel peut changer. En effet, d'autre bibliothèques bas niveaux ont
+événementiel peut changer. En effet, d'autres bibliothèques bas niveaux ont
 été adaptées avec le nouveau système. Si cela doit être le cas pour le stockage,
 il faudra aussi modifier la simulation
 
@@ -2355,29 +2354,29 @@ ont été ajoutés des composants Cctalk et MDB.
 \subsubsection*{Cctalk et MDB}
 
 La partie qui a pris le plus de temps à adapter a été celle sur les protocoles
-monétiques. Cette partie a été complexe intégrer car le code a beaucoup changé
+monétiques. Cette partie a été complexe intégrer, car le code a beaucoup changé
 entre les branches que ça soit pour les versions haut et bas niveau. Ici, les
-fonction \verb|Run| et \verb|Control| ont été changées pour pouvoir fonctionner
+fonctions \verb|Run| et \verb|Control| ont été changées pour pouvoir fonctionner
 avec le \verb|Sate Manager|. Les tests qui avaient été écrits ont aussi du être
-changés car certaines fonctionnalités ne fonctionnaient plus de la même façon.
+changés, car certaines fonctionnalités ne fonctionnaient plus de la même façon.
 
 Les modifications apportées au niveau des composants simulés concernent la
-fonction \verb|Run| qui utilise maintenant les fonction liées au \verb|Connects|
-plutôt que d'appeler directement les fonction \verb|Control|. À noter qu'ici,
-que ce soit pour la version haut niveau ou la bas niveau, la fonction \verb|Run|
-doit être utilisée dans les test pour éviter d'appeler des fonctions à la main.
+fonction \verb|Run| qui utilise maintenant les fonctions liées au \verb|Connects|
+plutôt que d'appeler directement les fonctions \verb|Control|. À noter qu'ici,
+que ce soit pour la version haut niveau ou bas niveau, la fonction \verb|Run|
+doit être utilisée dans les tests pour éviter d'appeler des fonctions à la main.
 Au niveau des tests, on ne peut plus utiliser les fonctions comme on le faisait
 sur la branche principale, comme dans la simulation, il faut déclencher les
 \verb|Connects|. Un gros avantage de notre simulation est le fait que l'on peut
 entièrement contrôler l'horloge, on peut donc facilement déclencher les
-évènement de \verb|timeout| car la plupart des fonctions sont appelée au bout
+évènements de \verb|timeout| car la plupart des fonctions sont appelée au bout
 d'une certaine période de temps. La méthode la plus simple est d'utiliser la
 fonction \verb|TESTTIMER_Wait| pour simuler une attente et ensuite d'appeler la
 fonction \verb|TIMER_Task|.
 
 À noter qu'ici, il y a eu beaucoup moins d'éléments simulés que sur la branche
 principale. En effet, cette branche est secondaire et elle n'est pas
-nécessairement à jour car tous les composants ne sont pas utilisés. De ce fait,
+nécessairement à jour, car tous les composants ne sont pas utilisés. De ce fait,
 la plupart des composants Cctalk et MDB qui étaient présents sur l'autre branche
 ne l'étaient pas ici.
 
@@ -2388,12 +2387,12 @@ CKWash avant de conclure la partie sur la branche secondaire.
 
 Comme dit dans la Section \ref{cdbs}, les historiques sont stockés dans la
 mémoire de la carte. Étant donné que le stockage n'a pas nécessité de
-modifications sur ce branche, toute la partie concernant les CDBs était presque
+modifications sur cette branche, toute la partie concernant les CDBs était presque
 fonctionnelle. Ici, des modifications ont été apportées au niveau du code de
 l'entreprise ainsi qu'au niveau des tests. En effet, la branche n'étant pas à
 jours, des éléments qui étaient utilisés sur la branche principale n'existaient
-pas, ils ont donc étaient supprimé. Dans le code de l'entreprise, il manquait
-aussi des conditions préprocesseurs qui étaient utilisaient sur l'autre branche
+pas, ils ont donc étaient supprimés. Dans le code de l'entreprise, il manquait
+aussi des conditions préprocesseurs qui étaient utilisées sur l'autre branche
 pour compiler, ces dernières ont donc été rajoutées.
 \\~\\
 
@@ -2412,56 +2411,56 @@ C++. L'objectif est de pouvoir intégrer l'outil dans le code commun Qt.
 \label{nouvframe}
 
 Au début du projet, le même framework devait être utilisé pour la partie C et la
-partie C++, cependant, des tests avec au autre framework avaient déjà été mis en
+partie C++, cependant, des tests avec un autre framework avaient déjà été mis en
 place sur un projet par un autre stagiaire. Le nouveau framework est Qt Test
-(bibliothèque \verb|QTest|) et ce dernier à été pensé spécialement pour Qt.
+(bibliothèque \verb|QTest|) et ce dernier a été pensé spécialement pour Qt.
 
-Qt Test est un framework très intéressant lorsque l'on travail avec Qt car il
-est compatible avec toute les fonctionnalités de la bibliothèque. Par exemple,
+Qt Test est un framework très intéressant lorsque l'on travaille avec Qt car il
+est compatible avec toutes les fonctionnalités de la bibliothèque. Par exemple,
 comme nous l'avons déjà mentionné, Qt fonctionne avec un système de signaux,
 qui, à leur émission permettent de déclencher des appels de fonctions. Le
 nouveau framework propose une classe permettant de détecter les signaux émit, ce
 qui permet de tester les signaux. En plus de cela, le framework est aussi pensé
-pour fonctionner avec du C++, par exemple, les tests sont écrit avec des
+pour fonctionner avec du C++, par exemple, les tests sont écrits avec des
 classes. Cela va permettre d'avoir du code plus homogène dans la partie Qt car
 le code utilise beaucoup les classes C++.
 
 Par contre, Qt Test possède tout de même des défauts. Le premier est spécifique
 à Qt et il vient du fait que les classes de tests sont des \verb|QObject|, qui
-utilise des fonctionnalités tels que les signaux et les \gls{slots}. Pour
+utilise des fonctionnalités telles que les signaux et les \gls{slots}. Pour
 pouvoir mettre en place ces fonctionnalités, Qt utilise le MOC (Meta Object
 Compiler) qui génère du code. Les fichiers générés automatiquement pour les
-tests ne sont pas gérés par CMake, il faut donc inclure les fichier \verb|moc|
+tests ne sont pas gérés par CMake, il faut donc inclure les fichiers \verb|moc|
 dans tous les fichiers de tests. De plus, le framework Qt Test reste
 relativement simple et il ne propose pas beaucoup de fonctionnalités pour
 organiser les tests. Par exemple, le framework propose une macro qui permet la
 génération automatique d'une fonction \verb|main|. Le problème est que comme il
-n'y a pas de système de suites de tests, on ne peut pas utiliser cette macro car
+n'y a pas de système de suites de tests, on ne peut pas utiliser cette macro, car
 elle oblige la compilation d'un exécutable par test ce qui peut être pénible à
-gérer étant donner que le projet commun est très gros est qu'il y a beaucoup de
-fichiers à tester. Pour palier à ce problème, un système de suite de test à du
+gérer étant donné que le projet commun est très gros est qu'il y a beaucoup de
+fichiers à tester. Pour palier à ce problème, un système de suite de test à dû
 être créé.
 
 \subsubsection*{Système de suites de tests}
 
 Comme nous l'avons vu dans la Section \ref{nouvframe}, étant donné la simplicité
-du framework Qt Test, un système de suite de test a du être implémenté. Ce
+du framework Qt Test, un système de suite de test a dû être implémenté. Ce
 système permet d'enregistrer et de lancer plusieurs classes de test. Il vient
 avec une macro qui permet de générer la fonction \verb|main| pour la suite.
 Cette macro devait s'utiliser comme celle fournie par le framework, sauf que
-cette dernière devait accepter plusieurs classe au lieu d'une. Pour ce faire, on
+cette dernière devait accepter plusieurs classes au lieu d'une. Pour ce faire, on
 utilise une macro variadique qui accepte une infinité d'arguments. Dans la
 macro, on peut utiliser \verb|VA_ARGS| pour accéder aux arguments.
 
-Le premier défi était que s'il on souhaitait utiliser cette macro comme celle du
+Le premier défi était que si on souhaitait utiliser cette macro comme celle du
 framework, cette dernière ne devait prendre en arguments que les noms des
 classes et non des instances de ces classes. Il fallait donc un moyen
 d'instancier les classes dans la macro. Le second défi était le fait qu'il n'y a
 aucun moyen simple de séparer les arguments dans \verb|VA_ARGS|. Pour réussir à
-créer cette macro, il a fallut utiliser un \textit{template variadique}.
+créer cette macro, il a fallu utiliser un \textit{template variadique}.
 
 Sur le Listing \ref{lst:macrovarmain}, on peut voir le code de la macro
-permettant de générer la fonction principale pour une suite. Cette dernière créé
+permettant de générer la fonction principale pour une suite. Cette dernière créée
 une suite nommée \verb|LocalSuite| et fait appel à la fonction \verb|AddAllTest|
 pour ajouter tous les tests passé en paramètre via \verb|VA_ARGS| à la suite.
 Ensuite, on lance tous les tests avec la méthode Run.
@@ -2483,7 +2482,7 @@ Ensuite, on lance tous les tests avec la méthode Run.
 
 La fonction template permettant d'instancier les suites est disponible sur le
 Listing \ref{lst:templateinst}. Ce template utilise \verb|sizeof...| pour savoir
-s'il reste des élément à instancier (si TS est vide ou non). À noter qu'ici, il
+s'il reste des éléments à instancier (si TS est vide ou non). À noter qu'ici, il
 est obligatoire de fournir une valeur par défaut pour le type \verb|T|, étant
 donné que tous les tests hérite de la classe \verb|QObject|, c'est elle qui a
 été choisie.
@@ -2503,35 +2502,35 @@ void AddAllTest(TEST_SUITE& Suite)
 \label{lst:templateinst}
 \end{listing}
 
-Cet élément du code n'est pas le plus important mais son fonctionnement est
-intéressant. Il présente deux élément assez peut utilisés dans le code qui on
+Cet élément du code n'est pas le plus important, mais son fonctionnement est
+intéressant. Il présente deux éléments assez peu utilisés dans le code qui on
 permet de créer une macro simple à utiliser qui se comporte comme celle du
 framework mais qui permet en plus d'exécuter plusieurs tests en même temps. \\
 
-Maintenant que nous avons traiter la mise en place du nouveau framework de test,
+Maintenant que nous avons traité la mise en place du nouveau framework de test,
 nous allons traiter la mise en place de l'outil de test dans le code (simulation
-et tests simples). Nous suivront le même ordre que dans les parties précédentes.
+et tests simples). Nous suivrons le même ordre que dans les parties précédentes.
 
 \subsection{Le stockage}
 
 Une partie qui avait pris beaucoup de temps côté C était le stockage. Pour
-rappel, l'implémentation du stockage avait nécessiter la simulation des
-périphériques de stockage ainsi que des deux interface utilisée pour interagir
-avec ces composant. Pour la partie C++, il n'y a pas eu besoin de simulation car
-le stockage se fait à l'aide de simples fichier. En effet, les cartes
+rappel, l'implémentation du stockage avait nécessité la simulation des
+périphériques de stockage ainsi que des deux interfaces utilisée pour interagir
+avec ces composants. Pour la partie C++, il n'y a pas eu besoin de simulation car
+le stockage se fait à l'aide de simples fichiers. En effet, les cartes
 électroniques utilisées avec Qt sont beaucoup plus haut niveau et intègrent un
 système d'exploitation (Linux) capable de gérer un système de fichier. Ici, on
 utilise l'objet \verb|QFile| pour écrire dans des fichiers au format binaire.
-Dans les tests, il suffit simplement d'aller lire dans les fichiers pour
-vérifier si les données sont bien stockées.
+Dans les tests, il suffit d'aller lire dans les fichiers pour vérifier si les données
+sont bien stockées.
 
 À noter qu'il peut être intéressant de ne pas utiliser l'objet \verb|QFile|
 dans les tests mais de plutôt opter pour les outils de la bibliothèque
 standard. Cela a pour objectif de détecter les mauvaises manipulations des
 outils de Qt. En effet, comme c'est le développeur du code qui écrit les tests,
-si ce dernier manipule mal les outils de Qt, il y a de fortes chance pour que ça
+si ce dernier manipule mal les outils de Qt, il y a de fortes chances pour que ça
 soit aussi le cas dans les tests. Pour éviter ce problème, on ne réutilise pas
-les même outils dans le code et dans les tests. De plus, cela pourra permettre
+les mêmes outils dans le code et dans les tests. De plus, cela pourra permettre
 la détection de problème avec Qt si jamais il y en a.\\
 
 Pour la partie Qt, les tests sur le stockage n'ont donc pas nécessiter la mise
@@ -2541,7 +2540,7 @@ verrons que cela n'a pas été le cas pour les protocoles monétique.
 \subsection{Les protocoles monétiques}
 
 Comme pour le C, la partie la plus chronophage a concerné le Cctalk et le MDB.
-Cette fois ci, il a fallut mettre en place de la simulation et cette dernière
+Cette fois-ci, il a fallu mettre en place de la simulation et cette dernière
 suis le même principe que celle du C sauf qu'ici, on utilise des objets et le
 polimorphisme pour simplifier l'implémentation.
 
@@ -2554,20 +2553,20 @@ TODO: diagrammes de classes
 
 \subsection{La mise en place de la pipeline}
 
-La configuration de la pipeline pour les commun Qt suis le même principe que
+La configuration de la pipeline pour les communs Qt suis le même principe que
 celle du C. On a deux jobs, le premier permet de compiler les tests et le second
-les exécutes. Les tests sont toujours compilés avec CMake (qui utilise g++ au
+les exécute. Les tests sont toujours compilés avec CMake (qui utilise g++ au
 lieu de gcc) et exécutés avec CTest.\\
 
-Bien que les deux configuration soient similaires, il y a tout de même des
+Bien que les deux configurations soient similaires, il y a tout de même des
 différences. Tout d'abord, ici, on doit compiler du code fonctionnant avec la
 bibliothèque Qt, cela nécessite donc de l'installer. Le problème est que Qt est
 une bibliothèque assez lourde, comportant un grand nombre de paquets. Le fait de
-devoir télécharger toutes les dépendance au début de chaque job comme on le
+devoir télécharger toutes les dépendances au début de chaque job comme on le
 faisait pour le C prend beaucoup plus de temps et consomme aussi beaucoup plus
-de bande passante. Pour économiser les ressources il est préférable d'utiliser
+de bande passante. Pour économiser les ressources, il est préférable d'utiliser
 une image docker déjà configurée et de lancer la pipeline dedans. Ce type
-d'images existes et certaines sont disponibles sur docker hub mais elles ne sont
+d'images existe et certaines sont disponibles sur docker hub, mais elles ne sont
 généralement pas complètes ou pas à jours. La solution déjà employée sur une
 autre pipeline Qt était un projet Github \verb|darkmattercoder/qt-build|. Le
 problème est que ce dépôt n'est plus maintenu et il n'est pas souhaitable
@@ -2585,34 +2584,34 @@ la pipeline commence par compiler le projet puis elle sauvegarde les fichiers
 nécessaires aux tests dans un artefact qui est réutilisé dans les étapes
 suivantes. Le problème vient du fait que pour calculer la couverture des tests,
 il faut sauvegarder tout le code généré par gcc à la compilation. Pour pouvoir
-stocker toutes ces données, il aurait fallut augmenter la taille des artefacts,
+stocker toutes ces données, il aurait fallu augmenter la taille des artefacts,
 cependant cela rend leur gestion plus complexe. En effet, il faut veiller à ne
-pas accumuler trop d'artefacts pour ne pas surcharger le stockage du serveur
+pas accumuler trop d'artefacts pour ne pas surcharger le stockage du serveur,
 mais il faut les conserver suffisamment longtemps pour que la pipeline
 s'exécute. Sachant que la société commence à avoir des problèmes de place au
 niveau du stockage serveur et que les informations de couverture des tests ne
 serons certainement pas utilisées, cette fonctionnalité a été enlevée. Il faut
-rappeler que ce n'était pas un élément demandé dans les spécification de l'outil
-à la base et que cette fonctionnalité avait été ajouté côté C car le projet
+rappeler que ce n'était pas un élément demandé dans les spécifications de l'outil
+à la base et que cette fonctionnalité avait été ajouté côté C, car le projet
 avançait vite.
 
 Enfin, un nouvel élément de test a été ajouté à la pipeline. En effet,
 contrairement à ce qui est fait en C, le code Qt utilise énormément l'allocation
-dynamique. Lors de la mise en place de l'outil de test, de nombreuse erreurs
-valgrind ont était trouvées, il a donc était jugé intéressant d'utiliser
+dynamique. Lors de la mise en place de l'outil de test, de nombreuses erreurs
+valgrind ont été trouvées, il a donc était jugé intéressant d'utiliser
 l'option \textbf{memcheck} que CTest dans la pipeline. Cette dernière possède
-donc maintenant trois étapes, un étape de compilation, une étape d'exécution des
-tests et enfin un étape de validation valgrind. Cette dernière étape ne vérifie
-pas uniquement les fuites mémoires car valgrind permet aussi de détecter les
+donc maintenant trois étapes, une étape de compilation, une étape d'exécution des
+tests et enfin une étape de validation valgrind. Cette dernière étape ne vérifie
+pas uniquement les fuites mémoires, car valgrind permet aussi de détecter les
 usages de variables non initialisées. Cela est très pratique en C++ étant donné
-la complexité de l'initialisation des classe, surtout lorsqu'il y a beaucoup de
+la complexité de l'initialisation des classes, surtout lorsqu'il y a beaucoup de
 variables membres qui sont souvent oubliées dans les listes d'initialisation (et
-qui sont donc initialisée par défaut et non à zéro). Par contre, le fait
+qui sont donc initialisées par défaut et non à zéro). Par contre, le fait
 d'utiliser Qt a nécessité la mise en place de fichier de suppression pour
-supprimer certaines erreur. En effet, valgrind détecte des fuites de mémoires
-dans la bibliothèque. C'est dernière sont obligatoire car elle sont dues au fait
+supprimer certaines erreurs. En effet, valgrind détecte des fuites de mémoires
+dans la bibliothèque. Ces dernières sont obligatoires, car elles sont dues au fait
 que le système d'exploitation ne laisse pas les bibliothèques graphiques libérer
-certaines ressources elles mêmes.
+certaines ressources elles-mêmes.
 %}}}
 \section{Déroulement du projet}%{{{
 
@@ -2623,29 +2622,29 @@ comparaison entre le planning prévisionnel et le planning réel.
 \subsection{Les outils utilisés}%{{{
 
 Dans cette partie, nous allons faire une revue des outils utilisés pendant le
-stage. Les outils les plus utilisés ne seront pas détaillé, par contre, cette
+stage. Les outils les plus utilisés ne seront pas détaillés, par contre, cette
 partie a pour but de mettre en lumière les avantages qu'il y a à connaitre et
 configurer ses outils de travail.
 
 \subsubsection{Gestion de version}%{{{
 
 Pour la réalisation du projet, le gestionnaire de version utilisé été Git. À
-noter que la société n'utilise Git que depuis un ans, le gestionnaire de version
+noter que la société n'utilise Git que depuis un an, le gestionnaire de version
 qu'ils utilisaient avant été SVN.
 
-L'avantage de Git est qu'il est assez simple d'utilisation mais propose tout de
+L'avantage de Git est qu'il est assez simple d'utilisation, mais propose tout de
 même des fonctionnalités très complexes. De plus, par rapport à SVN, Git est
 décentralisé et permet de faire des branches ce qui a été très utile pour éviter
-que le projet de tests pose problème.
+que le projet de tests pose un problème.
 
-La philosophie de travail utilisé a consisté en une version réadapté de Gitflow.
+La philosophie de travail utilisé a consisté en une version réadaptée de Gitflow.
 Le principe de Gitflow est d'avoir une branche \verb|master| qui va
 contenir les versions du projet. Ensuite, il y a une branche \verb|dev| qui
 est utilisée pendant le développement. La branche \verb|dev| contient du
-code fonctionnel mais qui n'est pas encore déployé sur \verb|master|. Entre
+code fonctionnel, mais qui n'est pas encore déployé sur \verb|master|. Entre
 les branches \verb|master| et \verb|dev| il doit normalement y avoir
-une branche \verb|release| qui contient des prés-versions mais elle n'a pas
-été utile ici. Enfin, à partir de la branche \verb|dev|, on créer des
+une branche \verb|release| qui contient des prés versions, mais elle n'a pas
+été utile ici. Enfin, à partir de la branche \verb|dev|, on crée des
 branches de \verb|features| sur lesquelles on développe les nouvelles
 fonctionnalités. Étant donné que le travail se faisait seul, le fait d'utiliser
 Gitflow avec autant de branche n'était pas vraiment nécessaire. Cependant, cette
@@ -2673,8 +2672,8 @@ suivre l'exécution du code, d'évaluer des expressions, d'interagir avec le cod
 en modifiant les valeurs des variables de façon interactive pendant une session
 ou encore d'inspecter le contenu des registres (utilisés dans le code assembleur
 généré par le compilateur). Cet outil propose aussi des fonctionnalités très
-avancées qui n'ont pas été utilisées durant le stage mais qui sont tout de même
-intéressantes à noter. GDB permet la création de checkpoints (commande
+avancées qui n'ont pas été utilisées durant le stage, mais qui sont tout de même
+intéressantes à noter. GDB permet la création de points de contrôle (commande
 \verb|checkpoint|) qui permettent la sauvegarde de l'état du code pendant
 l'exécution pour pouvoir recharger cet état sans relancer tout le programme. Il
 permet aussi d'enregistrer une suite d'instructions pour pouvoir faire de
@@ -2694,17 +2693,17 @@ GDB a permis de gagner énormément de temps pendant le développement de l'outi
 de test et c'est malheureusement un outil assez sous-estimé à l'école. Certains
 développeurs comme John Carmack considèrent l'utilisation d'un débogueur
 indispensable pour comprendre le fonctionnement d'un programme. GDB n'est pas
-simple d'utilisation mais c'est un outil léger puissant et flexible qu'il est
+simple d'utilisation, mais c'est un outil léger puissant et flexible qu'il est
 très intéressant de connaitre.
 %}}}
 \subsubsection{Environnement de Développement}%{{{
 
 Comme expliqué dans la section \ref{analproblem}, l'IDE (MPLAB) des développeurs
 de la société n'a pas été utilisé pour développer l'outil de test en C. Pour la
-partie Qt, QtCreator n'a pas été utilisé non plus car les projet ne sont pas
-fait pour être compilé avec gcc. Pour utiliser cet outil, il aurait fallut tout
+partie Qt, QtCreator n'a pas été utilisé non plus, car les projets ne sont pas
+fait pour être compilé avec gcc. Pour utiliser cet outil, il aurait fallu tout
 reconfigurer ce qui n'était pas souhaitable étant donné le fait que cela aurait
-complexifier la création de l'outil de test. L'environnement de développement
+complexifié la création de l'outil de test. L'environnement de développement
 utilisé durant le stage était donc \textit{neovim}.
 
 Neovim est un éditeur de texte puissant et surtout configurable. Par défaut il
@@ -2714,17 +2713,17 @@ gls{lsp} qui permet à l'éditeur de se connecter à un serveur qui analyse le c
 en temps réel. Le serveur utilisé pour le C et le C++ se nomme \textbf{clangd},
 il permet de détecter les erreurs de compilations, d'analyser les symboles
 (variables, fonctions, \dots) pour faire de la recherche ou du renommage. Il
-fourni aussi une complétion de texte intelligente. Cet outil permet à n'importe
+fournit aussi une complétion de texte intelligente. Cet outil permet à n'importe
 quel éditeur supportant le \gls{lsp}, d'être utilisé comme un IDE. La
 configuration utilisée durant le stage possède beaucoup d'autres fonctionnalités
 comme des outils de recherche de fichier ou de texte, une intégration de git,
 \dots
 
-Cet outil est assez peu apprécié par beaucoup de développeurs car il est très
+Cet outil est assez peu apprécié par beaucoup de développeurs, car il est très
 difficile à prendre en main étant donné qu'il n'a presque pas d'éléments
-d'interface et que tout doit se faire au clavier. Cependant c'est un éditeur
+d'interface et que tout doit se faire au clavier. Cependant, c'est un éditeur
 très puissant qui, une fois maitrisé, permet de faire beaucoup d'opérations
-rapidement tout en minimisant les mouvement de l'utilisateur. En effet, il
+rapidement tout en minimisant les mouvements de l'utilisateur. En effet, il
 permet de tout faire en utilisant uniquement les touches les plus accessibles du
 clavier ce qui évite de devoir déplacer ses mains sur la souris ou les touches
 directionnelles. C'est donc un outil confortable qui a grandement faciliter le
@@ -2733,40 +2732,40 @@ développement de l'outil de test.
 %}}}
 \subsection{Rédaction de la documentation}%{{{
 
-Un élément important de ce stage à été la rédaction de la documentation. En
+Un élément important de ce stage a été la rédaction de la documentation. En
 effet, l'objectif final étant de créer un outil qui soit utilisable et
 modifiable par les développeurs de la société, il était important de détailler
 toute l'implémentation et l'utilisation de l'outil. L'objectif de la
 documentation est donc de permettre d'une part l'utilisation de l'outil, ce qui
 comprend la rédaction de tests et l'utilisation de la simulation. D'autre part,
-elle doit permettre au développeurs de comprendre comment la simulation
+elle doit permettre aux développeurs de comprendre comment la simulation
 fonctionne pour pouvoir simuler de nouveaux composants facilement ou modifier
-les composant existants si besoin.
+les composants existant si besoin.
 
 La stratégie employée pour produire la documentation a été de rédiger les
 explications tout au long du développement. Cela a pour avantage de permettre
-une grande précision dans les explication car on se souvient plus aisément de
-tous les détaille lorsque l'on vient de produire une solution. Le défaut par
-contre est que le code bouge beaucoup et des éléments sont souvent modifiés voir
-même complètement reimplémentés comme cela a été le cas lors de l'abandon des
+une grande précision dans les explications, car on se souvient plus aisément de
+tous les détaille lorsque l'on vient de produire une solution. Le défaut, par
+contre, est que le code bouge beaucoup et des éléments sont souvent modifiés, voire
+même complètement réimplémentés comme cela a été le cas lors de l'abandon des
 threads en début de projet. Cela oblige à constamment réécrire des éléments de
 documentation et peut faire perdre beaucoup de temps.
 
-Au final, la documentation de l'outil à pris deux formes. Tout d'abord, il y a
-une documentation complètement rédigée qui apparait dans le wiki du projet.
+Au final, la documentation de l'outil a pris deux formes. Tout d'abord, il y a
+une documentation entièrement rédigée qui apparait dans le wiki du projet.
 Cette documentation décrit toutes les méthodes employées pour mettre en place
-l'outil de test (CMake, modification des fichiers, éléments simulé,\dots). Le
-wiki possède aussi une partie composées de tutoriels décrivant toutes les étapes
+l'outil de test (CMake, modification des fichiers, éléments simulés,\dots). Le
+wiki possède aussi une partie composée de tutoriels décrivant toutes les étapes
 à réaliser pour mettre en place un nouveau test ou encore simuler un nouveau
 composant. Ensuite, la documentation apparait aussi dans le code sous forme de
 commentaires au format \textbf{doxygen}. Le principe est que chaque fonction
 possède un commentaire décrivant son fonctionnement ainsi que ses paramètres et
-la valeur qu'elle renvoi. Les structures ainsi que les éléments qui les compose
-sont aussi commentés. Les commentaires dans le code sont très important,
+la valeur qu'elle renvoie. Les structures ainsi que les éléments qui les compose
+sont aussi commentées. Les commentaires dans le code sont très important,
 cependant il ne faut pas trop en abuser pour ne pas le surcharger. Chaque
-fonction possède un commentaire générale décrivant son utilité mais il n'y a que
-très peu de commentaire à l'intérieur du code car il doit être compréhensible de
-lui même. Pour ce faire il y a plusieurs méthode, tout d'abord il faut bien
+fonction possède un commentaire général décrivant son utilité, mais il n'y a que
+très peu de commentaire à l'intérieur du code, car il doit être compréhensible de
+lui-même. Pour ce faire, il y a plusieurs méthodes, tout d'abord il faut bien
 nommer les variables est les fonctions, ensuite, on peut utiliser des variables
 intermédiaires pour nommer les conditions par exemple.
 
@@ -2779,9 +2778,9 @@ suivante, nous allons détailler la planification des tâches.
 \subsection{Planification des tâches}%{{{
 
 Dans cette section, nous comparer la planification du projet réalisée au départ
-avec le déroulement réèl du projet à l'aide de deux diagrammes de Gantt.
+avec le déroulement réel du projet à l'aide de deux diagrammes de Gantt.
 
-Les tâches prévues lors du stage sont fisibles sur la Figure
+Les tâches prévues lors du stage sont visibles sur la Figure
 \ref{fig:expectedgantt}. Au départ, il était prévu de faire le choix du
 framework de tests puis de faire une revue des éléments du code à tester.
 Ensuite, il était prévu de faire des tests sur des fichiers simples pour
@@ -2802,10 +2801,10 @@ parallèle tout au long du projet.
 \end{figure}
 %}}}
 
-L'organisation de ces tâche a été faite sans connaissance de la complexité du
-code. Certains des composants de l'outil final ont été refait plusieurs fois car
-les résultats ne satisfaisaient pas les critère nécessaire à leur validation.
-C'est le cas du stockage où au départ il avait été fait le choix d'utiliser des
+L'organisation de ces tâches a été faite sans connaissance de la complexité du
+code. Certains des composants de l'outil final ont été refaits plusieurs fois, car
+les résultats ne satisfaisaient pas les critères nécessaire à leur validation.
+C'est le cas du stockage où au départ, il avait été fait le choix d'utiliser des
 threads, un choix qui a été remis en cause par la suite. Un autre exemple serait
 celui du Cctalk dont certaines parties ont été réécrites suite à
 l'implémentation de l'émulation des composants MDB pour ajouter plus de
@@ -2833,7 +2832,7 @@ NOTE: diagramme actuel
 \part{Résultats et discussions}
 
 Dans cette dernière partie, nous commencerons par présenter l'outil final dans
-toutes ces version (C et C++) puis nous discuterons des perspectives du projet.
+toutes ces versions (C et C++) puis nous discuterons des perspectives du projet.
 Enfin, avant de conclure, nous parlerons brièvement de l'inclusion du projet
 dans le développement durable.
 
@@ -2842,7 +2841,7 @@ dans le développement durable.
 Cette section va présenter le résultat final, tout d'abord sur la partie C puis
 sur la partie Qt.\\
 
-Concernant la partie C, l'outil final à été complètement intégré au code commun
+Concernant la partie C, l'outil final a été complètement intégré au code commun
 sur les deux branches. Tout d'abord, l'outil met en place un framework de test
 complet et simple d'utilisation: \verb|Criterion|. L'utilisation du framework a
 été détaillée dans la documentation rédigée durant le stage pour compléter celle
@@ -2852,26 +2851,26 @@ d'opérations sur les tests comme le calcule de la couverture du code (lancement
 automatique de \verb|gcov|). L'outil propose aussi un système permettant de
 simuler les interfaces des composants électroniques utilisés dans les projets de
 l'entreprise. Cela comprend les périphériques de stockage (registres, eeproms et
-flash) utilisés en I²C et en SPI mais aussi d'autre périphériques interfacés en
+flash) utilisés en I²C et en SPI mais aussi d'autres périphériques interfacés en
 Cctalk et en MDB qui sont des protocoles spécialisés dans la monétique. Pour
 chacun des composants, la documentation détaille la méthode employée pour la
-simulation de sorte à ce que l'on puisse facilement simuler de nouveaux
-composants. La simulation des protocoles monétiques proposes deux niveaux de
-simulation pour les tests. Une version où des fichiers ont été modifiés pour
+simulation de sorte que l'on puisse facilement simuler de nouveaux
+composants. La simulation des protocoles monétiques propose deux niveaux de
+simulation pour les tests. Une version dans laquelle des fichiers ont été modifiés pour
 isoler les éléments testés du reste du code et une autre version qui passe par
 toute la chaine d'instructions jusqu'aux fichiers du compilateur. Cela permet de
-faire à la fois des tests unitaires mais aussi des tests d'intégration où l'on
-test tout le code. La méthode consistant à créer des versions modifiées des
+faire à la fois des tests unitaires, mais aussi des tests d'intégration où l'on
+teste tout le code. La méthode consistant à créer des versions modifiées des
 fichiers a beaucoup été utilisée pour rendre les tests plus simples ou pour
 changer du code qui ne pouvait pas être compilé. Au final, il est bien possible
 d'écrire des tests où le code testé interagir avec les composants simulés.
 Depuis ces tests, on peut accéder aux données que les composants reçoivent pour
 vérifier que cela correspond à ce qui était attendu. Enfin, la pipeline
 permettant d'automatiser les tests sur Gitlab a bien été mise en place et permet
-des opérations qui n'était pas demandés à la base comme le calcule de la
+des opérations qui n'étaient pas demandées à la base comme le calcule de la
 couverture du code.
 
-La partie C résout aussi un problème du à la programmation embarquée côté C. En
+La partie C résout aussi un problème dû à la programmation embarquée côté C. En
 effet, l'optimisation du code pour la carte électronique rendait impossible
 l'utilisation d'un débogueur. L'outil de test permet d'exécuter une partie du
 code sur PC sans optimisation. De ce fait, l'utilisation d'un déboguer est
@@ -2880,28 +2879,28 @@ automatiquement le bon test dans \verb|gdbgui|.
 
 L'outil de test a déjà en partie prouvé son utilité en permettant la résolution
 de beaucoup de bugs suite à la fusion de la branche principale dans la branche
-événementiel. En effet, la branche principale avait plusieurs mois d'avances sur
-la branche secondaire et beaucoup de changements avaient été fait. La fusion des
-deux branche a nécessité près de deux semaines de travail et les tests ont
+de l'événementiel. En effet, la branche principale avait plusieurs mois d'avances sur
+la branche secondaire et beaucoup de changements avaient été faits. La fusion des
+deux branches a nécessité près de deux semaines de travail et les tests ont
 permis la détection de plusieurs problèmes.
 
 Pour la partie Qt une solution similaire à celle du C a aussi été mise en place.
 Les procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
 programmation orientée objet a été utilisée pour simplifier le code. La
 technique du mocking consistant en la création de classes intermédiaires donnant
-accès à certains élément protégés des classes a été utilisée pour permettre de
+accès à certains éléments protégés des classes a été utilisée pour permettre de
 rendre les tests possibles. Ici, tout n'a pas été fait comme prévu puisqu'à
 l'origine, le framework utilisé côté devait aussi servir côté C++, cependant, le
 framework QTest s'est avéré être plus adapté. Des modifications sur
 l'utilisation du framework ont tout de même été apportées pour permettre la mise
 en place de suites de tests. Enfin, la pipeline mise en place est plus complexe
-que celle du C car ici, un nouveau test à été ajouté. En effet, les développeurs
+que celle du C, car ici, un nouveau test a été ajouté. En effet, les développeurs
 avaient des difficultés à utiliser valgrind sur Windows, pour palier à ce
 problème, un test memcheck a été mis en place au niveau de la pipeline. Lorsque
 ce test échoue, on peut récupérer les logs en téléchargeant les artefacts.\\
 
-Le cahier des charges est donc remplit que ce soit pour la partie C ou la partie
-C++. Dans la section suivante, nous allons discuter des défaut de l'outil et des
+Le cahier des charges est donc rempli que ce soit pour la partie C ou la partie
+C++. Dans la section suivante, nous allons discuter des défauts de l'outil et des
 perspectives d'évolution.
 
 \clearpage
@@ -2909,10 +2908,10 @@ perspectives d'évolution.
 \section{Discussion et perspectives}
 
 Regard sur ce qui a été fait et comment cela a été fait (parler de l'échec
-des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou a
+des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou à
 améliorer.
 
-TODO: parler du fait qu'on est obliger d'utiliser des wait en Qt
+TODO: parler du fait qu'on est obligé d'utiliser des wait en Qt
 TODO: les tests ne sont pas faciles à écrire (machines à états)
 
 \clearpage
@@ -2926,11 +2925,11 @@ Tout d'abord, l'objectif du stage était la mise en place d'un outil permettant
 l'automatisation de tests sur du code s'exécutant sur des cartes électroniques.
 Les cartes électroniques sont ensuite utilisées sur des bornes installées dans
 divers endroits, en France comme à l'étranger. Les problèmes sur ce genre de
-dispositifs peuvent avoir un impacte non négligeable sur l'environnement. En
+dispositifs peuvent avoir un impact non négligeable sur l'environnement. En
 effet, lorsqu'il y a un problème au niveau du code, cela nécessite de mettre
 les cartes à jour. Dans le meilleur des cas, cela est possible en utilisant le
 système de mise à jour automatique créé par la société. Cependant, cela va
-consommer beaucoup de bande passante car il va falloir envoyer via internet un
+consommer beaucoup de bande passante, car il va falloir envoyer via internet un
 nouveau binaire ou une nouvelle configuration les cartes. Dans le pire des cas,
 lorsque la borne est trop vielle ou qu'elle n'est pas connectée à internet, il
 faut faire intervenir un technicien qui devra se déplacer en voiture pour mettre
@@ -2940,35 +2939,35 @@ suite et donc l'obligation de mettre à jour les bornes.
 
 Ensuite, l'outil créé ne permet pas seulement de faire des tests, il permet
 aussi de faire des statistiques au niveau du code. Par exemple, l'analyse de la
-couverture des tests peut non seulement donner une idée de la qualité des tests
-mais aussi sur la qualité du code. Si on cherche à faire des tests les plus
-complets possibles mais que le pourcentage de couverture restes bas, cela peut
+couverture des tests peut non seulement donner une idée de la qualité des tests,
+mais aussi sur la qualité du code. Si l'on cherche à faire des tests les plus
+complets possibles, mais que le pourcentage de couverture restes bas, cela peut
 être indicateur du fait qu'il y a du code inutile. Le fait d'enlever les
 éléments inutiles dans un programme permet d'un part de gagner en simplicité et
 donc de limiter les risques d'erreurs. D'autre part, cela aide à limiter la
-taille des exécutable et donc à consommer moins de mémoire. Étant donné que les
+taille des exécutables et donc à consommer moins de mémoire. Étant donné que les
 programme sont de plus en plus consommateur de mémoire, le fait d'optimiser
 cette consommation peut permettre d'exécuter le code sur des cartes plus
-ancienne et d'économiser la mémoire sur les nouvelles cartes augmentant ainsi
+anciennes et d'économiser la mémoire sur les nouvelles cartes augmentant ainsi
 leurs durées de vie. Étant donné le fait que la fabrication de cartes
 électroniques coûte cher en métaux rares, le fait de pouvoir utiliser
 d'anciennes cartes permet d'économiser les ressources naturelles. En plus de
 cela, il reste peu d'entreprise qui utilisent encore des cartes électroniques à
 cause de la complexité du code. Maintenant ce sont les PC qui sont privilégiés
-même dans l'embarque alors que ces derniers sont moins fiables et plus
+même dans l'embarqué alors que ces derniers sont moins fiables et plus
 consommateurs en énergie et en métaux rares. L'optimisation du code donc est
 cruciale pour pouvoir continuer à utiliser de simples cartes électroniques.
 
 Enfin, la mise en place de l'outil s'est aussi fait dans une démarche
 environnementale. Par exemple, lors de la mise en place de la pipeline des
-commun C++, il s'est avéré qu'il faillait télécharger et installer toutes les
+communs C++, il s'est avéré qu'il faillait télécharger et installer toutes les
 bibliothèques à chaque exécution. Cela n'était pas souhaitable étant donné la
 taille des paquets à installer, surtout lorsque l'on considère le fait que les
-pipeline peuvent être exécuté plusieurs dizaines de fois par jours. C'est pour
+pipelines peuvent être exécuté plusieurs dizaines de fois par jours. C'est pour
 cela que la création d'une image docker prés-configurée a été automatisée, de
-sorte à ce que l'on ait plus rien à télécharger au lancement de la pipeline des
+sorte que l'on n'ait plus rien à télécharger au lancement de la pipeline des
 communs. Cette image est compilée bien moins souvent et permet d'économiser du
-temps et de la bande passante au lancement de la pipeline Qt. Le temps gagner
+temps et de la bande passante au lancement de la pipeline Qt. Le temps gagné
 permet aussi de libérer les ressources du serveur Gitlab plus rapidement pour
 économiser de l'énergie.\\
 
