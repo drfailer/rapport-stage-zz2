@@ -1,0 +1,104 @@
+@startuml
+
+class SIMULATION {
+  +{static} m_EmulatedDevices: (CAEMULATED_DEVICE*)[EMULATED_DEVICED_MAX]
+  +{static} DeviceAdd(CAEMULATED_DEVICE*)
+  +{static} ResponseSend(CAEMULATED_DEVICE*)
+}
+
+SIMULATION --* CAEMULATED_DEVICE
+
+abstract class CAEMULATED_DEVICE {
+  #m_Addr: uchar
+  +{abstract} ResponseSend()
+  +AddrGet(): uchar
+}
+
+CAEMULATED_DEVICE <|-- CATESTCCTALK_DEVICE
+abstract class CATESTCCTALK_DEVICE {
+  -m_Responses: QList<TRESPONSE>
+  +ResponseIsConfigured(): boll
+  +ResponseAdd(uchar Header, QByteArray& Data)
+  +NextResponseHeaderGet(): uchar
+  +NextResponseDataGet(): QByteArray
+  +NextResponseSend()
+}
+
+CATESTCCTALK_DEVICE <|-- CCEMULATED_BILLVALIDATOR
+class CCEMULATED_BILLVALIDATOR {
+  +ResponseSend()
+}
+
+class CCTESTCMDCCTALK {
+  -{static} m_LastSentCmd: CCCTALK_COMMAND
+  +{static} CmdSet(CCCTALK_COMMAND *Cmd);
+  +{static} AddrSrcGet(): uchar
+  +{static} AddrDestGet(): uchar
+  +{static} HeaderGet(): uchar
+  +{static} ChkSumGet(): uchar
+  +{static} DataGet(): QByteArray&
+  +{static} CmdIsAvailable(): bool
+  +{static} CheckSum(): uchar
+  +{static} AckRespond()
+  +{static} DataRespond(uchar Header, QByteArray Data):
+  +{static} CmdEndEmit()
+}
+CCEMULATED_BILLVALIDATOR -- CCTESTCMDCCTALK : use >
+CCTESTAPICCTALK -- CCTESTCMDCCTALK : share cmd to >
+CCTESTAPICCTALK -- SIMULATION : communicate with >
+
+class CCTESTAPICCTALK {
+  +CmdSnd(CCCTALK_COMMAND *Cmd): bool
+}
+
+abstract class CATESTMDB_DEVICE {
+  -m_Responses: QList<TRESPONSE>
+  +ResponseIsConfigured(): boll
+  +ResponseAdd(uchar Cmd, QByteArray& Data)
+  +NextResponseHeaderGet(): uchar
+  +NextResponseDataGet(): QByteArray
+  +NextResponseSend()
+}
+
+CAEMULATED_DEVICE <|-- CATESTMDB_DEVICE
+CATESTMDB_DEVICE <|-- CCEMULATED_MDBCASHLESS
+CCEMULATED_MDBCASHLESS o-- CCSCENARIO_MDB
+
+class CCEMULATED_MDBCASHLESS {
+  +ResponseSend()
+  +ValidSingleVendPlay()
+}
+
+CCEMULATED_MDBCASHLESS -- CCTESTCMDMDB : use >
+CCTESTAPIMDB -- CCTESTCMDMDB : share cmd to >
+CCTESTAPIMDB -- SIMULATION : communicate with >
+
+class CCTESTCMDMDB {
+  -{static} m_LastSentCmd CMDBCOMMAND*
+  +{static} CmdSet(CMDBCOMMAND* Cmd)
+  +{static} DestAddrGet() uchar
+  +{static} CmdGet(): uchar
+  +{static} ChecksumGet(): uchar
+  +{static} DataGet(): QByteArray
+  +{static} CmdIsAvailable(): bool
+  +{static} CheckSum: uchar
+  +{static} AckRespond()
+  +{static} NakRespond()
+  +{static} RetRespond()
+  +{static} DataRespond(uchar Cmd, QByteArray& Data)
+  +{static} CmdEndEmit()
+}
+
+class CCTESTAPIMDB {
+  +CmdSnd(CMDBCOMMAND *Cmd)
+}
+
+class CCSCENARIO_MDB {
+  -m_Actions: QList<SCENARIO_ELEMENT>
+  +Clear();
+  +Add(uchar Addr, uchar SndCmd, QByteArray SndData, uchar RespCmd, QByteArray RespData);
+  +ScenarioIsRunning(): bool
+  +void SendNext()
+  +{static} Next()
+}
+@enduml
