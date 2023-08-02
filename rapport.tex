@@ -145,6 +145,14 @@
     description={(Language Server Protocol) standard de communication pour les
     outils de développements développé par Microsoft.}
 }
+
+\newglossaryentry{tap}
+{
+    name=TAP,
+    description={(Test Anything Protocol) protocol qui permet d'assuer la
+    communication entre des modules de test et les outils qui permettent
+    l'automatisation des tests.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -407,7 +415,7 @@ création d'un nouveau composant. Ici, le produit final n'est pas tellement le
 code en lui même mais plus la méthode employée pour mettre en place les tests.
 
 À noter que l'objectif du projet n'est pas d'écrire des tests, la philosophie de
-l'entreprise est que ce sont les développeurs qui tests leurs code. Des tests
+l'entreprise est que ce sont les développeurs qui testent leurs code. Des tests
 ont été écrits durant le stage mais ces derniers ont pour objectif de valider
 le bon fonctionnement des composants simulés et non celui du code de la société.
 Par contre, il faudra fournir une documentation complète décrivant comment
@@ -416,23 +424,24 @@ et décrire le fonctionnement des composants simulés ainsi que leur utilisation
 
 Enfin, concernant les limites du projet, l'objectif est de pouvoir tester les
 bibliothèques communes aux différents projets. Cela comprend le code commun de
-la partie C ainsi que le code commun de la partie Qt (C++). À noter qu'au niveau
-de la partie, il y aura deux branches à traiter, et ces dernière on un
-fonctionnement différent, il faudra donc adapter l'outil de tests pour les deux
+la partie C ainsi que le code commun de la partie Qt (C++). À noter que pour la
+partie C, il y aura deux branches à traiter, et ces dernières ont un
+fonctionnement différent, il faudra donc adapter l'outil de test pour les deux
 branches.
 
 Maintenant que nous avons décrit les bases du projet, intéressons nous un peut
 plus en détail au problème posé.
 %}}}
 \section{Analyse du problème}%{{{
+\label{analproblem}
 
 Le but du stage est de créer un outil permettant de faire de l'intégration
 continue. De ce fait, cela va nécessiter de trouver un framework de test complet
 mais aussi suffisamment simple d'utilisation. En effet, les développeurs de
-l'entreprise ne sont pas nécessairement formé à l'utilisation de ce types
+l'entreprise ne sont pas nécessairement formés à l'utilisation de ce types
 d'outils. Concernant le framework, il faudra aussi que ce dernier soit simple à
 mettre en place dans une pipeline. Cela signifie que les frameworks disponibles
-dans les bases des gestionnaires de paquets seront privilégié.
+dans les bases des gestionnaires de paquets seront privilégiés.
 
 Comme mentionné dans la partie précédente, l'outil sera utilisé pour tester du
 code normalement exécuté sur du matériel embarqué, il faudra donc un moyen de
@@ -445,16 +454,16 @@ modifications ont été apportées dessus. De plus, les composants électronique
 sont interfacés avec différents protocoles. Il faudra donc comprendre le
 fonctionnent de ces protocoles ainsi que leur implémentation par l'entreprise
 pour pouvoir simuler une communication réaliste entre la carte et les
-composants. Le fait de devoir faire de la simulation pour les tests peut
+composants. Le fait de devoir faire de la simulation pour les tests peut être
 complexe si le framework choisi n'est pas adapté. Il faudra que le framework de
-test ne soit suffisamment flexible et offre un maximum d'outil pour tester les
+test soit suffisamment flexible et offre un maximum d'outils pour tester les
 structures de données qui vont être utilisées dans la simulation.
 
 Étant donné que les tests seront exécutés dans une pipeline (donc dans un
 docker), il faudra s'assurer que le code puisse compiler sous Linux. Ici, on ne
 pourra pas utiliser MPLAB (IDE fourni par Microship) et les compilateurs
 utilisés par l'entreprise à cause de la simulation. Le compilateur utilisé sera
-gcc et une partie des bibliothèques de Microship seront modifiées pour arriver à
+gcc et une partie des bibliothèques de Microship sera modifiée pour arriver à
 générer un exécutable.
 
 Enfin, le plus gros défi de ce stage va être le fait de comprendre et d'utiliser
@@ -488,8 +497,7 @@ frameworks disponibles sur Wikipédia \cite{enwikiframeworks} a permis de prendr
 connaissance des frameworks disponibles pour ensuite pouvoir faire plus de
 recherches. Ce travail de recherche à permis de faire un prés tri et d'éliminer
 les framework incomplets ou trop peu utilisés. Une fois la liste des meilleurs
-frameworks terminée, il a fallut trouver des critères pour comparer les
-frameworks. \\
+frameworks terminée, il a fallut trouver des critères pour les comparer.\\
 
 Tout d'abord, l'équipe de développement souhaitait pouvoir tester à la fois du
 code \textbf{C} et du code \textbf{C++} pour certaines parties développées par
@@ -500,17 +508,20 @@ avec tous les frameworks C étant donné la compatibilité entre le C et le C++.
 Pour pouvoir tester du code C++, il faut aussi que le framework soit capable
 d'interagir avec les structures de donnés fournis par la bibliothèque standard
 de C++ ou encore de pouvoir traiter des exceptions. Étant donné ce critère,
-l'idée d'utiliser un framework écrit en C++ a été envisagé.
+l'idée d'utiliser un framework écrit en C++ a été envisagé. Bien que ce critère
+ait été pris en compte pour le choix du framework en début de projet, nous
+verrons dans la section \ref{nouvframe} qu'un autre framework a au final été
+utilisé pour Qt.
 
 Un autre critère concerne la modernité et la facilité d'utilisation du
 framework. Cela peut sembler anodin mais l'écriture des tests est une tâche
-aussi longue que le développement. Pour ne pas perdre de temps, il est
-préférable que les tests soient le plus simple possible à mettre en place. De
-plus, les tests peuvent aussi servir de documentation, c'est donc un avantage
-non négligeable que d'avoir un framework qui permette d'écrire des tests
-simples, lisibles et compréhensibles. Enfin, ce critère impacte aussi le temps
-de conception de l'outil de test car le fait d'utiliser un framework trop
-complexe aurait nécessité la conception de fonctions et macros (pour réduire la
+aussi longue que le développement du programme à tester. Pour ne pas perdre de
+temps, il est préférable que les tests soient le plus simple possible à mettre
+en place. De plus, les tests peuvent aussi servir de documentation, c'est donc
+un avantage non négligeable que d'avoir un framework qui permette d'écrire des
+tests simples, lisibles et compréhensibles. Enfin, ce critère impacte aussi le
+temps de conception de l'outil de test car le fait d'utiliser un framework trop
+complexe va nécessité la conception de fonctions et macros (pour réduire la
 complexité) et rallongé le temps d'écriture de la documentation. À noter que
 pour valider ce critère, la documentation des différents outils a aussi été
 étudiée, les frameworks devaient donc fournir une documentation suffisamment
@@ -532,22 +543,23 @@ activement maintenu.
 % TODO: mal dit
 D'autres critères ont permis de démarquer les frameworks comme par exemple le
 fait que les frameworks fournissent des fonctionnalités supplémentaires comme
-l'export des résultats des tests dans différents format comme TAP ou XML (utile
-pour faire des rapports) ou encore des générateur de nombres pseudo aléatoires
-pour faire des tests avec des entrée aléatoires,\dots Une autre fonctionnalité
-intéressante est que les frameworks exécutent les tests dans des threads séparer
-ce qui permet de tester des signaux ou encore de ne pas stopper tous les tests à
-cause d'une sortie erreur. Le fait que les frameworks utilisent beaucoup de
-macros à aussi été pris en compte car bien que ces dernières permettent de
-rendre le code beaucoup plus simple, elles peuvent aussi être source de
-problèmes (elles ont parfois un comportement non souhaité et elles sont très
-compliqué à déboguer). Le frameworks qui a été choisi possède ce défaut et nous
-verrons les problème que cela pose lorsque nous détaillerons ce framework.
+l'export des résultats des tests dans différents format comme \gls{tap} ou XML
+(utile pour faire des rapports) ou encore des générateur de nombres pseudo
+aléatoires pour faire des tests avec des entrée aléatoires,\dots Une autre
+fonctionnalité intéressante est que les frameworks exécutent les tests dans des
+threads séparés ce qui permet de tester des signaux ou encore de ne pas stopper
+tous les tests à cause d'une sortie erreur. Le fait que les frameworks utilisent
+beaucoup de macros à aussi été pris en compte car bien que ces dernières
+permettent de rendre le code beaucoup plus simple, elles peuvent aussi être
+source de problèmes (elles ont parfois un comportement non souhaité et elles
+sont très compliquées à déboguer). Le frameworks qui a été choisi possède ce
+défaut et nous verrons les problèmes que cela pose dans la conclusion de cette
+partie.
 %}}}
 \subsection{Les frameworks}%{{{
 
 Dans cette section, nous allons faire une revue de tous les frameworks de tests
-étudiés pendant le début du stage. Une fois ceci fait, nous présenterons le
+étudiés pendant le début du stage. Une fois ceci fait, nous expliquerons le
 choix final.
 
 \subsubsection*{Check}
@@ -555,13 +567,13 @@ choix final.
 Le premier framework de la liste est Check, il propose un interface simple pour
 l'écriture des tests, cependant, toute la mise en place des suites de tests est
 plus complexe mais peut être changée facilement. Check permet d'exécuter les
-tests dans des zones mémoires séparées ce qui permet de ne pas s'arrêter lors de
-l'émission d'un signal comme SIGSEV. La bibliothèque Check est disponible avec
-un paquet aptitude, ce qui le rend simple à installer. C'est aussi une bonne
-preuve de la popularité de cette bibliothèque. Check est assez complet et donne
+tests dans des zones mémoires séparées ce qui permet de ne pas s'arrêter à cause
+de certaines erreurs comme les erreurs de segmentation. La bibliothèque Check
+est disponible avec un paquet aptitude, ce qui le rend simple à installer et
+c'est aussi une bonne preuve de sa popularité. Check est assez complet et donne
 un rapport clair et facile à utiliser après l'exécution des tests. Le framework
 permet de construire une structure de tests classique où l'on groupe les tests
-dans des suites. Par contre, Check n'est pas compatible avec le C++.
+dans des suites, par contre, il n'est pas compatible C++.
 
 Pour présenter les framework aux développeurs de la société, des exemples de
 codes ont été présentés pour permettre d'avoir une idée de comment le framework
@@ -591,10 +603,9 @@ un paquet aptitude. Il propose une interface très simple pour écrire des tests
 et des suites de tests. On peut facilement ajouter les fonctions de setup et
 teardown (pour les tests et les suites de tests) et les tests peuvent êtres
 paramétrés. Comme Check, les tests sont exécutés dans des zones mémoires
-séparées. On peut aussi facilement tester si un signal (comme SIGSEV) est émis
-ou pas. De plus, le framework propose beaucoup de macros permettant de faire des
-assertions non seulement sur les types primitifs, mais aussi sur les tableaux.
-Enfin, Criterion possède aussi une interface C++.
+séparées. De plus, le framework propose beaucoup de macros permettant de faire
+des assertions non seulement sur les types primitifs, mais aussi sur les
+tableaux. Enfin, Criterion possède aussi une interface C++.
 
 À noter tout de même que la simplicité de l'interface de Criterion vient du fait
 que le frameworks utilise beaucoup les macros ce qui peut poser problème.
@@ -620,24 +631,19 @@ Munit propose une interface plus complexe car cela nécessite d'utiliser des
 tableaux et des structures. Pour les tests, les fonctions de tests sont très
 simple à écrire et il y a la possibilités d'avoir différents types de retours.
 Pour chaque test, on peut associer les fonctions de setup et de teardown. Les
-tests peuvent aussi être paramétrés. Le framework propose aussi une interface en
-ligne de commande, il est donc possible de donner des paramètres au programme
-pour choisir quels tests sont exécutés. Il est aussi possible de construire une
+tests peuvent aussi être paramétrés. Il est aussi possible de construire une
 structure de test plus complexe cas on peut avoir des suites de suites de tests.
-Le framework propose aussi des fonctions de génération de nombres aléatoires.
+Le framework propose aussi des générateurs de nombres aléatoires.
 
 On peut voir sur le listing \ref{munit-example} de l'annexe
 \ref{appendix:frameworks-code} comment s'utilise Munit.
 
 \subsubsection*{Unity}
 
-Framework de test spécialisé pour les systèmes embarqué, léger et simple. Il ne
-permet pas de construire une structure de tests très complexe (seulement de
-simple tests) mais possède beaucoup de fonctions d'assertion. En terme
+Framework de test spécialisé pour les systèmes embarqué, il est léger et simple.
+Il ne permet pas de construire une structure de tests très complexe (seulement
+de simple tests) mais possède beaucoup de fonctions d'assertion. En terme
 d'interface, le framework propose une collection de macros simples et lisibles.
-Le framework fourni aussi un script pour faciliter la mise en place des tests
-(en revanche ce script est assez mauvais car il ne génère un runner que pour une
-seule suite).
 
 Le framework possède beaucoup de fonctions d'assertions mais il ne possède pas
 beaucoup plus de fonctionnalités. Il ne sera pas utilisable pour tester du code
@@ -660,22 +666,21 @@ On peut voir sur le listing \ref{tau-example} de l'annexe
 \subsection{Le choix final}%{{{
 
 Le choix final s'est porté sur Criterion car le framework possède beaucoup
-d'avantage. Tout d'abord, il est le seul à être complètement compatible avec le
+d'avantages. Tout d'abord, il est le seul à être complètement compatible avec le
 C++ et ce, sans proposer une interface nécessitant la mise en place de classe
 comme ce que l'on pourrais voir avec CPPUnit. De plus, ce framework est très
 simple d'utilisation, il permet d'écrire des tests clairs facilement et
 rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité de
-générer des logs, les tests paramétrés, les théories (tests des vecteurs
-d'entrées et de sorties) et possède aussi une interface en ligne de commande
-permettant de passer des options en paramètres du programme.
+générer des logs, les tests paramétrés ou encore les théories (tests des
+vecteurs d'entrées et de sorties).
 
 Par contre, la simplicité d'utilisation de ce framework cache une grande
 complexité au niveau de son implémentation. Le framework a posé quelques
 problèmes mineurs dans la suite du projet. Tout d'abord, la simulation des
-composant nécessite l'appel de fonctions d'initialisation au préalable et cela
+composants nécessite l'appel de fonctions d'initialisation au préalable et cela
 aurait été pratique de le faire dans la fonction \verb|main|. Comme
 expliqué dans les parties précédentes, le framework génère son propre point
-d'entré, cependant il est possible d'écrire la fonction \verb|main| à la
+d'entrée, cependant il est possible d'écrire la fonction \verb|main| à la
 main si besoin. Le problème est que pour une raison inconnue, cela n'a pas
 marché lors des essais au début du projet (d'après le message d'erreur, le
 problème venait des threads). Ce n'est pas un problème grave car Criterion
@@ -690,12 +695,12 @@ puissantes, elles permettent ici de rendre le code beaucoup plus lisible,
 cependant, il faut noter que les macros trop complexe sont très difficiles à
 écrire et à déboguer.
 
-Le framework choisit possède donc beaucoup de qualité mais aussi quelques
-défauts. Au final, bien que ce framework ne soit pas parfait, il remplit
-bien son rôle et il propose beaucoup de fonctionnalités très utiles pour
-écrire les tests. De plus, il faut noter que ce framework est assez récent, il
-est donc normal qu'il y ai encore des défaut qui seront certainement corrigés
-au fil des années de développement.
+Le framework choisit possède donc beaucoup de qualités mais aussi quelques
+défauts. Au final, bien qu'il ne soit pas parfait, il remplit bien son rôle et
+propose beaucoup de fonctionnalités très utiles pour écrire les tests. De
+plus, il faut noter que ce framework est assez récent, il est donc normal qu'il
+y ai encore des défaut qui seront certainement corrigés au fil des années de
+développement.
 %}}}
 %}}}
 \section{Organisation d'un projet CKsquare}%{{{
@@ -764,7 +769,7 @@ concerne que la partie C.
 %}}}
 
 La partie que nous allons traiter se trouve dans le répertoire \verb|dev_pic|
-(aussi appelé codes communs). Comme on peut le voir sur la figure
+(aussi appelé codes communs C). Comme on peut le voir sur la figure
 \ref{fig:repdevpic}, ce répertoire possède un sous répertoire \verb|commun| qui
 contient la partie du code à tester. À la racine des communs, se trouvent aussi
 une partie des bibliothèques des différents compilateurs. L'entreprise CKsquare
@@ -2535,10 +2540,14 @@ verrons que cela n'a pas été le cas pour les protocoles monétique.
 
 \subsection{Les protocoles monétiques}
 
-Comme pour le C, la partie la plus chronophage a concerner le Cctalk et le MDB.
+Comme pour le C, la partie la plus chronophage a concerné le Cctalk et le MDB.
 Cette fois ci, il a fallut mettre en place de la simulation et cette dernière
 suis le même principe que celle du C sauf qu'ici, on utilise des objets et le
 polimorphisme pour simplifier l'implémentation.
+
+- récupération des commandes => classe statique
+- simulation => classe statique qui est utilisée dans les api de test
+- arborescence des classes
 
 TODO: explications
 TODO: diagrammes de classes
@@ -2690,16 +2699,13 @@ très intéressant de connaitre.
 %}}}
 \subsubsection{Environnement de Développement}%{{{
 
-Étant donné le fait que le projet a été développé sur Linux, l'IDE des
-développeurs de la société (MPLAB) n'a pas été utilisé. En effet, il était
-préférable de développer sous Linux étant donné le fait que la pipeline ne
-s'exécute pas sur Windows. Le problème est que l'IDE et les compilateurs de
-Microship ne fonctionnent pas bien sur Linux. Pour la partie Qt, QtCreator n'a
-pas été utilisé non plus car les projet ne sont pas fait pour être compilé avec
-gcc. Pour utiliser cet outil, il aurait fallut tout reconfigurer ce qui n'était
-pas souhaitable étant donné le fait que cela aurait complexifier la création de
-l'outil de test. L'environnement de développement utilisé durant le stage était
-donc \textit{neovim}.
+Comme expliqué dans la section \ref{analproblem}, l'IDE (MPLAB) des développeurs
+de la société n'a pas été utilisé pour développer l'outil de test en C. Pour la
+partie Qt, QtCreator n'a pas été utilisé non plus car les projet ne sont pas
+fait pour être compilé avec gcc. Pour utiliser cet outil, il aurait fallut tout
+reconfigurer ce qui n'était pas souhaitable étant donné le fait que cela aurait
+complexifier la création de l'outil de test. L'environnement de développement
+utilisé durant le stage était donc \textit{neovim}.
 
 Neovim est un éditeur de texte puissant et surtout configurable. Par défaut il
 ne vient pas avec toutes de fonctionnalités que l'on retrouve avec la plupart
