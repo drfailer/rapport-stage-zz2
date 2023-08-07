@@ -2407,7 +2407,7 @@ pipeline sur le code commun Qt.
 Dans cette section, nous allons traiter l'implication de l'outil de test en
 C++. L'objectif est de pouvoir intégrer l'outil dans le code commun Qt.
 
-\subsection{Nouveau framework}
+\subsection{Nouveau framework}%{{{
 \label{nouvframe}
 
 Au début du projet, le même framework devait être utilisé pour la partie C et la
@@ -2483,7 +2483,7 @@ pour ajouter tous les tests passé en paramètre via \verb|VA_ARGS| à la suite.
 Ensuite, on lance tous les tests avec la méthode Run.
 
 \begin{listing}[ht!]
-\begin{minted}{C}
+\begin{minted}{C++}
 #define TESTSUITE_MAIN(...) \
     int main(int argc, char *argv[]) { \
         QCoreApplication app(argc, argv); \
@@ -2505,7 +2505,7 @@ donné que tous les tests hérite de la classe \verb|QObject|, c'est elle qui a
 été choisie.
 
 \begin{listing}[ht!]
-\begin{minted}{C}
+\begin{minted}{C++}
 template<class T=QObject, class... Ts>
 void AddAllTest(TEST_SUITE& Suite)
 {
@@ -2527,8 +2527,8 @@ framework mais qui permet en plus d'exécuter plusieurs tests en même temps. \\
 Maintenant que nous avons traité la mise en place du nouveau framework de test,
 nous allons traiter la mise en place de l'outil de test dans le code (simulation
 et tests simples). Nous suivrons le même ordre que dans les parties précédentes.
-
-\subsection{Le stockage}
+%}}}
+\subsection{Le stockage}%{{{
 
 Une partie qui avait pris beaucoup de temps côté C était le stockage. Pour
 rappel, l'implémentation du stockage avait nécessité la simulation des
@@ -2553,8 +2553,8 @@ la détection de problème avec Qt si jamais il y en a.\\
 Pour la partie Qt, les tests sur le stockage n'ont donc pas nécessiter la mise
 en place d'une simulation comme pour la partie C. Dans la section suivante, nous
 verrons que cela n'a pas été le cas pour les protocoles monétique.
-
-\subsection{Les protocoles monétiques}
+%}}}
+\subsection{Les protocoles monétiques}%{{{
 
 Comme pour le C, la partie la plus chronophage a concerné le Cctalk et le MDB.
 Cette fois-ci, il a fallu mettre en place de la simulation et cette dernière
@@ -2692,7 +2692,7 @@ utilise une exception pour spécifier au développeur des tests que la simulatio
 est incomplète.
 
 \begin{listing}[ht!]
-\begin{minted}{C}
+\begin{minted}{C++}
 void CCEMULATED_HOPPER::ResponseSend()
 {
     switch (CCTESTCMDCCTALK::HeaderGet()) {
@@ -2842,8 +2842,8 @@ et elle est simple à utiliser dans les tests.\\
 Cet exemple conclue la section sur les protocoles monétique. Dans la partie
 suivante nous allons voir la mise en place des classes utilisées pour isoler le
 code testé du reste du programme.
-
-\subsection{Les classes de test}
+%}}}
+\subsection{Les classes de test}%{{{
 
 Pour pouvoir tester certains éléments, il a fallu mettre en place de nouvelle
 classes. Ces nouvelles classes peuvent prendre deux formes. Tout d'abord, elle
@@ -2880,8 +2880,8 @@ facilement imitable lors de la création de tests par les employés de la socié
 À présent que nous avons vu toutes les méthodes employées pour la mise en place
 des tests au niveau du C++, traitons la configuration de la pipeline qui a été
 la dernière tâche à accomplir pour ce stage.
-
-\subsection{La mise en place de la pipeline}
+%}}}
+\subsection{La mise en place de la pipeline}%{{{
 
 La configuration de la pipeline pour les communs Qt suis le même principe que
 celle du C. On a deux jobs, le premier permet de compiler les tests et le second
@@ -2942,6 +2942,7 @@ supprimer certaines erreurs. En effet, valgrind détecte des fuites de mémoires
 dans la bibliothèque. Ces dernières sont obligatoires, car elles sont dues au fait
 que le système d'exploitation ne laisse pas les bibliothèques graphiques libérer
 certaines ressources elles-mêmes.
+%}}}
 %}}}
 \section{Déroulement du projet}%{{{
 
@@ -3166,7 +3167,7 @@ toutes ces versions (C et C++) puis nous discuterons des perspectives du projet.
 Enfin, avant de conclure, nous parlerons brièvement de l'inclusion du projet
 dans le développement durable.
 
-\section{L'outil final}
+\section{L'outil final}%{{{
 
 Cette section va présenter le résultat final, tout d'abord sur la partie C puis
 sur la partie Qt.\\
@@ -3242,19 +3243,52 @@ C++. Dans la section suivante, nous allons discuter des défauts de l'outil et d
 perspectives d'évolution.
 
 \clearpage
+%}}}
+\section{Discussion et perspectives}%{{{
 
-\section{Discussion et perspectives}
+L'outil de test créé est assez complet, cependant, il y a tout de même des
+choses qui pourrait être améliorées. Tout d'abord, l'outil de test ne permet pas
+de couvrir tout le code, par exemple, la partie concernant le protocole TCPIP
+n'a pas été traitée. Bien que le protocole ne soit pas beaucoup utilisé dans le
+code, les parties le concernant sont complexes, il serait donc intéressant de
+pouvoir écrire des tests dessus. Un autre défaut concerne le fait qu'il est
+nécessaire de lancer la simulation dans les tests en C, ce peut être assez
+contraignant. Il serait être intéressant de trouver un moyen de le faire
+automatiquement. Enfin, il n'y a pas de moyen vraiment simple de lancer les
+tests sur Windows sans utiliser WSL, que ce soit pour le C et pour le C++. Il
+pourrait être intéressant de faire un script batch capable d'installer toutes
+les dépendances de l'outil et de compiler les tests automatiquement.
 
-Regard sur ce qui a été fait et comment cela a été fait (parler de l'échec
-des threads, manque de bibliographie, ...). Parler de ce qui reste à faire ou à
-améliorer.
+Au niveau de la branche de l'événementiel, la simulation n'a pas beaucoup été
+modifiée par rapport à la branche principale. Bien que la simulation soit assez
+simple, il serait bien de complètement l'intégrer au nouveau système pour que
+tout soit homogène.
 
-TODO: parler du fait qu'on est obligé d'utiliser des wait en Qt
-TODO: les tests ne sont pas faciles à écrire (machines à états)
+Pour la partie Qt, un défaut évident concerne le fait que l'on soit obligé de
+mettre en pause le programme pour débloquer les machines à états. Cela ralentit
+grandement l'exécution des tests ce qui n'est pas souhaitable sachant que le
+temps de compilation est déjà relativement long. Pour ne pas monopoliser les
+ressources de Gitlab, il serait préférable de trouver un moyen contrôler
+l'horloge de Qt ou d'utiliser une horloge gérée par les tests comme avec le C.
+De plus, il y a aussi des choses qui ne sont pas testés, car comme pour le C,
+elles sont trop complexes. Ces par exemple le cas de tous les programmes qui
+utilisent les port série qui peuvent être difficile à utiliser dans les tests.
+Le fait que l'outil puisse gérer ces éléments permettrait de mieux tester les
+couches bas niveau.
+
+L'outil de test possède aussi certainement d'autres défauts moins évidents qui
+vont nécessiter une réelle utilisation de la part des développeurs. En effet,
+les développeurs de CKsquare n'avaient pas une idée très précise de à quoi
+devait ressembler le produit final, ils n'ont donc pas donné beaucoup
+d'indications. Certains des choix qui ont été fait ne leur conviendront pas
+nécessairement lorsqu'ils utiliseront l'outil.\\
+
+Nous avons donc présenté les résultat et les perspectives du projet. Avant de
+conclure ce rapport, nous allons parler des enjeux écologiques du projet.
 
 \clearpage
-
-\section{Développement durable}
+%}}}
+\section{Développement durable}%{{{
 
 Dans cette section, nous allons voir en quoi ce simple projet de test peut
 s'inscrire dans une démarche de développement durable.\\
@@ -3315,11 +3349,40 @@ plus, le projet à était fait de manière responsable de sorte à polluer le mo
 possible.
 
 \clearpage
-\section*{Conclusion}
+%}}}
+\section*{Conclusion}%{{{
 \addcontentsline{toc}{section}{Conclusion}
 
-CONCLUSION
+L'objectif du stage était de concevoir un outil permettant de faire de
+l'intégration continue. Cet outil devait présenter un ensemble de méthode
+permettant d'automatiser des tests sur la partie commune du code C et C++
+utilisé sur les produits de l'entreprise. De plus, comme le code testé s'exécute
+normalement sur des cartes électronique, il fallait que l'outil mette en place
+la simulation des composants connectés à la carte.\\
 
+L'outil final rempli les critères du cahier des charges et présente bien une
+méthode permettant de simuler les composants électroniques pour faire des tests.
+L'outil n'a pas encore été beaucoup utilisé mais les résultats sont
+encourageant, car le peu de tests qui ont été écrit durant le stage ont déjà
+prouvé leur utilité. Ils ont permis la détection de plusieurs problèmes suite à
+une grosse fusion de branches. Enfin, la pipeline permet non seulement
+d'exécuter les tests automatiquement mais elle possède aussi d'autres
+fonctionnalités. Pour le code C, elle permet de calculer la couverture du code
+et pour la partie Qt, il y a un test memcheck qui permet d'analyser
+l'utilisation de la mémoire.\\
+
+Le projet s'est déroulé bien plus rapidement que prévu du fait de la volonté de
+simplifier au maximum la simulation. La solution imaginée au départ utilisait
+des thread, elle était lourde et difficile à mettre en œuvre. Par la suite, nous
+avons décidé de simplifier au maximum ce qui a fait gagné beaucoup de temps.\\
+
+Ce stage a permis de découvrir les bases du monde de l'embarqué. En effet, pour
+créer l'outil, il a fallu découvrir plusieurs protocoles tels que l'I²C et le
+SPI ainsi que le Cctalk et le MDB spécialisé pour la monétique. De plus,
+l'écriture des tests exemple a nécessité l'étude et la compréhension d'une
+partie du code utilisé sur les bornes. Enfin, ce stage constitue aussi une
+première expérience en entreprise.\\
+%}}}
 %***************************************************************************}}}
 
 %------------------------------------------------------------------------------%
