@@ -2672,7 +2672,176 @@ simulés et de test.
 
 \subsubsection{Exemple de composant simulé}
 
+Maintenant que nous avons traité la conception des classes, intéressons nous à
+la simulation d'un composant. Ici, nous allons étudier la fonction
+\verb|ResponseSend| d'une trémie.
+
+Le code est visible sur le listing \ref{respsendhopper}. Ici, on voit que
+cette méthode se compose simplement d'un \verb|switch| qui permet de
+sélectionner une réponse automatique en fonction du \textit{header} reçue. Les
+méthodes de la classe \verb|CCTESTCMDCCTALK| permettent de modifier l'objet
+commande pour envoyer la réponse. Par exemple, lorsque le composant reçoit
+l'entête \verb|CCTALK_HEADER_CATEGORY|, ce dernier répond son nom précédé de la
+même entête \footnote{Ce header ainsi que cinq suivant font partie des
+\textit{core commandes} qui sont demandée à l'initialisation. La plupart des
+réponses sont arbitraires car elle ne sont jamais utilisées dans le programme}.
+On peut aussi voir que pour certaines entêtes, on utilise la méthode
+\verb|NextResponseSend| qui permet d'envoyer une réponse paramétrée dans les
+tests (ou un acquittement par défaut). Lorsque l'entête reçue est inconnue, on
+utilise une exception pour spécifier au développeur des tests que la simulation
+est incomplète.
+
+\begin{listing}[ht!]
+\begin{minted}{C}
+void CCEMULATED_HOPPER::ResponseSend()
+{
+    switch (CCTESTCMDCCTALK::HeaderGet()) {
+        case CCTALK_HEADER_CATEGORY:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_CATEGORY, QByteArray("Hopper"));
+        break;
+        case CCTALK_HEADER_PRODUCT:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_PRODUCT, QByteArray("1234"));
+        break;
+        case CCTALK_HEADER_BUILDCODE:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_BUILDCODE, QByteArray("1234"));
+        break;
+        case CCTALK_HEADER_SOFTREVISION:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_SOFTREVISION, QByteArray("1234"));
+        break;
+        case CCTALK_HEADER_SN:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_SN, QByteArray("1234"));
+        break;
+        case CCTALK_HEADER_MANUFACTURER_ID:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_MANUFACTURER_ID, QByteArray("1234"));
+        break;
+        case CCTALK_HEADER_HO_PAYOUTSTATUS:
+            // bas niveau actif
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_HO_PAYOUTSTATUS, Buff(0b00010000));
+        break;
+        case CCTALK_HEADER_HO_ENABLE:
+            CCTESTCMDCCTALK::AckRespond();
+        break;
+        case CCTALK_HEADER_CIPHERKEY:
+            CCTESTCMDCCTALK::DataRespond(CCTALK_HEADER_CIPHERKEY, QByteArray("CIPHERKEY"));
+        break;
+        case CCTALK_HEADER_HO_DISPENSE:
+            NextResponseSend();
+        break;
+        case CCTALK_HEADER_HO_STATUS_DISPENSE:
+            NextResponseSend();
+        break;
+        default:
+            throw std::logic_error("Error (hopper): unknown header.");
+        break;
+    }
+}
+\end{minted}
+\caption{Méthode ResponseSend de la trémie.}
+\label{respsendhopper}
+\end{listing}
+
+Ce code montre bien la simplicité de la simulation, ce qui permet une mise en
+place facile est rapide de nouveaux composants. Cette simplicité est très
+importante car elle était requise dans le cahier des charges.\\
+
+Voyons à présent à quoi ressemblent les tests qui utilisent des composants
+simulés.
+
 \subsubsection{Exemple de test}
+
+Ici, nous allons traiter une exemple de test sur la trémie. Ce test très
+simple permet de vérifier le fonctionnement de la machine à états chargée de la
+gestion des paiements.
+
+La première chose à faire est d'initialiser le test en créant les objets
+nécessaires. Cela se fait dans la fonction \verb|init| visible sur le listing
+\ref{inittesthopper}. Cette fonction est automatiquement appelée avant chaque
+test.
+
+\begin{listing}[ht!]
+\begin{minted}{C++}
+void TEST_HOPPER::init()
+{
+    // on met l'echo à false pour ce test car on utilise la version modifiée du
+    // fichier cctalk_api => On ne passe jamais dans la fonction Control
+    m_CctalkApi = new CCTESTAPICCTALK(1, false, "CCCTALK_API_SERIAL", CLOGSYTEM::TYPE_NONE);
+    m_Hopper = new CCTALK_HOPPER(m_CctalkApi, 0, 4, "CCTALK_HOPPER", CLOGSYTEM::TYPE_NONE);
+    m_CctalkApi->Connect();
+    m_EmulHopper = new CCEMULATED_HOPPER(4); // ajout à la simulation
+    SIMULATION::DeviceAdd(m_EmulHopper);
+}
+\end{minted}
+\caption{Initialisation du test sur la trémie.}
+\label{inittesthopper}
+\end{listing}
+
+Le code du test est disponible sur le listing \ref{testhopper}. Ici, on commence
+par démarrer la machine à états de la trémie avec la méthode \verb|Start| puis
+on fait une demande de paiement. On sait qu'ici, on doit recevoir une commande
+Cctalk après environ cinq secondes, on utilise donc la fonction \verb|qWaitFor|
+pour attendre jusqu'à ce que la commande soit reçue. Le temps d'attente maximum
+est de huit secondes par sécurité. Lorsqu'une commande est reçue, on vérifie que
+sont contenue est correcte avant de passer à la suite. À chaque fois, on utilise
+la méthode \verb|CmdEndEmit| qui émet un évènement Qt qui débloque la machine à
+états. Plus loin, on voit un exemple de configuration de réponse avec la méthode
+\verb|ResponseAdd|. Enfin, on peut aussi voir l'utilisation d'un
+\verb|QSignalSpy| qui permet de vérifier si un évènement est émit. À la fin, le
+code testé est sensé émettre l'évènement \verb|PayoutEnded|, on vérifie donc que
+ce dernier est bien émit une fois.
+
+\begin{listing}[ht!]
+\begin{minted}{C++}
+void TEST_HOPPER::TEST_Payout()
+{
+    QByteArray DispenseStatus;
+    QSignalSpy Spy(m_Hopper, SIGNAL(PayoutEnded()));
+
+    m_Hopper->Start(); // on démarre la machine à état
+
+    // on passe dans toute la machine à état de PayoutSwitchControl
+    m_Hopper->PayoutRequest(10);
+
+    (void) QTest::qWaitFor([&]() { return CCTESTCMDCCTALK::CmdIsAvailable(); }, 8000);
+    QVERIFY(CCTESTCMDCCTALK::HeaderGet() == CCTALK_HEADER_HO_ENABLE);
+    QVERIFY((uchar) CCTESTCMDCCTALK::DataGet().at(0) == 165);
+    CCTESTCMDCCTALK::CmdEndEmit();
+
+    (void) QTest::qWaitFor([&]() { return CCTESTCMDCCTALK::CmdIsAvailable(); }, 8000);
+    QVERIFY(CCTESTCMDCCTALK::HeaderGet() == CCTALK_HEADER_CIPHERKEY);
+    CCTESTCMDCCTALK::CmdEndEmit();
+
+    // on ne répond pas de valeur donc il n'y aura pas d'évènement enregistré
+    // (payout.Event = 0)
+    (void) QTest::qWaitFor([&]() { return CCTESTCMDCCTALK::CmdIsAvailable(); }, 8000);
+    QVERIFY(CCTESTCMDCCTALK::HeaderGet() == CCTALK_HEADER_HO_DISPENSE);
+    CCTESTCMDCCTALK::CmdEndEmit();
+
+    DispenseStatus.push_back((char) 0x00);
+    DispenseStatus.push_back((char) 0x00);
+    DispenseStatus.push_back((char) 0x00);
+    DispenseStatus.push_back((char) 0x00);
+    m_EmulHopper->ResponseAdd(CCTALK_HEADER_HO_DISPENSE, DispenseStatus);
+    (void) QTest::qWaitFor([&]() { return CCTESTCMDCCTALK::CmdIsAvailable(); }, 8000);
+    QVERIFY(CCTESTCMDCCTALK::HeaderGet() == CCTALK_HEADER_HO_STATUS_DISPENSE);
+    CCTESTCMDCCTALK::CmdEndEmit();
+
+    (void) QTest::qWaitFor([&]() { return Spy.count() > 0; }, 8000);
+    QCOMPARE(Spy.count(), 1); // on vérifie qu'un signal a bien été émit
+}
+\end{minted}
+\caption{Test sur la trémie.}
+\label{testhopper}
+\end{listing}
+
+La plupart des tests sur les Cctalk et MDB ont cette forme, ce qui permet de
+facilement créer de nouveaux tests. On peut voir que la mise en place du test
+reste relativement simple et que encore une fois, la complexité des tests vient
+plus de celle du code que de celle de l'outil. La simulation fonctionnement bien
+et elle est simple à utiliser dans les tests.\\
+
+Cet exemple conclue la section sur les protocoles monétique. Dans la partie
+suivante nous allons voir la mise en place des classes utilisées pour isoler le
+code testé du reste du programme.
 
 \subsection{Les classes de test}
 
@@ -3113,27 +3282,27 @@ CONCLUSION
 %                                 bibliographie                                %
 %------------------------------------------------------------------------------%
 
-\section{Résumé biblio (WARN: section temporaire)}
+% \section{Résumé biblio (WARN: section temporaire)}
 
-Test affichage biblio:
+% Test affichage biblio:
 
-\begin{itemize}
-  \item \cite{enwikiframeworks}: liste des frameworks sur Wikipédia
-  \item \cite{enwikifixtures}: définition fixture Wikipédia
-  \item \cite{teststatemachines}: tester des machines à états
-  \item \cite{mankar2014review}: présentation du protocole I²C
-  \item \cite{dhaker2018introduction} et \cite{li2014design}: présentation du
-    protocole SPI
-  \item \cite{articleembeddedtests}: test de systèmes embarqués en utilisant de
-    la simulation. Très différent du projet mais il y a des point intéressants.
-  \item \cite{engblom2015continuous}: simulation pour CI sur systèmes embarqués
-  \item \cite{maartensson2016continuous}: intégration continue sur les systèmes
-    embarqués.
-  \item \cite{hamill2004unit}: livre sur les frameworks de tests (p 42: mocking)
-  \item \cite{cctalkpt1}, \cite{cctalkpt2},\cite{cctalkpt3}: trois premières
-    parties de la doc cctalk
-  \item \cite{mdbdoc}: doc mdb
-\end{itemize}
+% \begin{itemize}
+%   \item \cite{enwikiframeworks}: liste des frameworks sur Wikipédia
+%   \item \cite{enwikifixtures}: définition fixture Wikipédia
+%   \item \cite{teststatemachines}: tester des machines à états
+%   \item \cite{mankar2014review}: présentation du protocole I²C
+%   \item \cite{dhaker2018introduction} et \cite{li2014design}: présentation du
+%     protocole SPI
+%   \item \cite{articleembeddedtests}: test de systèmes embarqués en utilisant de
+%     la simulation. Très différent du projet mais il y a des point intéressants.
+%   \item \cite{engblom2015continuous}: simulation pour CI sur systèmes embarqués
+%   \item \cite{maartensson2016continuous}: intégration continue sur les systèmes
+%     embarqués.
+%   \item \cite{hamill2004unit}: livre sur les frameworks de tests (p 42: mocking)
+%   \item \cite{cctalkpt1}, \cite{cctalkpt2},\cite{cctalkpt3}: trois premières
+%     parties de la doc cctalk
+%   \item \cite{mdbdoc}: doc mdb
+% \end{itemize}
 
 \clearpage{}
 \pagestyle{empty}
