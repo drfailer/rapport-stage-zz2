@@ -2845,6 +2845,42 @@ code testé du reste du programme.
 
 \subsection{Les classes de test}
 
+Pour pouvoir tester certains éléments, il a fallu mettre en place de nouvelle
+classes. Ces nouvelles classes peuvent prendre deux formes. Tout d'abord, elle
+peuvent remplacer des classes existantes du projet de façon similaire aux
+fausses bibliothèques du C. Ensuite, elle peuvent prendre la forme d'objet mock,
+qui héritent des classes du code de l'entreprise et qui donne accès à certains
+éléments protégés ou changent l'implémentation de certaines méthodes virtuelles.
+
+La première classe de test qui a été mise en place a remplacé la classe
+\verb|CKSPRO|. Ici, aucun héritage n'était possible, la classe a donc dû être
+refaite. À noter qu'ici, le fichier d'entête de la classe d'origine est
+conserver car l'objectif est que la nouvelle classe remplace totalement
+l'ancienne. L'intérêt de cette classe était de permettre la vérification des
+trames envoyées sur le CKwash. Les fonctions inutiles ont été laissées vide
+(pour que le code compile) et, comme en C, la fonction \verb|CmdSnd| est
+modifiée pour permettre la sauvegarde des trames.
+
+Pour le Cctalk et le MDB, il a été possible d'utiliser l'héritage et de créer
+une nouvelle classe. En effet, pour ces deux protocoles, il peut y avoir
+plusieurs API qui hérites de classes abstraites. Des API de test ont donc
+logiquement été créées en changeant encore une fois l'implémentation de la
+méthode \verb|CmdSnd|. Les méthodes des classes abstraites sont aussi testées à
+l'aide d'autres classes qui donnent accès aux membres protégées dans les tests.
+Cela permet de vérifier le bon fonctionnements des machines à états
+responsable de la transmission des commandes comme le faisait la version bas
+niveau de la partie C.
+
+L'objectif de ces classes de test est de simplifier la mise en place des tests,
+soit en contournant les contraintes de visibilité de certains attribut, soit en
+changeant l'implémentation de certaines méthodes pour isoler les éléments du
+code testé. C'est une méthode fiable est très simple à mettre en place qui sera
+facilement imitable lors de la création de tests par les employés de la société.
+
+À présent que nous avons vu toutes les méthodes employées pour la mise en place
+des tests au niveau du C++, traitons la configuration de la pipeline qui a été
+la dernière tâche à accomplir pour ce stage.
+
 \subsection{La mise en place de la pipeline}
 
 La configuration de la pipeline pour les communs Qt suis le même principe que
@@ -3142,27 +3178,30 @@ complet et simple d'utilisation: \verb|Criterion|. L'utilisation du framework a
 du framework. Une configuration de CMake a aussi été mise en place pour
 simplifier la compilation. Cette configuration utilise CTest qui permet beaucoup
 d'opérations sur les tests comme le calcule de la couverture du code (lancement
-automatique de \verb|gcov|). L'outil propose aussi un système permettant de
-simuler les interfaces des composants électroniques utilisés dans les projets de
-l'entreprise. Cela comprend les périphériques de stockage (registres, eeproms et
-flash) utilisés en I²C et en SPI mais aussi d'autres périphériques interfacés en
-Cctalk et en MDB qui sont des protocoles spécialisés dans la monétique. Pour
-chacun des composants, la documentation détaille la méthode employée pour la
-simulation de sorte que l'on puisse facilement simuler de nouveaux
-composants. La simulation des protocoles monétiques propose deux niveaux de
-simulation pour les tests. Une version dans laquelle des fichiers ont été modifiés pour
-isoler les éléments testés du reste du code et une autre version qui passe par
-toute la chaine d'instructions jusqu'aux fichiers du compilateur. Cela permet de
-faire à la fois des tests unitaires, mais aussi des tests d'intégration où l'on
-teste tout le code. La méthode consistant à créer des versions modifiées des
-fichiers a beaucoup été utilisée pour rendre les tests plus simples ou pour
-changer du code qui ne pouvait pas être compilé. Au final, il est bien possible
-d'écrire des tests où le code testé interagir avec les composants simulés.
-Depuis ces tests, on peut accéder aux données que les composants reçoivent pour
-vérifier que cela correspond à ce qui était attendu. Enfin, la pipeline
-permettant d'automatiser les tests sur Gitlab a bien été mise en place et permet
-des opérations qui n'étaient pas demandées à la base comme le calcule de la
-couverture du code.
+automatique de \verb|gcov|).
+
+L'outil propose aussi un système permettant de simuler les interfaces des
+composants électroniques utilisés dans les projets de l'entreprise. Cela
+comprend les périphériques de stockage (registres, eeproms et flash) utilisés en
+I²C et en SPI mais aussi d'autres périphériques interfacés en Cctalk et en MDB
+qui sont des protocoles spécialisés dans la monétique. Pour chacun des
+composants, la documentation détaille la méthode employée pour la simulation de
+sorte que l'on puisse facilement simuler de nouveaux composants. La simulation
+des protocoles monétiques propose deux niveaux de simulation pour les tests. Une
+version dans laquelle des fichiers ont été modifiés pour isoler les éléments
+testés du reste du code et une autre version qui passe par toute la chaine
+d'instructions jusqu'aux fichiers du compilateur. Cela permet de faire à la fois
+des tests unitaires, mais aussi des tests d'intégration où l'on teste tout le
+code. La méthode consistant à créer des versions modifiées des fichiers a
+beaucoup été utilisée pour rendre les tests plus simples ou pour changer du code
+qui ne pouvait pas être compilé.
+
+Au final, il est bien possible d'écrire des tests où le code testé interagir
+avec les composants simulés. Depuis ces tests, on peut accéder aux données que
+les composants reçoivent pour vérifier que cela correspond à ce qui était
+attendu. Enfin, la pipeline permettant d'automatiser les tests sur Gitlab a bien
+été mise en place et permet des opérations qui n'étaient pas demandées à la base
+comme le calcule de la couverture du code.
 
 La partie C résout aussi un problème dû à la programmation embarquée côté C. En
 effet, l'optimisation du code pour la carte électronique rendait impossible
@@ -3176,22 +3215,27 @@ de beaucoup de bugs suite à la fusion de la branche principale dans la branche
 de l'événementiel. En effet, la branche principale avait plusieurs mois d'avances sur
 la branche secondaire et beaucoup de changements avaient été faits. La fusion des
 deux branches a nécessité près de deux semaines de travail et les tests ont
-permis la détection de plusieurs problèmes.
+permis la détection de plusieurs problèmes.\\
 
 Pour la partie Qt une solution similaire à celle du C a aussi été mise en place.
 Les procédés d'implémentation ont été les mêmes qu'au début du projet. Ici, la
 programmation orientée objet a été utilisée pour simplifier le code. La
 technique du mocking consistant en la création de classes intermédiaires donnant
-accès à certains éléments protégés des classes a été utilisée pour permettre de
-rendre les tests possibles. Ici, tout n'a pas été fait comme prévu puisqu'à
-l'origine, le framework utilisé côté devait aussi servir côté C++, cependant, le
-framework QTest s'est avéré être plus adapté. Des modifications sur
-l'utilisation du framework ont tout de même été apportées pour permettre la mise
-en place de suites de tests. Enfin, la pipeline mise en place est plus complexe
-que celle du C, car ici, un nouveau test a été ajouté. En effet, les développeurs
-avaient des difficultés à utiliser valgrind sur Windows, pour palier à ce
-problème, un test memcheck a été mis en place au niveau de la pipeline. Lorsque
-ce test échoue, on peut récupérer les logs en téléchargeant les artefacts.\\
+accès à certains éléments protégés des classes a été utilisée pour faciliter les
+tests. Ici, tout n'a pas été fait comme prévu puisqu'à l'origine, le framework
+utilisé côté devait aussi servir côté C++, cependant, le framework QTest s'est
+avéré être plus adapté. Des modifications sur l'utilisation du framework ont
+tout de même été apportées pour permettre la mise en place de suites de tests.
+
+Comme pour la partie C, les composants électroniques ont été simulés. La
+simulation est simple à utiliser et à copier, et elle permet bien de tester du
+code qui est normalement censé interagir avec des composants réels.
+
+Enfin, la pipeline mise en place est plus complexe que celle du C, car ici, un
+nouveau test a été ajouté. En effet, les développeurs avaient des difficultés à
+utiliser valgrind sur Windows, pour palier à ce problème, un test memcheck a été
+mis en place au niveau de la pipeline. Lorsque ce test échoue, on peut récupérer
+les logs en téléchargeant les artefacts.\\
 
 Le cahier des charges est donc rempli que ce soit pour la partie C ou la partie
 C++. Dans la section suivante, nous allons discuter des défauts de l'outil et des
