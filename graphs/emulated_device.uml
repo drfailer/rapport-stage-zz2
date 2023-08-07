@@ -1,0 +1,7 @@
+@startuml
+abstract class CAEMULATED_DEVICE {
+  #m_Addr: uchar
+  +{abstract} ResponseSend()
+  +AddrGet(): uchar
+}
+@enduml

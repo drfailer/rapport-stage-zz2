@@ -2270,7 +2270,7 @@ void CONNECT_Define(TCONNECT * Connect,
 \label{sigconnectdefine}
 \end{listing}
 
-Pour récupérer certains des arguments de cette fonction, cela nécessite 
+Pour récupérer certains des arguments de cette fonction, cela nécessite
 l'utilisations d'autres fonctions secondaires. Le listing
 \ref{firstconnectdefine} comment était utilisée cette fonction au départ. On
 peut voir ici qu'il y a deux appels de fonctions dans les arguments, un appel à
@@ -2439,7 +2439,24 @@ n'y a pas de système de suites de tests, on ne peut pas utiliser cette macro, c
 elle oblige la compilation d'un exécutable par test ce qui peut être pénible à
 gérer étant donné que le projet commun est très gros est qu'il y a beaucoup de
 fichiers à tester. Pour palier à ce problème, un système de suite de test à dû
-être créé.
+être créé, ce système sera décrit dans la sous section suivante.
+
+Un autre gros problème est le fait que le framework ne propose pas de moyen de
+contrôler les horloges. Cela est d'autant plus grave du fait que la plupart des
+machines à états sont gérées avec des minuteurs. Qt Test fournit des fonctions
+permettant de marquer des temps d'attente, cependant, là où la simulation des
+horloges en C permettait de simuler une attente, ici, le framework n'en est pas
+capable ce qui oblige à vraiment mettre en pause le programme. Pour l'instant,
+la seule solution fiable trouvée nécessite la réécriture complète des classes
+des horloges de Qt. Cette solution n'a pas était mise en place car cela était
+trop complexe \footnote{La durée du stage aurait effectivement permis de mettre
+en place un tel système, cependant, il ne faut pas oublier que le code doit être
+facilement maintenable par les développeurs de l'entreprise ce qui n'aurait pas
+été le cas ici.}. Au final, le seul moyen que l'on a dans ce genre de cas est de
+faire de vrai pauses dans le programme, ce qui fait que l'exécution des tests
+est très lente. Heureusement, le framework met à disposition une fonction
+\verb|qWaitFor| qui met fin à la pause lorsqu'un prédicat est vrai, ce qui
+permet d'optimiser les temps d'attente.
 
 \subsubsection*{Système de suites de tests}
 
@@ -2541,15 +2558,123 @@ verrons que cela n'a pas été le cas pour les protocoles monétique.
 
 Comme pour le C, la partie la plus chronophage a concerné le Cctalk et le MDB.
 Cette fois-ci, il a fallu mettre en place de la simulation et cette dernière
-suis le même principe que celle du C sauf qu'ici, on utilise des objets et le
-polimorphisme pour simplifier l'implémentation.
+suit le même principe que celle du C sauf qu'ici, on utilise des objets et le
+polymorphisme pour simplifier l'implémentation.
 
-- récupération des commandes => classe statique
-- simulation => classe statique qui est utilisée dans les api de test
-- arborescence des classes
+\subsubsection{La conception des classes}
 
-TODO: explications
-TODO: diagrammes de classes
+Pour concevoir les classes utilisées dans la simulation, la première étape a été
+de faire un schéma UML pour identifier les caractéristiques communes des classes
+et créer une arborescence qui permette d'éviter au maximum la copie de code. La
+première classe créée est \verb|CAEMULATED_DEVICE|, c'est une classe abstraite
+qui regroupe les caractéristiques de tous les composants simulés (peu importe le
+protocole). Dans l'état actuel du projet, les composants ont deux points
+communs. Tout d'abord, ils possèdent tous une adresse unique qui permet de les
+identifier lors des communications, la classe possède donc un attribut
+\verb|Addr| et un accesseur en lecture. Ensuite, tous les composants simulés
+sont utilisés pour répondre aux commandes envoyées par la carte, chacun d'entre
+eux doit donc implémenter une méthode \verb|ResponseSend| (qui est abstraite
+ici). Le diagramme de cette classe est visible sur la figure
+\ref{fig:caemulateddevice}.
+
+% [CAEMULATED_DEVICE] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./graphs/emulated_device.png}
+  \caption{Diagramme de la classe: CAEMULATED\_DEVICE.}
+    \label{fig:caemulateddevice}
+  \end{center}
+\end{figure}
+%}}}
+
+Ensuite, la classe \verb|SIMULATION| a été créée. L'objectif de cette dernière
+est de gérer tous les composants simulés. Cette classe statique possède un
+tableau de composants dans lequel on place les composants simulés. Normalement,
+il est assez peu fréquent d'utiliser plusieurs composants en même temps dans les
+tests, cependant, la possibilité a été laissée dans le cas ou l'on souhaite
+faire des tests d'intégration plus complexes. La classe possède aussi une
+méthode statique \verb|ResponseSend| qui prend en paramètre l'adresse d'un
+composant et qui fait appel à la méthode \verb|ResponseSend| du composant à
+l'adresse demandée. Le diagramme de cette classe est visible sur la figure
+\ref{fig:simulationclasse}.
+
+% [SIMULATION] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./graphs/simulation_classe.png}
+    \caption{Diagramme de la classe: SIMULATION.}
+    \label{fig:simulationclasse}
+  \end{center}
+\end{figure}
+%}}}
+
+Les autres classes sont spécifiques au protocole utilisé. Le premier protocole
+qui a été traité était le Cctalk et un travail similaire à été réalisé pour le
+MDB. Ici, on introduit une nouvelle classe abstraite qui va regrouper les
+caractéristiques communes à tous les composant Cctalk. Pour l'instant, le seul
+point commun entre tous ces composants est le fait que l'on peut configurer des
+réponses dans les tests. En effet, bien que les composants simulés puissent
+répondre à la plupart des commandes de façon automatiques, il est parfois
+souhaitable de changer certaines réponses dans les tests. Cette classe possède
+donc toutes les méthodes nécessaires pour changer les réponses dans les tests.
+Ensuite, il y a plusieurs classes (concrètes cette fois), qui correspondent aux
+composant. Le diagramme de classe est disponible sur la figure \ref{fig:simucctalk}.
+
+% [simuation cctalk] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./graphs/simulation_cctalk.png}
+    \caption{Diagramme de la classe des composant Cctalk.}
+    \label{fig:simucctalk}
+  \end{center}
+\end{figure}
+%}}}
+
+Enfin, pour mettre en place les tests et la simulation, il fallait un moyen de
+donner accès aux commandes envoyées par la carte. Les commandes sont
+représentées par la classe \verb|CCCTALK_COMMAND|. Lorsque le code testé envoie
+une nouvelle commande, il fait appel à la méthode \verb|CmdSnd| d'une API qui
+prend en paramètre un pointeur sur la commande à transmettre. Pour pouvoir
+vérifier que les bonne commandes sont envoyées, il est obligatoire d'avoir accès
+à ce pointeur depuis les tests. De plus, comme pour la partie C, la façon la
+plus simple de répondre pour les composants simulés est de directement modifier
+l'objet de la commande transmise. Pour partager la commande à toutes les
+classes, on utilise une classe statique qui agit comme une variable globale. Son
+diagramme de classe est visible sur la figure \ref{fig:testcctalkcmd}.
+
+% [test cctalk cmd] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./graphs/testcctalkcmd.png}
+    \caption{Diagramme de la classe: CCTESTCMDCCTALK.}
+    \label{fig:testcctalkcmd}
+  \end{center}
+\end{figure}
+%}}}
+
+Des classes similaires ont été créées pour le protocole MDB. En plus, le MDB
+possède une autre classe qui permet de gérer le système de scénarios qui avait
+été implémenté en C. La figure \ref{fig:simcomplete} représente le diagramme de
+classe complet de la simulation pour les composants Cctalk et MDB.
+
+% [diagramme de classe complet] {{{
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.3]{./graphs/simulation.png}
+    \caption{Diagramme de la classe de la simulation.}
+    \label{fig:simcomplete}
+  \end{center}
+\end{figure}
+%}}}
+
+Dans les sous-sections suivantes, nous traiterons un exemple de composants
+simulés et de test.
+
+\subsubsection{Exemple de composant simulé}
+
+\subsubsection{Exemple de test}
+
+\subsection{Les classes de test}
 
 \subsection{La mise en place de la pipeline}
 

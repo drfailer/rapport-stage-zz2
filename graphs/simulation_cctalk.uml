@@ -1,0 +1,19 @@
+@startuml
+abstract class CATESTCCTALK_DEVICE {
+  -m_Responses: QList<TRESPONSE>
+  +ResponseIsConfigured(): boll
+  +ResponseAdd(uchar Header, QByteArray& Data)
+  +NextResponseHeaderGet(): uchar
+  +NextResponseDataGet(): QByteArray
+  +NextResponseSend()
+}
+
+CATESTCCTALK_DEVICE <|-- CCEMULATED_BILLVALIDATOR
+CATESTCCTALK_DEVICE <|-- CCEMULATED_HOPPER
+class CCEMULATED_BILLVALIDATOR {
+  +ResponseSend()
+}
+class CCEMULATED_HOPPER {
+  +ResponseSend()
+}
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+class CCTESTCMDCCTALK {
+  -{static} m_LastSentCmd: CCCTALK_COMMAND
+  +{static} CmdSet(CCCTALK_COMMAND *Cmd);
+  +{static} AddrSrcGet(): uchar
+  +{static} AddrDestGet(): uchar
+  +{static} HeaderGet(): uchar
+  +{static} ChkSumGet(): uchar
+  +{static} DataGet(): QByteArray&
+  +{static} CmdIsAvailable(): bool
+  +{static} CheckSum(): uchar
+  +{static} AckRespond()
+  +{static} DataRespond(uchar Header, QByteArray Data):
+  +{static} CmdEndEmit()
+}
+@enduml

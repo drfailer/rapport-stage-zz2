@@ -1,0 +1,7 @@
+@startuml
+class SIMULATION {
+  +{static} m_EmulatedDevices: (CAEMULATED_DEVICE*)[EMULATED_DEVICED_MAX]
+  +{static} DeviceAdd(CAEMULATED_DEVICE*)
+  +{static} ResponseSend(uchar)
+}
+@enduml
