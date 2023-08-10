@@ -153,6 +153,12 @@
     communication entre des modules de test et les outils qui permettent
     l'automatisation des tests.}
 }
+
+\newglossaryentry{foncmembre}
+{
+    name=fonctions membres,
+    description={Méthodes de classe en programmation orientée objet.}
+}
 %}}}
 
 %------------------------------------------------------------------------------%
@@ -278,13 +284,13 @@ l'entreprise CKsquare dans le carder d'un stage d'une durée de cinq moins.
 L'objectif du stage était la création d'un outil permettant l'automatisation de
 tests sur du code embarqué depuis une pipeline Gitlab.\\
 
-Le code de l'entreprise doit normalement être exécuté sur des cartes
-électroniques. Les tests doivent être exécutés dans une pipeline où l'on n'a pas
-accès aux cartes. Pour rendre cela possible, les composants électroniques
-normalement reliés à la carte ont été simulés. À noter également que l'outil de
-test doit être utilisé sur la partie du code qui est commune à tous les projets
-de l'entreprise, il n'est pas fait pour tester toute une application, mais
-seulement les blocks communs.\\
+Le code de l'entreprise doit être exécuté sur des cartes électroniques. Les
+tests doivent être exécutés dans une pipeline où l'on a pas accès aux cartes.
+Pour rendre cela possible, les composants électroniques, normalement reliés à la
+carte, ont été simulés. À noter également que l'outil de test doit être utilisé
+sur la partie du code qui est commune à tous les projets de l'entreprise, il
+n'est pas fait pour tester toute une application, mais seulement les bloques
+communs.\\
 
 Au départ, le stage ne portait que sur la création d'un outil permettant de
 tester une partie du code écrit en C. La mise en place de cet outil est
@@ -296,7 +302,7 @@ de l'événementiel) ainsi que sur la partie C++ (partie Qt).\\
 Dans cette présentation, nous commencerons par expliquer le choix du framework
 de test qui a été utilisé pour créer l'outil. Ensuite, nous aborderons
 l'organisation du projet ainsi que son fonctionnement général pour permettre une meilleure
-compréhension des choix qui ont été fait durant le développement.
+compréhension des choix qui ont été faits durant le développement.
 Dans les parties suivantes, nous traiterons la résolution du problème principal
 de ce stage en expliquant la simulation des divers éléments. Une fois que nous
 aurons détaillé le fonctionnement de l'outil et de la simulation, nous verrons
@@ -336,7 +342,7 @@ l'entreprise de faire face au déclin des stations de lavage auto auxquelles on
 impose des restrictions à cause des sécheresses de plus en plus fréquentes.
 Aujourd'hui, plus de 40 000 stations de lavage auto sont équipées de bornes
 CKsquare. On peut voir sur la Figure \ref{bornes-intro} un exemple de produits
-conçues par l'entreprise.
+conçus par l'entreprise.
 
 % [bornes] {{{
 \begin{figure}[h!]
@@ -484,8 +490,8 @@ l'entreprise ne souhaitent pas la modifier ou la tester.
 
 Le but du projet est de concevoir un outil permettant de tester du code, la
 première tâche a donc été de choisir un framework de test. Le framework de test
-constitue la base de l'outil, c'est donc un choix assez important. Dans cette
-partie, nous traiterons de la procédure qui a été utilisée pour trouver et
+constitue la base de l'outil, ce qui en fait un choix assez important. Dans
+cette partie, nous traiterons de la procédure qui a été utilisée pour trouver et
 comparer des frameworks et des bibliothèques de test.
 
 \subsection{Les critères de comparaison}%{{{
@@ -522,9 +528,9 @@ un avantage non négligeable que d'avoir un framework qui permette d'écrire des
 tests simples, lisibles et compréhensibles. Enfin, ce critère impacte aussi le
 temps de conception de l'outil de test, car le fait d'utiliser un framework trop
 complexe va nécessiter la conception de fonctions et macros (pour réduire la
-complexité) et rallongé le temps d'écriture de la documentation. À noter que
+complexité) et rallonger le temps d'écriture de la documentation. À noter que
 pour valider ce critère, la documentation des différents outils a aussi été
-étudiée, les frameworks devaient donc fournir une documentation suffisamment
+étudiée, les frameworks devaient ainsi fournir une documentation suffisamment
 claire et précise permettant d'utiliser facilement toutes les fonctionnalités
 proposées.
 
@@ -533,28 +539,27 @@ Le critère le plus important est celui du statut du développement du framework
 En effet, lorsque l'on souhaite utiliser un outil, une question importante à se
 poser est de savoir ce que l'on peut faire en cas de problème. Ici, il a fallu
 regarder la taille, la popularité et l'âge des projets. En effet, plus un projet
-est populaire plus il sera facile de trouver de l'aide en cas de problème. De
-plus, les projets important ont souvent beaucoup plus de collaborateurs ce qui
+est populaire, plus il sera facile de trouver de l'aide en cas de problème. De
+plus, les projets importants ont souvent beaucoup plus de collaborateurs ce qui
 peut accélérer la correction des bugs ou la vitesse de réponse aux issues. Enfin
-les dates de dernières mis à jour ont aussi été répertoriées, car là aussi, il
+les dates de dernières mises à jour ont aussi été répertoriées, car là aussi, il
 est beaucoup plus simple de résoudre les problèmes sur un projet qui est encore
 activement maintenu.
 
 % TODO: mal dit
-D'autres critères ont permis de démarquer les frameworks comme par exemple le
-fait que les frameworks fournissent des fonctionnalités supplémentaires comme
-l'export des résultats des tests dans différents formats comme \gls{tap} ou XML
-(utile pour faire des rapports) ou encore des générateurs de nombres pseudo
-aléatoires pour faire des tests avec des entrées aléatoires,\dots Une autre
-fonctionnalité intéressante est que les frameworks exécutent les tests dans des
-threads séparés ce qui permet de tester des signaux ou encore de ne pas stopper
-tous les tests à cause d'une sortie erreur. Le fait que les frameworks utilisent
-beaucoup de macros a aussi été pris en compte, car bien que ces dernières
-permettent de rendre le code beaucoup plus simple, elles peuvent aussi être
-source de problèmes (elles ont parfois un comportement non souhaité et elles
-sont très compliquées à déboguer). Le framework qui a été choisi possède ce
-défaut et nous verrons les problèmes que cela pose dans la conclusion de cette
-partie.
+D'autres critères ont permis de démarquer les frameworks comme le fait qu'ils
+fournissent des fonctionnalités supplémentaires comme l'export des résultats des
+tests dans différents formats comme \gls{tap} ou XML (utile pour faire des
+rapports) ou encore des générateurs de nombres pseudo aléatoires pour faire des
+tests avec des entrées aléatoires, \dots Une autre fonctionnalité intéressante
+est le fait que les frameworks exécutent les tests dans des zones mémoires
+séparées ce qui permet de tester des signaux ou encore de ne pas stopper tous les
+tests à cause d'une sortie erreur. Le fait que les frameworks utilisent beaucoup
+de macros a aussi été pris en compte, car bien que ces dernières permettent de
+rendre le code beaucoup plus simple, elles peuvent aussi être source de
+problèmes (elles ont parfois un comportement non souhaité et elles sont très
+compliquées à déboguer). Le framework qui a été choisi possède ce défaut et nous
+verrons les problèmes que cela pose dans la conclusion de cette partie.
 %}}}
 \subsection{Les frameworks}%{{{
 
@@ -582,12 +587,12 @@ s'utilise. Sur le listing \ref{check-example} de l'annexe
 
 \subsubsection*{CUnit}
 
-Le second framework est CUnit, il est aussi disponible avec un paquet aptitude
-cependant. Le framework est assez complet et fourni beaucoup de fonctions
-d'assertion. CUnit permet de construire la même structure de tests que Check, et
-utilise des pointeurs de fonctions pour construire les suites. Pour chaque suite
-de tests, on peut fournir deux fonctions qui seront exécutées avant et après les
-tests pour permettre d'initialiser l'environnement de tests (ces fonctions sont
+Le second framework est CUnit, il est aussi disponible avec un paquet aptitude.
+Le framework est assez complet et fourni beaucoup de fonctions d'assertion.
+CUnit permet de construire la même structure de tests que Check, et utilise des
+pointeurs de fonctions pour construire les suites. Pour chaque suite de tests,
+on peut fournir deux fonctions qui seront exécutées avant et après les tests
+pour permettre d'initialiser l'environnement de tests (ces fonctions sont
 généralement appelées \textbf{setup} et \textbf{teardown}). Ce framework ne sera
 pas compatible avec C++. Le framework CCPUnit est similaire à CUnit et permet
 aussi de tester du code C, cependant, il est nécessaire d'utiliser des classes
@@ -611,7 +616,7 @@ tableaux. Enfin, Criterion possède aussi une interface C++.
 que le framework utilise beaucoup les macros ce qui peut poser un problème.
 
 On peut voir sur le listing \ref{criterion-example} de l'annexe
-\ref{appendix:frameworks-code} un example de tests écrits avec Criterion.
+\ref{appendix:frameworks-code} un exemple de tests écrits avec Criterion.
 
 \subsubsection*{Minunit}
 
@@ -667,12 +672,12 @@ On peut voir sur le listing \ref{tau-example} de l'annexe
 
 Le choix final s'est porté sur Criterion car le framework possède beaucoup
 d'avantages. Tout d'abord, il est le seul à être complètement compatible avec le
-C++, et ce, sans proposer une interface nécessitant la mise en place de classe
+C++, et ce, sans proposer une interface nécessitant la mise en place de classes
 comme ce que l'on pourrait voir avec CPPUnit. De plus, ce framework est très
-simple d'utilisation, il permet d'écrire des tests clairs facilement et
-rapidement. Il propose aussi beaucoup de fonctionnalités comme la possibilité de
-générer des logs, les tests paramétrés ou encore les théories (tests des
-vecteurs d'entrées et de sorties).
+simple d'utilisation, il permet d'écrire des tests clairs rapidement. Il propose
+aussi beaucoup de fonctionnalités comme la possibilité de générer des logs, les
+tests paramétrés ou encore les théories (tests des vecteurs d'entrées et de
+sorties).
 
 Par contre, la simplicité d'utilisation de ce framework cache une grande
 complexité au niveau de son implémentation. Le framework a posé quelques
@@ -686,7 +691,7 @@ marché lors des essais au début du projet (d'après le message d'erreur, le
 problème venait des threads). Ce n'est pas un problème grave, car Criterion
 propose beaucoup d'outils qui permettent de mettre en place des solutions
 alternatives, mais c'est tout de même un point important à noter. De plus, le
-fait que le framework utilise beaucoup de macros pose parfois problème car ces
+fait que le framework utilise beaucoup de macros pose parfois problème, car ces
 dernières peuvent avoir des comportements indésirables. Par exemple, il peut
 arriver qu'un test basique d'égalité avec la fonction d'assertion principale ne
 compile plus lorsque l'on échange les expressions de par et d'autre de
@@ -698,9 +703,9 @@ cependant, il faut noter que les macros trop complexe sont très difficiles à
 Le framework choisi possède donc beaucoup de qualités, mais aussi quelques
 défauts. Au final, bien qu'il ne soit pas parfait, il remplit bien son rôle et
 propose beaucoup de fonctionnalités très utiles pour écrire les tests. De
-plus, il faut noter que ce framework est assez récent, il est donc normal qu'il
-y ait encore des défauts qui seront certainement corrigés au fil des années de
-développement.
+plus, il faut noter que ce framework est assez récent, il est de ce fait normal
+qu'il y ait encore des défauts qui seront certainement corrigés au fil des
+années de développement.
 %}}}
 %}}}
 \section{Organisation d'un projet CKsquare}%{{{
@@ -746,9 +751,9 @@ l'entreprise.
 Comme on peut le voir sur l'arborescence de la Figure \ref{fig:arbrprojck},
 chaque projet comporte une partie locale ou les noms de fichiers commencent par
 \textbf{l}. Cette partie contient tous les fichiers qui sont spécifiques au
-projet courant (fonction d'initialisation, fonction principale,\dots). Chaque
+projet courant (fonction d'initialisation, fonction principale, \dots). Chaque
 projet contient au moins deux fichiers de configuration qui sont des fichiers
-d'entête contenant des constantes préprocesseur utilisées pour faire de la
+d'entête contenant des constantes préprocesseurs utilisées pour faire de la
 compilation conditionnelle. La gestion de la configuration s'est avérée complexe
 pour créer l'outil de test à cause du grand nombre d'options. Chaque projet
 contient aussi un répertoire \verb|CKLibs| dans lequel se trouvent des
@@ -777,13 +782,13 @@ a réécrit une grande partie de ces bibliothèques pour avoir plus de maitrise
 quant à la gestion des différents éléments. Ces bibliothèques ont été très
 utiles pour mettre en place une partie de l'émulation des composants dans le
 projet de test, nous traiterons cela plus loin dans ce rapport. Le reste des
-bibliothèques des microcontrôleurs a aussi été utilisé pour compiler avec gcc,
-là aussi, ce sera traité dans les prochaines sections.
+bibliothèques des microcontrôleurs a aussi été utilisé pour compiler avec
+\verb|gcc|, là aussi, ce sera traité dans les prochaines sections.
 
 Le répertoire \verb|commun| s'organise en catégories. Par exemple, on retrouve
 le dossier \verb|StorageDriver| qui contient les fichiers qui gèrent le stockage
 ou encore le dossier \verb|Payment| qui contient tout ce qui concerne le
-paiement (types de paiement, accepteur de pièce,\dots). L'objectif est de
+paiement (types de paiement, accepteur de pièce, \dots). L'objectif est de
 pouvoir faire des recherches par catégories et de garder les dépendances au plus
 proche des fichiers. Par exemple, plusieurs des sous répertoires de
 \verb|commun| contiennent un dossier \verb|Web| qui regroupe les dépendances web
@@ -833,7 +838,7 @@ de seconde entre chaque appel.
 
 Les fonctions \verb|Control| vont être un élément très important à tester. Ces
 fonctions ont beaucoup servi lors des essais réalisés sur les fichiers pendant la
-création de l'outil. Elles sont très intéressantes car elles permettent de
+création de l'outil. Elles sont très intéressantes, car elles permettent de
 couvrir une grande quantité de code et de tester la plupart des cas (pour le
 code de l'outil de test). À noter cependant que les machines à états sont très
 compliquées à tester puisqu'il ne faut normalement pas avoir accès aux états
@@ -891,6 +896,31 @@ logiciel. Il permet vraiment de simplifier le code et il est souvent plus
 intuitif dans son utilisation que le système de \verb|Control Manager|. Par
 contre, ce n'est pas un système simple à mettre en place en C. Dans la section
 suivante, nous traiterons l'organisation du projet de test.
+
+\subsubsection{Le projet Qt}
+
+La partie Qt fonctionne de la même façon que la branche de l'événementiel. Là
+aussi, toutes les machines à états sont gérées avec un \verb|State Manager| et
+les fonctions sont appelées suites à l'émission d'évènements. À noter qu'ici, le
+système d'évènements est intégré à Qt; les évènements sont des \gls{foncmembre}
+déclarées avec le mot clé \verb|signals| que l'on peut utiliser avec le mot-clé
+\verb|emit| pour émettre un évènement. Qt fournit une fonction \verb|connect|
+pour connecter une fonction à un signal.
+
+La grande différence avec le C est que le code C++ est entièrement basé sur les
+classes. Cela donne plus de flexibilité, car on peut aisément changer les
+implémentations de certains objets avec le polymorphisme ce qui simplifie la
+gestion de plusieurs configurations. De plus le polymorphisme permet d'éviter un
+maximum la copie de code.
+
+Enfin, le code C++ est beaucoup plus haut niveau que le code C, car Qt fournit
+beaucoup de classes utilitaires pour gérer les éléments complexes comme les
+communications à l'aide de port série. En plus, les cartes Beaglebone sur
+lesquelles s'exécute le code sont beaucoup plus évoluées que les \gls{pic}s, car
+ces dernières sont équipées d'un Linux embarqué. Cela change beaucoup de choses,
+par exemple, avec ces cartes, on a plus besoin de communiquer directement avec
+les périphériques de stockage, tout est géré par le système d'exploitation à
+l'aide de fichiers.
 %}}}
 \section{Organisation du projet de tests}%{{{
 
@@ -905,9 +935,6 @@ final, il a été décidé d'intégrer complètement l'outil de test dans
 Section \ref{orgaprojck}. De ce fait, les tests sont stockés à proximité des
 fichiers testés. Sur la Figure \ref{fig:integrtestcommun}, on peut voir une
 représentation de l'arborescence des fichiers dans le projet commun.
-
-% TODO: une partie de l'arborescence est normalement présentée dans la partie
-% précédente
 
 % [Intégration des tests dans le code commun] {{{
 \begin{figure}[h!]
@@ -925,10 +952,10 @@ mentionnées dans la Section \ref{orgaprojck}. Le répertoire \verb|Test| a ét�
 ajouté lors de l'intégration du projet de test dans le projet commun, ce dernier
 contient les fichiers généraux spécifiques aux tests. À noter qu'il y a un autre
 répertoire \verb|CFake| qui lui se trouve à la racine du projet, au même niveau
-que \verb|commun|. Ce dernier contient la simulation des interfaces pour le
-stockage. Étant donné que le stockage est un élément assez général, il a été mis
-à part. Comme on peut le voir ici, tous les fichiers ayant un lien entre eux
-sont stockés ensemble et il en est de même pour les tests.
+que \verb|commun|, contient la simulation des interfaces pour le stockage.
+Étant donné que le stockage est un élément assez général, il a été mis à part.
+Comme on peut le voir ici, tous les fichiers ayant un lien entre eux sont
+stockés ensemble et il en est de même pour les tests.
 
 Maintenant que nous avons définie une carte générale du projet, détaillons les
 parties les plus importantes.
@@ -967,10 +994,10 @@ Ce répertoire contient des versions modifiées des fichiers du compilateur
 \verb|c32| (normalement stockés dans le répertoire \verb|C32| à la racine des
 communs). Là aussi, les fichiers sont modifiés pour que le code puisse compiler
 avec \verb|gcc|. À noter que ce répertoire contient un fichier créé à partir de
-la bibliothèque \verb|plib| qui définie toutes les variables globales
-normalement utilisées par les bibliothèques carte. Tous les fichiers contenus
-dans ce répertoire permettent donc de compiler le code sans avoir accès aux
-bibliothèques du \verb|PIC|.
+la bibliothèque \verb|plib| qui définie toutes les variables globales utilisées
+par les bibliothèques carte. Tous les fichiers contenus dans ce répertoire
+permettent donc de compiler le code sans avoir accès aux bibliothèques du
+\verb|PIC|.
 
 \subsubsection*{Configuration de Criterion}
 \label{configuration-de-criterion}
@@ -981,16 +1008,16 @@ fichier qui fourni des fonctions d'initialisation et de terminaison globales qui
 peuvent être utilisées dans les tests. La fonction d'initialisation permet de
 créer les threads utilisés pour les horloges comme nous le verrons dans la
 Section \ref{simuhorologes} ainsi que d'initialiser toutes les variables
-nécssaire au bon fonctionnement de la simulation. Dans la fonction de
+nécessaires au bon fonctionnement de la simulation. Dans la fonction de
 terminaison, on termine simplement les threads des horloges. Dans ce fichier, on
-peut aussi ajouer d'autres fonctions spécifiques au framework.
+peut aussi ajouter d'autres fonctions spécifiques au framework.
 
 \subsection{Les répertoires de test secondaires}
 
 Comme dit précédemment, les développeurs de l'entreprise souhaitaient stocker
 les tests à proximité des fichiers testés. C'est pour cela que l'on a des
 répertoires de test secondaires dans chaque répertoire du projet. Dans les
-sections suivant, nous allons décrire le contenu de ces dossiers.
+sections suivantes, nous allons décrire le contenu de ces dossiers.
 
 \subsubsection{Les fichiers modifiés}
 
@@ -1003,7 +1030,7 @@ de tester si une action d'entrée ou de sortie a été réalisée. Une version m
 de ce fichier a donc été créée pour les tests. Les fonctions de la version test
 du fichier mettent à jour des variables globales accessibles depuis les tests
 permettant ainsi de savoir si des actions d'entrée ou de sortie ont été
-réalisées. Les versions test des fichiers sont compilés à la place des fichiers
+réalisées. Les versions test des fichiers sont compilées à la place des fichiers
 originaux pour les tests. Cette solution est similaire au \textit{mocking} (au
 niveau des fichiers) qui est très utilisé avec les langages objets
 \ref{spadini2017mock}.
@@ -1013,7 +1040,7 @@ niveau des fichiers) qui est très utilisé avec les langages objets
 Les sous-répertoires de test permettent aussi de stocker les fichiers qui
 contiennent les éléments nécessaires à la simulation des composants. Par exemple,
 les fichiers qui permettent de simuler les composants interfacés avec le
-protocole Cctalk sont stocké dans le répertoire \verb|commun/Cctalk/Test|. Nous
+protocole Cctalk sont stockés dans le répertoire \verb|commun/Cctalk/Test|. Nous
 traiterons ce protocole dans la Section \ref{interfacecctalk}.
 
 \subsubsection{Les tests}
@@ -1075,7 +1102,7 @@ La configuration comporte les six sections suivantes:
   \item[$\bullet$] \textbf{exécutables}: dans cette partie, on génère les
     exécutables en spécifiant les bonnes listes de fichiers à compiler. De plus,
     pour chaque exécutable, on utilise une commande CMake qui permet de définir
-    des constantes préprocesseur lors de la compilation (option \verb|-D|
+    des constantes préprocesseurs lors de la compilation (option \verb|-D|
     de gcc). Cela permet de choisir les configurations du projet pour les tests.
   \item[$\bullet$] \textbf{tests}: dans cette section, on ajoute les exécutables
     à la liste des tests. Ces tests pourront être lancés par \verb|CTest|
@@ -1115,22 +1142,20 @@ problème, il a été très rapidement décidé d'utiliser des threads. L'object
 s'exécutant dans un processus séparé en même temps que le programme principal.
 
 Cette solution a été très simple et rapide à mettre en place étant donné que les
-processus n'avaient pas besoin d'être synchronies. Au final, les deux horloges
+processus n'avaient pas besoin d'être synchronisés. Au final, les deux horloges
 fonctionnent sur le même principe. Pour chacun des fichiers, on a une fonction
-\verb|Start| qui permet de créer le thread. Cette fonction possède une
-sécurité qui fait que l'on peut faire autant d'appels que l'on souhaite, le
-thread n'est créé qu'une seule fois (cela rend l'utilisation plus simple dans
-les tests). À noter que dans le cas du Rtc, l'horloge démarre à la date du jour.
-Les fichiers comportent aussi une fonction \verb|Loop| qui est la fonction
-qui s'exécute dans le thread. De plus, des moyen d'interagir avec les horloges ont été
-ajoutés. Par exemple, à certains endroits du code, on met en place
-des temps d'attente relativement long. Pour éviter de bloquer le programme,
-chaque fichier propose une fonction \verb|Wait| qui permet d'incrémenter le
-compteur manuellement. Il est aussi possible de mettre les horloges en pause et
-de les relancer. Enfin, il y a une fonction \verb|Stop| qui permet de
-détruire les threads. Les fonctions \verb|Start| et \verb|Stop| sont
-appelées dans les fonctions d'initialisation et de terminaison globales décrites
-dans la Section \ref{configuration-de-criterion}.\\
+\verb|Start| qui permet de créer le thread. Cette fonction possède une sécurité
+qui fait que si l'on appelle plusieurs fois la fonction, il n'y a qu'un seul
+thread créé (cela rend l'utilisation plus simple dans les tests). À noter que
+dans le cas du Rtc, l'horloge démarre à la date du jour. Les fichiers comportent
+aussi une fonction \verb|Loop| qui est la fonction qui s'exécute dans le thread.
+De plus, des moyens d'interagir avec les horloges ont été ajoutés. La fonction
+\verb|Wait| permet de faire passer le temps de les tests et les fonctions
+\verb|Pause| et \verb|Run| permette de gérer la mise en pause des horloges.
+Enfin, il y a une fonction \verb|Stop| qui permet de détruire les threads. Les
+fonctions \verb|Start| et \verb|Stop| sont appelées dans les fonctions
+d'initialisation et de terminaison globales décrites dans la Section
+\ref{configuration-de-criterion}.\\
 
 Les horloges représentaient donc une partie importante du projet, car elles sont
 énormément utilisées dans le code et si les compteurs ne sont pas incrémentés,
@@ -1148,14 +1173,11 @@ L'émulation des périphériques de stockage est assez simple puisqu'il s'agit
 juste de tableaux de caractères non signés (codés sur 8 bits sur la plupart des
 machines). La partie complexe de l'émulation du stockage concerne l'interface
 qui permet d'interagir avec les périphériques. Il y a deux protocoles qui sont
-utilisés avec le stockage. Tout d'abord il y a le protocole I²C qui est utilisé
-avec les registres et certaines eeproms. Ensuite il y a le protocole SPI qui est
+utilisés avec le stockage. Tout d'abord, il y a le protocole I²C qui est utilisé
+avec les registres et certaines eeproms. Ensuite, il y a le protocole SPI qui est
 utilisé avec les eeproms et les mémoires flash. La simulation de ces deux
 interfaces a nécessité l'apprentissage des deux protocoles qui ne sont pas traités
 dans les cours de la filière 2 à l'ISIMA.
-
-TODO: mettre des images des composants (montrer l'objet au-delà du code est
-intéressant)
 
 Dans cette partie, nous allons voir comment a été réalisée l'émulation de
 l'interface permettant d'utiliser le stockage avec les différents protocoles.
@@ -3357,24 +3379,24 @@ L'objectif du stage était de concevoir un outil permettant de faire de
 l'intégration continue. Cet outil devait présenter un ensemble de méthode
 permettant d'automatiser des tests sur la partie commune du code C et C++
 utilisé sur les produits de l'entreprise. De plus, comme le code testé s'exécute
-normalement sur des cartes électronique, il fallait que l'outil mette en place
+normalement sur des cartes électroniques, il fallait que l'outil mette en place
 la simulation des composants connectés à la carte.\\
 
 L'outil final rempli les critères du cahier des charges et présente bien une
 méthode permettant de simuler les composants électroniques pour faire des tests.
-L'outil n'a pas encore été beaucoup utilisé mais les résultats sont
-encourageant, car le peu de tests qui ont été écrit durant le stage ont déjà
+L'outil n'a pas encore été beaucoup utilisé, mais les résultats sont
+encourageants, car le peu de tests qui ont été écrits durant le stage ont déjà
 prouvé leur utilité. Ils ont permis la détection de plusieurs problèmes suite à
 une grosse fusion de branches. Enfin, la pipeline permet non seulement
-d'exécuter les tests automatiquement mais elle possède aussi d'autres
+d'exécuter les tests automatiquement, mais elle possède aussi d'autres
 fonctionnalités. Pour le code C, elle permet de calculer la couverture du code
 et pour la partie Qt, il y a un test memcheck qui permet d'analyser
 l'utilisation de la mémoire.\\
 
 Le projet s'est déroulé bien plus rapidement que prévu du fait de la volonté de
 simplifier au maximum la simulation. La solution imaginée au départ utilisait
-des thread, elle était lourde et difficile à mettre en œuvre. Par la suite, nous
-avons décidé de simplifier au maximum ce qui a fait gagné beaucoup de temps.\\
+des threads, elle était lourde et difficile à mettre en œuvre. Par la suite, nous
+avons décidé de simplifier au maximum ce qui a fait gagner beaucoup de temps.\\
 
 Ce stage a permis de découvrir les bases du monde de l'embarqué. En effet, pour
 créer l'outil, il a fallu découvrir plusieurs protocoles tels que l'I²C et le
@@ -3382,6 +3404,12 @@ SPI ainsi que le Cctalk et le MDB spécialisé pour la monétique. De plus,
 l'écriture des tests exemple a nécessité l'étude et la compréhension d'une
 partie du code utilisé sur les bornes. Enfin, ce stage constitue aussi une
 première expérience en entreprise.\\
+
+Du point de vue du cahier des charges, l'objectif du stage a été rempli, mais il
+faudra tout de même que l'outil créé soit vraiment utilisé par les développeurs
+de l'entreprise pour être complètement validé. Dans le cas où un élément ne
+conviendrait pas, la documentation qui détaille toutes les méthodes utilisées
+pour mettre en place l'outil permettra de faire les modifications nécessaires.
 %}}}
 %***************************************************************************}}}
 
