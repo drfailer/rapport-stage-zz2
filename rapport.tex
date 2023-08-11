@@ -2326,10 +2326,10 @@ Une autre erreur similaire est survenu lors de la création des tests sur les
 historiques de paiement. Ici, c'était un \verb|assert| qui stoppait le
 programme. La condition testait la taille d'une structure de données avec un
 \verb|sizeof|, le problème était que cette structure de données utilisait des
-\verb|long|. Là aussi une meilleure connaissance du standard aurait permis de
-savoir que la taille des \verb|long| est variable entre les machines. Comme on
-peut le voir sur \cite{ISO:C99} et \cite{typescppref}, le standard spécifie les
-règles suivantes sur la taille des entiers:
+\verb|long|. Là aussi, pour des raisons d'optimisation, le standard ne spécifie
+pas de taille fixe pour les \verb|long|. Comme on peut le voir sur
+\cite{ISO:C99} et \cite{typescppref}, le standard spécifie les règles suivantes
+sur la taille des entiers:
 
 \begin{itemize}
   \item[$\bullet$] \verb|sizeof(char)| $\leq$ \verb|sizeof(short)| $\leq$ \verb|sizeof(int)| $\leq$ \verb|sizeof(long)| $\leq$ \verb|sizeof(long long)|
